@@ -5,12 +5,13 @@ export function HeroSection() {
   return (
     <section className="relative min-h-[700px] w-full overflow-hidden">
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-right"
         style={{
           backgroundImage: `url('/homebcma.jpg')`,
         }}
       >
-        <div className="absolute inset-0 bg-black/40" />
+        {/* Gradient overlay from black (top) to transparent (bottom) */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/100 via-black/60 to-transparent" />
       </div>
 
       <div className="container relative z-10 flex min-h-[700px] items-center px-4 py-20 md:px-6">

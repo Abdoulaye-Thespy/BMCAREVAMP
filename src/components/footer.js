@@ -9,16 +9,22 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-4">
           {/* About Column */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold">About BMCA</h3>
+            <div className="mb-4 flex items-center gap-2">
+              <img
+                src="/logo.png"
+                alt="BMCA Logo"
+                className="h-8 w-auto"
+              />
+              <span className="text-lg font-semibold">BMCA</span>
+            </div>
             <p className="text-pretty text-sm text-white/80">
-              Building stronger communities in Beirut through sustainable programs that empower families and create
-              lasting change.
+              The Bafut Manjong Cultural Association, BMCA – is a group of Bafut people and its affiliates based in the United States of America.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
+            <h3 className="mb-4 text-lg font-semibold text-[#E67D00]">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="#about" className="text-white/80 transition-colors hover:text-primary">
@@ -27,17 +33,17 @@ export function Footer() {
               </li>
               <li>
                 <a href="#programs" className="text-white/80 transition-colors hover:text-primary">
+                  Convention
+                </a>
+              </li>
+              <li>
+                <a href="#programs" className="text-white/80 transition-colors hover:text-primary">
                   Our Programs
                 </a>
               </li>
               <li>
-                <a href="#volunteer" className="text-white/80 transition-colors hover:text-primary">
-                  Volunteer
-                </a>
-              </li>
-              <li>
                 <a href="#donate" className="text-white/80 transition-colors hover:text-primary">
-                  Donate
+                  Contact Us
                 </a>
               </li>
             </ul>
@@ -45,7 +51,7 @@ export function Footer() {
 
           {/* Resources */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Resources</h3>
+            <h3 className="mb-4 text-lg font-semibold text-[#E67D00]">Resources</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="#news" className="text-white/80 transition-colors hover:text-primary">
@@ -57,22 +63,12 @@ export function Footer() {
                   Annual Reports
                 </a>
               </li>
-              <li>
-                <a href="#contact" className="text-white/80 transition-colors hover:text-primary">
-                  Contact Us
-                </a>
-              </li>
-              <li>
-                <a href="#faq" className="text-white/80 transition-colors hover:text-primary">
-                  FAQ
-                </a>
-              </li>
             </ul>
           </div>
 
           {/* Newsletter */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Stay Connected</h3>
+            <h3 className="mb-4 text-lg font-semibold text-[#E67D00]">Stay Connected</h3>
             <p className="mb-4 text-sm text-white/80">Subscribe to our newsletter for updates</p>
             <div className="mb-4 flex gap-2">
               <Input
@@ -80,7 +76,7 @@ export function Footer() {
                 placeholder="Your email"
                 className="bg-white/10 text-white placeholder:text-white/60"
               />
-              <Button className="bg-primary hover:bg-primary/90">Subscribe</Button>
+              <Button className="bg-[#E67D00] hover:bg-primary/90">Subscribe</Button>
             </div>
             <div className="flex gap-3">
               <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-white/10 hover:text-primary">

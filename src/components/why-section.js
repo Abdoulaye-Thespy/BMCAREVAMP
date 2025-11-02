@@ -1,10 +1,26 @@
 import { Button } from "@/components/ui/button"
-import { Heart } from "lucide-react" // Declare the Heart variable here
 
 export function WhySection() {
   return (
-    <section className="w-full bg-gradient-to-br from-amber-900 to-stone-900 py-16 text-white md:py-24">
-      <div className="container px-4 md:px-6">
+    <section className="w-full py-16 text-white md:py-24 relative mb-8">
+      {/* Background Image with Overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url('/bg-why-us.jpg')`,
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60" />
+      </div>
+      
+      <div className="container relative z-10 px-4 md:px-6">
+        {/* Header with button background color */}
+        <div className="mb-4">
+          <h1 className="inline-bloc px-k6 py-2 text-lg font-bold md:text-xl text-[#E67D00]">
+            OUR HISTORY
+          </h1>
+        </div>
+
         <div className="grid gap-8 md:grid-cols-2 md:items-center">
           <div>
             <h2 className="mb-6 text-3xl font-bold md:text-4xl">Why did we start this foundation?</h2>
@@ -17,15 +33,19 @@ export function WhySection() {
               deserves dignity, opportunity, and support. Through community-driven programs, we're not just providing
               aid—we're building lasting change.
             </p>
-            <Button size="lg" variant="secondary" className="bg-white text-foreground hover:bg-white/90">
+            <Button size="lg" variant="secondary" className="w-full bg-[#E67D00] text-foreground hover:bg-white/90">
               Learn Our Story
             </Button>
           </div>
           <div className="flex items-center justify-center">
             <div className="relative h-64 w-64 md:h-80 md:w-80">
               <div className="absolute inset-0 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
-                <div className="flex h-48 w-48 items-center justify-center rounded-full bg-primary md:h-56 md:w-56">
-                  <Heart className="h-24 w-24 text-primary-foreground md:h-28 md:w-28" />
+                <div className="flex h-48 w-48 items-center justify-center rounded-full bg-primary overflow-hidden md:h-56 md:w-56">
+                  <img
+                    src="/icon-why-us.png"
+                    alt="Our foundation"
+                    className="h-full w-full object-cover"
+                  />
                 </div>
               </div>
             </div>
