@@ -37,7 +37,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#programs" className="text-white/80 transition-colors hover:text-primary">
+                <a href="/programs" className="text-white/80 transition-colors hover:text-primary">
                   Our Programs
                 </a>
               </li>
