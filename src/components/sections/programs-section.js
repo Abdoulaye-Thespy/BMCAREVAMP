@@ -1,56 +1,53 @@
+"use client"
+
+import { useRouter } from "next/navigation"
 import { BookOpen, Droplet, Palette, Heart, Users, Building2, Plus, ArrowRight } from "lucide-react"
 
 export default function ProgramsSection() {
+  const router = useRouter()
+
   const programs = [
     {
-      id: 1,
+      id: "education",
       name: "Education",
       icon: BookOpen,
     },
     {
-      id: 2,
+      id: "water",
       name: "Water",
       icon: Droplet,
     },
     {
-      id: 3,
+      id: "culture-art",
       name: "Culture & Art",
       icon: Palette,
     },
     {
-      id: 4,
+      id: "health",
       name: "Health & Fitness",
       icon: Heart,
     },
     {
-      id: 5,
+      id: "kiteuh",
       name: "Kiteuh",
       icon: Users,
     },
     {
-      id: 6,
+      id: "infrastructure",
       name: "Infrastructure",
       icon: Building2,
     },
-    {
-      id: 7,
-      name: "More",
-      icon: Plus,
-      isMore: true,
-    },
-    {
-      id: 8,
-      name: "More",
-      icon: Plus,
-      isMore: true,
-    },
-    {
-      id: 9,
-      name: "More",
-      icon: Plus,
-      isMore: true,
-    },
   ]
+
+  const handleProgramClick = (programId) => {
+    if (programId <= 6) {
+      router.push(`/programs/${programId}`)
+    }
+  }
+
+  const handleDonate = () => {
+    router.push("/donate")
+  }
 
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
@@ -65,13 +62,16 @@ export default function ProgramsSection() {
         </div>
 
         {/* Programs Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {programs.map((program) => {
             const Icon = program.icon
             return (
               <div
                 key={program.id}
-                className="bg-orange-50 rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer group"
+                onClick={() => handleProgramClick(program.id)}
+                className={`bg-orange-50 rounded-lg p-6 hover:shadow-lg transition-shadow ${
+                  program.isMore ? "cursor-default" : "cursor-pointer group"
+                }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -80,11 +80,25 @@ export default function ProgramsSection() {
                     </div>
                     <span className="text-gray-900 font-semibold text-lg">{program.name}</span>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-orange-500 transition-colors" />
+                  {!program.isMore && (
+                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-orange-500 transition-colors" />
+                  )}
                 </div>
               </div>
             )
           })}
+        </div>
+
+        {/* Donate Section - Updated with better colors */}
+        <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg p-8 text-center">
+          <h3 className="text-3xl font-bold mb-4">Want to Make a Difference?</h3>
+          <p className="text-orange-50 mb-6 text-lg">Support our programs and help us build stronger communities</p>
+          <button
+            onClick={handleDonate}
+            className="bg-white cursor-pointer text-orange-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-bold transition-colors shadow-lg hover:shadow-xl"
+          >
+            Donate Now
+          </button>
         </div>
       </div>
     </section>
