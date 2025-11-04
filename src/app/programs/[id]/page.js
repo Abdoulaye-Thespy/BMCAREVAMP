@@ -1,9 +1,9 @@
 "use client"
 
 import { useParams, useRouter } from "next/navigation"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
+import { Header }from "@/components/header"
 import { ArrowLeft, Share2, Heart } from "lucide-react"
+import { Footer } from "@/components/footer"
 
 export default function ProgramDetailPage() {
   const params = useParams()
