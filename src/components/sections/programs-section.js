@@ -1,10 +1,12 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { BookOpen, Droplet, Palette, Heart, Users, Building2, Plus, ArrowRight } from "lucide-react"
 
 export default function ProgramsSection() {
   const router = useRouter()
+  const [activeCategory, setActiveCategory] = useState(null)
 
   const programs = [
     {
@@ -37,6 +39,24 @@ export default function ProgramsSection() {
       name: "Infrastructure",
       icon: Building2,
     },
+    {
+      id: 7,
+      name: "More",
+      icon: Plus,
+      isMore: true,
+    },
+    {
+      id: 8,
+      name: "More",
+      icon: Plus,
+      isMore: true,
+    },
+    {
+      id: 9,
+      name: "More",
+      icon: Plus,
+      isMore: true,
+    },
   ]
 
   const handleProgramClick = (programId) => {
@@ -57,7 +77,7 @@ export default function ProgramsSection() {
           <p className="text-orange-500 font-semibold text-sm uppercase tracking-wide mb-2">Programs</p>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Explore our programs</h2>
           <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-            BMCA programs and the overall well-being and development of the community through sub programs
+            Bafut Fondom programs and the overall well-being and development of the community through sub programs
           </p>
         </div>
 
@@ -89,13 +109,13 @@ export default function ProgramsSection() {
           })}
         </div>
 
-        {/* Donate Section - Updated with better colors */}
+        {/* Donate Section */}
         <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg p-8 text-center">
           <h3 className="text-3xl font-bold mb-4">Want to Make a Difference?</h3>
           <p className="text-orange-50 mb-6 text-lg">Support our programs and help us build stronger communities</p>
           <button
-            onClick={handleDonate}
-            className="bg-white cursor-pointer text-orange-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-bold transition-colors shadow-lg hover:shadow-xl"
+            onClick={() => router.push("/donate")}
+            className="bg-white text-orange-500 hover:bg-orange-50 px-8 py-3 rounded-lg font-bold transition-colors"
           >
             Donate Now
           </button>
