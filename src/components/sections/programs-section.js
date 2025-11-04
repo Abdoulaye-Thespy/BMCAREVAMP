@@ -57,7 +57,7 @@ export default function ProgramsSection() {
           <p className="text-orange-500 font-semibold text-sm uppercase tracking-wide mb-2">Programs</p>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Explore our programs</h2>
           <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-            Bafut Fondom programs and the overall well-being and development of the community through sub programs
+            BMCA programs and the overall well-being and development of the community through sub programs
           </p>
         </div>
 
