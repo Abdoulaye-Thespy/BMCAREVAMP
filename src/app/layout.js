@@ -14,6 +14,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Bafut Manjong Cultural Association - Building Bafut Communities",
   description: "Bafut Manjong Cultural Association, BMCA - is a group of Bafut people and its affiliates Bases in The United States of America",
+    icons: {
+    icon: "/favicon.ico", // Add this line
+  },
 };
 
 export default function RootLayout({ children }) {
