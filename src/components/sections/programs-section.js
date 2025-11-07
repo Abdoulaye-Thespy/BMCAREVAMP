@@ -39,24 +39,6 @@ export default function ProgramsSection() {
       name: "Infrastructure",
       icon: Building2,
     },
-    {
-      id: 7,
-      name: "More",
-      icon: Plus,
-      isMore: true,
-    },
-    {
-      id: 8,
-      name: "More",
-      icon: Plus,
-      isMore: true,
-    },
-    {
-      id: 9,
-      name: "More",
-      icon: Plus,
-      isMore: true,
-    },
   ]
 
   const handleProgramClick = (programId) => {
