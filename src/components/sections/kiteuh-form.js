@@ -4,19 +4,21 @@ import { useState } from "react"
 import { Check } from "lucide-react"
 
 const CHAPTERS = [
-  "Dalles",
-  "Puebla",
-  "New England",
-  "Great Lakes",
+  "Houston Chapter",
+  "Dallas Chapter",
+  "Florida Chapter",
+  "New England Chapter",
+  "Great Lakes Chapter",
+  "Los Angeles Chapter",
   "United Chapter",
   "United Chapter West Coast",
-  "Minnesota",
-  "DC Metro",
-  "Delaware",
-  "North Carolina",
-  "East",
-  "Los Angeles",
-]
+  "Minnesota Chapter",
+  "DC Metro Chapter",
+  "Delaware Chapter",
+  "Mid West Chapter",
+  "North Carolina Chapter",
+  "North East Chapter"
+];
 
 const steps = [
   { number: 1, name: "Chapter" },
@@ -131,7 +133,7 @@ export default function KiteuhForm() {
         {currentStep === 1 && (
           <div>
             <h2 className="text-2xl font-bold text-orange-600 mb-6">Kiteuh Mutual Assurance Program</h2>
-            <p className="text-gray-600 mb-4">Bafut Mbonjing Cultural Association subscription program for members</p>
+            <p className="text-gray-600 mb-4">Bafut Manjong Cultural Association subscription program for members</p>
             <p className="text-orange-600 font-semibold mb-4">Choose your members chapter</p>
 
             <div className="mb-6">
