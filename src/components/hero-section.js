@@ -1,5 +1,4 @@
 "use client"
-
 import { Button } from "@/components/ui/button"
 import { CreditCard, ChevronLeft, ChevronRight } from "lucide-react"
 import { useState, useEffect } from "react"
@@ -19,7 +18,7 @@ const slides = [
     title: "Empowering Futures\nTransforming Lives",
     description: "From traditional kingdom to modern development. Continuing Bafut's legacy of producing doctors, engineers, and leaders through education and opportunity.",
     buttonText: "Donate Now", 
-    textPosition: "right",
+    textPosition: "center",
   }
 ]
 
@@ -68,8 +67,10 @@ export function HeroSection() {
             backgroundImage: `url('${slide.backgroundImage}')`,
           }}
         >
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
+          {/* Black gradient overlay only for first slide */}
+          {slide.id === 1 && (
+            <div className="absolute inset-0 bg-gradient-to-r from-black/100 via-black/60 to-transparent" />
+          )}
         </div>
       ))}
 
@@ -109,13 +110,13 @@ export function HeroSection() {
         ))}
       </div>
 
-      {/* Content Container */}
-      <div className="container relative z-10 flex min-h-[700px] items-center px-4 py-20 md:px-6">
-        {/* Left-aligned Content */}
+      {/* Content Container - Reduced padding to move text up */}
+      <div className="container relative z-10 flex min-h-[700px] items-center px-4 py-5 md:px-6">
+        {/* Left-aligned Content with extra padding */}
         <div className={`max-w-2xl transition-all duration-1000 ${
           currentSlideData.textPosition === 'left' 
-            ? 'translate-x-0 opacity-100' 
-            : '-translate-x-20 opacity-0 pointer-events-none'
+            ? 'translate-x-0 opacity-100 pl-12 md:pl-20' 
+            : '-translate-x-20 opacity-0 pointer-events-none pl-12 md:pl-20'
         }`}>
           <h1 className="mb-6 text-balance text-5xl font-bold leading-tight text-white md:text-6xl lg:text-7xl">
             {currentSlideData.title.split('\n').map((line, index) => (
@@ -136,9 +137,9 @@ export function HeroSection() {
           </Button>
         </div>
 
-        {/* Right-aligned Content (for second slide) */}
-        <div className={`ml-auto max-w-2xl text-right transition-all duration-1000 ${
-          currentSlideData.textPosition === 'right' 
+        {/* Center-aligned Content for second slide */}
+        <div className={`mx-auto max-w-2xl text-left transition-all duration-1000 ${
+          currentSlideData.textPosition === 'center' 
             ? 'translate-x-0 opacity-100' 
             : 'translate-x-20 opacity-0 pointer-events-none'
         }`}>
