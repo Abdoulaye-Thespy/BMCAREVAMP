@@ -15,10 +15,10 @@ const slides = [
   {
     id: 2,
     backgroundImage: "/bg-why-us.jpg",
-    title: "Empowering Futures\nTransforming Lives",
+    title: "Building Futures, Changing Lives",
     description: "From traditional kingdom to modern development. Continuing Bafut's legacy of producing doctors, engineers, and leaders through education and opportunity.",
     buttonText: "Donate Now", 
-    textPosition: "center",
+    textPosition: "left",
   }
 ]
 
@@ -55,13 +55,15 @@ export function HeroSection() {
   const currentSlideData = slides[currentSlide]
 
   return (
-    <section className="relative min-h-[700px] w-full overflow-hidden">
-      {/* Background Slides */}
+    <section className="relative min-h-[680px] w-full overflow-hidden">
+      {/* Background Slides with Zoom Animation */}
       {slides.map((slide, index) => (
         <div
           key={slide.id}
           className={`absolute inset-0 bg-cover bg-center transition-all duration-1000 ${
-            index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+            index === currentSlide 
+              ? 'opacity-100 scale-110 animate-zoom' 
+              : 'opacity-0 scale-105'
           }`}
           style={{
             backgroundImage: `url('${slide.backgroundImage}')`,
@@ -110,22 +112,22 @@ export function HeroSection() {
         ))}
       </div>
 
-      {/* Content Container - Reduced padding to move text up */}
+      {/* Content Container - Full width on mobile */}
       <div className="container relative z-10 flex min-h-[700px] items-center px-4 py-5 md:px-6">
-        {/* Left-aligned Content with extra padding */}
-        <div className={`max-w-2xl transition-all duration-1000 ${
+        {/* First slider - Full width on mobile, left on larger screens */}
+        <div className={`w-full max-w-full md:max-w-2xl transition-all duration-1000 ${
           currentSlideData.textPosition === 'left' 
-            ? 'translate-x-0 opacity-100 pl-12 md:pl-20' 
-            : '-translate-x-20 opacity-0 pointer-events-none pl-12 md:pl-20'
+            ? 'translate-x-0 opacity-100 px-4 md:pl-12 lg:pl-20' 
+            : '-translate-x-20 opacity-0 pointer-events-none px-4 md:pl-12 lg:pl-20'
         }`}>
-          <h1 className="mb-6 text-balance text-5xl font-bold leading-tight text-white md:text-6xl lg:text-7xl">
+          <h1 className="mb-6 text-balance text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
             {currentSlideData.title.split('\n').map((line, index) => (
               <span key={index} className="block">
                 {line}
               </span>
             ))}
           </h1>
-          <p className="mb-8 text-pretty text-lg text-white/90 md:text-xl">
+          <p className="mb-8 text-pretty text-base text-white/90 sm:text-lg md:text-xl">
             {currentSlideData.description}
           </p>
           <Button 
@@ -137,20 +139,20 @@ export function HeroSection() {
           </Button>
         </div>
 
-        {/* Center-aligned Content for second slide */}
-        <div className={`mx-auto max-w-2xl text-left transition-all duration-1000 ${
+        {/* Second slider - Full width on mobile, centered on larger screens */}
+        <div className={`w-full max-w-full md:max-w-2xl transition-all duration-1000 ${
           currentSlideData.textPosition === 'center' 
-            ? 'translate-x-0 opacity-100' 
-            : 'translate-x-20 opacity-0 pointer-events-none'
+            ? 'translate-x-0 opacity-100 px-4 md:px-0 md:mx-auto' 
+            : 'translate-x-20 opacity-0 pointer-events-none px-4 md:px-0 md:mx-auto'
         }`}>
-          <h1 className="mb-6 text-balance text-5xl font-bold leading-tight text-white md:text-6xl lg:text-7xl">
+          <h1 className="mb-6 text-balance text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
             {currentSlideData.title.split('\n').map((line, index) => (
               <span key={index} className="block">
                 {line}
               </span>
             ))}
           </h1>
-          <p className="mb-8 text-pretty text-lg text-white/90 md:text-xl">
+          <p className="mb-8 text-pretty text-base text-white/90 sm:text-lg md:text-xl">
             {currentSlideData.description}
           </p>
           <Button 
@@ -162,6 +164,21 @@ export function HeroSection() {
           </Button>
         </div>
       </div>
+
+      {/* Add CSS for zoom animation */}
+      <style jsx>{`
+        @keyframes zoom {
+          0% {
+            transform: scale(1);
+          }
+          100% {
+            transform: scale(1.1);
+          }
+        }
+        .animate-zoom {
+          animation: zoom 5s ease-in-out infinite alternate;
+        }
+      `}</style>
     </section>
   )
 }
