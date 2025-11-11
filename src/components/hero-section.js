@@ -1,7 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { CreditCard, ChevronLeft, ChevronRight } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 const slides = [
   {
@@ -25,6 +25,12 @@ const slides = [
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
+  const [touchStart, setTouchStart] = useState(null)
+  const [touchEnd, setTouchEnd] = useState(null)
+  const sliderRef = useRef(null)
+
+  // Minimum swipe distance (px)
+  const minSwipeDistance = 50
 
   const nextSlide = () => {
     if (isAnimating) return
@@ -36,6 +42,30 @@ export function HeroSection() {
     if (isAnimating) return
     setIsAnimating(true)
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
+  }
+
+  // Touch handlers for swipe
+  const onTouchStart = (e) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe) {
+      nextSlide()
+    } else if (isRightSwipe) {
+      prevSlide()
+    }
   }
 
   useEffect(() => {
@@ -55,7 +85,13 @@ export function HeroSection() {
   const currentSlideData = slides[currentSlide]
 
   return (
-    <section className="relative min-h-[680px] w-full overflow-hidden">
+    <section 
+      ref={sliderRef}
+      className="relative min-h-[680px] w-full overflow-hidden"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       {/* Background Slides with Zoom Animation */}
       {slides.map((slide, index) => (
         <div
@@ -76,10 +112,10 @@ export function HeroSection() {
         </div>
       ))}
 
-      {/* Navigation Arrows */}
+      {/* Navigation Arrows - Only on desktop */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/20 p-3 text-white transition-all hover:bg-white/30 backdrop-blur-sm"
+        className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/20 p-3 text-white transition-all hover:bg-white/30 backdrop-blur-sm hidden md:block"
         aria-label="Previous slide"
       >
         <ChevronLeft className="h-6 w-6" />
@@ -87,7 +123,7 @@ export function HeroSection() {
       
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/20 p-3 text-white transition-all hover:bg-white/30 backdrop-blur-sm"
+        className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/20 p-3 text-white transition-all hover:bg-white/30 backdrop-blur-sm hidden md:block"
         aria-label="Next slide"
       >
         <ChevronRight className="h-6 w-6" />
@@ -112,33 +148,50 @@ export function HeroSection() {
         ))}
       </div>
 
-      {/* Content Container - Full width on all screens */}
-      <div className="relative z-10 flex min-h-[700px] w-full items-center px-4 py-5 md:px-6">
-        {/* Single content container that adapts based on textPosition */}
+      {/* Swipe instruction for mobile */}
+      <div className="absolute bottom-20 left-1/2 z-20 -translate-x-1/2 md:hidden">
+        <div className="flex items-center space-x-2 rounded-full bg-black/30 px-3 py-1 backdrop-blur-sm">
+          <div className="flex space-x-1">
+            <div className="h-1 w-1 rounded-full bg-white/60 animate-pulse"></div>
+            <div className="h-1 w-1 rounded-full bg-white/60 animate-pulse" style={{animationDelay: '0.2s'}}></div>
+            <div className="h-1 w-1 rounded-full bg-white/60 animate-pulse" style={{animationDelay: '0.4s'}}></div>
+          </div>
+          <span className="text-xs text-white/80">Swipe to navigate</span>
+        </div>
+      </div>
+
+      {/* Content Container - Full width with mobile-only larger text */}
+      <div className="relative z-10 flex min-h-[700px] w-full items-center px-6 py-5 sm:px-8 md:px-12 lg:px-20">
+        {/* Single content container with mobile-optimized text sizes */}
         <div className={`w-full transition-all duration-1000 ${
           currentSlideData.textPosition === 'left' 
-            ? 'translate-x-0 opacity-100 md:pl-12 lg:pl-20' 
-            : 'translate-x-0 opacity-100 text-center md:mx-auto'
+            ? 'translate-x-0 opacity-100' 
+            : 'translate-x-0 opacity-100 text-center'
         } ${
           currentSlideData.textPosition === 'center' 
-            ? 'md:max-w-2xl' 
+            ? 'md:max-w-2xl md:mx-auto' 
             : 'md:max-w-2xl'
         }`}>
-          <h1 className="mb-6 text-balance text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
+          {/* Header - Larger only on mobile, normal on desktop */}
+          <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-white sm:text-5xl md:text-4xl lg:text-5xl xl:text-6xl">
             {currentSlideData.title.split('\n').map((line, index) => (
               <span key={index} className="block">
                 {line}
               </span>
             ))}
           </h1>
-          <p className="mb-8 text-pretty text-base text-white/90 sm:text-lg md:text-xl">
+          
+          {/* Paragraph - Larger only on mobile, normal on desktop */}
+          <p className="mb-8 text-pretty text-lg text-white/90 sm:text-xl md:text-base lg:text-lg">
             {currentSlideData.description}
           </p>
+          
+          {/* Button - Slightly larger on mobile */}
           <Button 
             size="lg" 
-            className="bg-[#F5A623] hover:bg-[#F5A623]/90 text-white transform transition-all duration-500 hover:scale-105"
+            className="bg-[#F5A623] hover:bg-[#F5A623]/90 text-white transform transition-all duration-500 hover:scale-105 text-base py-6 px-8 md:py-4 md:px-6 md:text-sm"
           >
-            <CreditCard className="mr-2 h-5 w-5" />
+            <CreditCard className="mr-2 h-5 w-5 md:h-4 md:w-4" />
             {currentSlideData.buttonText}
           </Button>
         </div>
