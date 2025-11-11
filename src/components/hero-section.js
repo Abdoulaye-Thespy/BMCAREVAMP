@@ -27,6 +27,7 @@ export function HeroSection() {
   const [isAnimating, setIsAnimating] = useState(false)
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)
+  const [animateContent, setAnimateContent] = useState(false)
   const sliderRef = useRef(null)
 
   // Minimum swipe distance (px)
@@ -35,12 +36,14 @@ export function HeroSection() {
   const nextSlide = () => {
     if (isAnimating) return
     setIsAnimating(true)
+    setAnimateContent(false)
     setCurrentSlide((prev) => (prev + 1) % slides.length)
   }
 
   const prevSlide = () => {
     if (isAnimating) return
     setIsAnimating(true)
+    setAnimateContent(false)
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
   }
 
@@ -71,7 +74,8 @@ export function HeroSection() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsAnimating(false)
-    }, 800)
+      setAnimateContent(true)
+    }, 300)
 
     return () => clearTimeout(timer)
   }, [currentSlide])
@@ -137,6 +141,7 @@ export function HeroSection() {
             onClick={() => {
               if (!isAnimating) {
                 setIsAnimating(true)
+                setAnimateContent(false)
                 setCurrentSlide(index)
               }
             }}
@@ -163,41 +168,63 @@ export function HeroSection() {
       {/* Content Container - Full width with mobile-only larger text */}
       <div className="relative z-10 flex min-h-[700px] w-full items-center px-6 py-5 sm:px-8 md:px-12 lg:px-20">
         {/* Single content container with mobile-optimized text sizes */}
-        <div className={`w-full transition-all duration-1000 ${
-          currentSlideData.textPosition === 'left' 
-            ? 'translate-x-0 opacity-100' 
-            : 'translate-x-0 opacity-100 text-center'
-        } ${
+        <div className={`w-full transition-all duration-300 ${
           currentSlideData.textPosition === 'center' 
             ? 'md:max-w-2xl md:mx-auto' 
             : 'md:max-w-2xl'
         }`}>
-          {/* Header - Larger only on mobile, normal on desktop */}
+          {/* Header - Staggered animation */}
           <h1 className="mb-6 text-balance text-4xl font-bold leading-tight text-white sm:text-5xl md:text-4xl lg:text-5xl xl:text-6xl">
             {currentSlideData.title.split('\n').map((line, index) => (
-              <span key={index} className="block">
+              <span 
+                key={index} 
+                className={`block transition-all duration-700 ${
+                  animateContent 
+                    ? 'opacity-100 translate-y-0' 
+                    : 'opacity-0 translate-y-8'
+                }`}
+                style={{
+                  transitionDelay: `${200 + index * 100}ms`
+                }}
+              >
                 {line}
               </span>
             ))}
           </h1>
           
-          {/* Paragraph - Larger only on mobile, normal on desktop */}
-          <p className="mb-8 text-pretty text-lg text-white/90 sm:text-xl md:text-base lg:text-lg">
+          {/* Paragraph - Fade in with delay */}
+          <p className={`mb-8 text-pretty text-lg text-white/90 sm:text-xl md:text-base lg:text-lg transition-all duration-700 ${
+            animateContent 
+              ? 'opacity-100 translate-y-0' 
+              : 'opacity-0 translate-y-6'
+          }`}
+          style={{
+            transitionDelay: '500ms'
+          }}>
             {currentSlideData.description}
           </p>
           
-          {/* Button - Slightly larger on mobile */}
-          <Button 
-            size="lg" 
-            className="bg-[#F5A623] hover:bg-[#F5A623]/90 text-white transform transition-all duration-500 hover:scale-105 text-base py-6 px-8 md:py-4 md:px-6 md:text-sm"
-          >
-            <CreditCard className="mr-2 h-5 w-5 md:h-4 md:w-4" />
-            {currentSlideData.buttonText}
-          </Button>
+          {/* Button - Scale and fade in */}
+          <div className={`transition-all duration-700 ${
+            animateContent 
+              ? 'opacity-100 scale-100' 
+              : 'opacity-0 scale-95'
+          }`}
+          style={{
+            transitionDelay: '700ms'
+          }}>
+            <Button 
+              size="lg" 
+              className="bg-[#F5A623] hover:bg-[#F5A623]/90 text-white transform transition-all duration-500 hover:scale-105 text-base py-6 px-8 md:py-4 md:px-6 md:text-sm"
+            >
+              <CreditCard className="mr-2 h-5 w-5 md:h-4 md:w-4" />
+              {currentSlideData.buttonText}
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Add CSS for zoom animation */}
+      {/* Add CSS for animations */}
       <style jsx>{`
         @keyframes zoom {
           0% {
