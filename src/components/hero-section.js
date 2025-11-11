@@ -112,38 +112,17 @@ export function HeroSection() {
         ))}
       </div>
 
-      {/* Content Container - Full width on mobile */}
-      <div className="container relative z-10 flex min-h-[700px] items-center px-4 py-5 md:px-6">
-        {/* First slider - Full width on mobile, left on larger screens */}
-        <div className={`w-full max-w-full md:max-w-2xl transition-all duration-1000 ${
+      {/* Content Container - Full width on all screens */}
+      <div className="relative z-10 flex min-h-[700px] w-full items-center px-4 py-5 md:px-6">
+        {/* Single content container that adapts based on textPosition */}
+        <div className={`w-full transition-all duration-1000 ${
           currentSlideData.textPosition === 'left' 
-            ? 'translate-x-0 opacity-100 px-4 md:pl-12 lg:pl-20' 
-            : '-translate-x-20 opacity-0 pointer-events-none px-4 md:pl-12 lg:pl-20'
-        }`}>
-          <h1 className="mb-6 text-balance text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
-            {currentSlideData.title.split('\n').map((line, index) => (
-              <span key={index} className="block">
-                {line}
-              </span>
-            ))}
-          </h1>
-          <p className="mb-8 text-pretty text-base text-white/90 sm:text-lg md:text-xl">
-            {currentSlideData.description}
-          </p>
-          <Button 
-            size="lg" 
-            className="bg-[#F5A623] hover:bg-[#F5A623]/90 text-white transform transition-all duration-500 hover:scale-105"
-          >
-            <CreditCard className="mr-2 h-5 w-5" />
-            {currentSlideData.buttonText}
-          </Button>
-        </div>
-
-        {/* Second slider - Full width on mobile, centered on larger screens */}
-        <div className={`w-full max-w-full md:max-w-2xl transition-all duration-1000 ${
+            ? 'translate-x-0 opacity-100 md:pl-12 lg:pl-20' 
+            : 'translate-x-0 opacity-100 text-center md:mx-auto'
+        } ${
           currentSlideData.textPosition === 'center' 
-            ? 'translate-x-0 opacity-100 px-4 md:px-0 md:mx-auto' 
-            : 'translate-x-20 opacity-0 pointer-events-none px-4 md:px-0 md:mx-auto'
+            ? 'md:max-w-2xl' 
+            : 'md:max-w-2xl'
         }`}>
           <h1 className="mb-6 text-balance text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
             {currentSlideData.title.split('\n').map((line, index) => (
