@@ -43,7 +43,7 @@ export default function PresidentSection() {
               isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
             }`}
           >
-            Message from the President
+            President's Message
           </h2>
           <div className="w-20 h-1 bg-orange-600 mx-auto rounded-full" />
         </div>
@@ -62,7 +62,7 @@ export default function PresidentSection() {
 
             {/* Main image container */}
             <div className="relative z-10 rounded-lg overflow-hidden shadow-2xl">
-              <img src="/PR-BMCA.png" alt="BMCA President" className="w-full h-auto object-cover" />
+              <img src="/VP-BMCA.png" alt="BMCA President" className="w-full h-auto object-cover" />
 
               {/* Orange accent bar */}
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 to-orange-400" />
@@ -83,15 +83,50 @@ export default function PresidentSection() {
               isVisible ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"
             }`}
           >
-            {/* Message text - Two paragraphs */}
-            <div className="space-y-6">
-              <p className="text-lg leading-relaxed text-gray-700">
-                <strong className="text-orange-600">Our Mission:</strong> At BMCA, we are dedicated to fostering sustainable community development through compassionate service and collective action. Our comprehensive programs in Water, Education, Health & Fitness, Culture & Art, Kiteuh Assurance, and Infrastructure reflect our steadfast commitment to creating meaningful, lasting impact. We believe that strategic investment in community resources is fundamental to building a prosperous and resilient future for all.
+            {/* Greeting */}
+            <div className="mb-6">
+              <p className="text-lg font-semibold text-gray-900">
+                Dear Members and Friends of BMCA,
               </p>
+              <p className="text-lg text-gray-700 mt-2">
+                It is with great pride and optimism that I share with you our vision and mission as BMCA USA:
+              </p>
+            </div>
 
-              <p className="text-lg leading-relaxed text-gray-700">
-                <strong className="text-orange-600">Our Vision:</strong> The significant achievements we have realized—from serving thousands of individuals through our diverse initiatives to establishing strategic partnerships with local organizations—demonstrate the effectiveness of our collaborative approach. Together with our dedicated team, volunteers, and supporters, we continue our mission of building Bafut communities "one at a time," ensuring equitable access to essential services and opportunities. We remain committed to this transformative journey and welcome your continued partnership.
-              </p>
+            {/* Message text */}
+            <div className="space-y-6">
+              <div>
+                <p className="text-lg leading-relaxed text-gray-700">
+                  <strong className="text-orange-600">Our Vision:</strong> To create an environment where Bafut people collaborate in diverse neighborhoods for sustainable community development. This vision reflects our deep commitment to unity, inclusiveness, and progress. At BMCA USA, we believe that when we come together - sharing ideas, resources, and cultural heritage - we build stronger communities that thrive for generations.
+                </p>
+              </div>
+
+              <div>
+                <p className="text-lg leading-relaxed text-gray-700">
+                  <strong className="text-orange-600">Our Mission:</strong> At BMCA USA, we are dedicated to fostering sustainable community development through compassionate service and collective action. Our comprehensive programs in Water, Education, Health & Fitness, Culture & Art, Kiteuh Assurance, and Infrastructure reflect our steadfast commitment to creating meaningful, lasting impact. We believe that strategic investment in community resources is fundamental to building a prosperous and resilient future for all.
+                </p>
+              </div>
+
+              <div>
+                <p className="text-lg leading-relaxed text-gray-700">
+                  Our mission is not just about development; it is about creating a sense of belonging and mutual support wherever Bafut people live. By fostering collaboration across neighborhoods and embracing diversity, we ensure that our traditions remain vibrant while adapting to modern challenges. Together, we can transform aspirations into reality, making every community a beacon of sustainability and solidarity.
+                </p>
+              </div>
+
+              <div>
+                <p className="text-lg leading-relaxed text-gray-700">
+                  Let us continue to work hand in hand, guided by our vision, to build a future where every Bafut person feels empowered and every neighborhood flourishes.
+                </p>
+                <p className="text-lg leading-relaxed text-gray-700 mt-4">
+                  Thank you for your unwavering support and dedication.
+                </p>
+              </div>
+            </div>
+
+            {/* Signature */}
+            <div className="mt-8 pt-6 border-t border-orange-200">
+              <p className="text-xl font-bold text-gray-900">Emmanuel Neba</p>
+              <p className="text-lg text-gray-600">President, BMCA USA</p>
             </div>
 
             {/* CTA Button */}
