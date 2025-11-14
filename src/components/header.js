@@ -267,16 +267,18 @@ export function Header() {
                       Resources
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
+                      <ul className="grid w-[400px] gap-3 p-4">
                         <li>
                           <NavigationMenuLink asChild>
                             <a
-                              href="/resources/annual-reports"
+                              href="https://drive.google.com/file/d/1Br73YDJmiZmAFNc1ho7YK22EhzGjBcqW/view"
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             >
-                              <div className="text-sm font-medium leading-none">Annual Reports</div>
+                              <div className="text-sm font-medium leading-none">BMCA USA Constitution</div>
                               <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                View our yearly impact and financials
+                                View and download our constitution PDF
                               </p>
                             </a>
                           </NavigationMenuLink>
@@ -284,38 +286,12 @@ export function Header() {
                         <li>
                           <NavigationMenuLink asChild>
                             <a
-                              href="/resources/documents"
-                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            >
-                              <div className="text-sm font-medium leading-none">Documents & Forms</div>
-                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                Download important documents
-                              </p>
-                            </a>
-                          </NavigationMenuLink>
-                        </li>
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <a
-                              href="/resources/media-kit"
+                              href="/gallery"
                               className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             >
                               <div className="text-sm font-medium leading-none">Media Kit</div>
                               <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                                 Logos, photos, and press materials
-                              </p>
-                            </a>
-                          </NavigationMenuLink>
-                        </li>
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <a
-                              href="/resources/newsletter"
-                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            >
-                              <div className="text-sm font-medium leading-none">Newsletter Archive</div>
-                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                Read past newsletters and updates
                               </p>
                             </a>
                           </NavigationMenuLink>
@@ -347,12 +323,12 @@ export function Header() {
                 <span className="sr-only">Shopping Cart</span>
               </Button>
 
-              <a
+              {/* <a
                 href="/login"
                 className="hidden text-sm font-medium text-[#F5A623] transition-colors hover:text-[#F5A623]/80 lg:inline-block"
               >
                 Log in
-              </a>
+              </a> */}
 
               <Button size="default" className="hidden bg-[#F5A623] text-white hover:bg-[#F5A623]/90 lg:inline-flex">
                 Donate Now
@@ -498,48 +474,24 @@ export function Header() {
                       </div>
                       <div className="pl-6 space-y-1">
                         <a
-                          href="/resources/annual-reports"
-                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/resources/annual-reports' 
-                              ? 'text-[#F5A623] bg-orange-50' 
-                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
-                          }`}
+                          href="https://drive.google.com/file/d/1Br73YDJmiZmAFNc1ho7YK22EhzGjBcqW/view"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-base transition-colors py-2 px-4 rounded-lg text-gray-600 hover:text-[#F5A623] hover:bg-gray-50"
                           onClick={() => setMobileMenuOpen(false)}
                         >
-                          Annual Reports
+                          BMCA USA Constitution
                         </a>
                         <a
-                          href="/resources/documents"
+                          href="/gallery"
                           className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/resources/documents' 
-                              ? 'text-[#F5A623] bg-orange-50' 
-                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Documents & Forms
-                        </a>
-                        <a
-                          href="/resources/media-kit"
-                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/resources/media-kit' 
+                            pathname === '/gallery' 
                               ? 'text-[#F5A623] bg-orange-50' 
                               : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
                           }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Media Kit
-                        </a>
-                        <a
-                          href="/resources/newsletter"
-                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/resources/newsletter' 
-                              ? 'text-[#F5A623] bg-orange-50' 
-                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Newsletter Archive
                         </a>
                       </div>
                     </div>
