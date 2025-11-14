@@ -267,7 +267,7 @@ export function Header() {
                       Resources
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <ul className="grid w-[400px] gap-3 p-4">
+                      <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
                         <li>
                           <NavigationMenuLink asChild>
                             <a
@@ -292,6 +292,32 @@ export function Header() {
                               <div className="text-sm font-medium leading-none">Media Kit</div>
                               <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                                 Logos, photos, and press materials
+                              </p>
+                            </a>
+                          </NavigationMenuLink>
+                        </li>
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <a
+                              href="/privacy-policy"
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-medium leading-none">Privacy Policy</div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                How we protect and use your personal information
+                              </p>
+                            </a>
+                          </NavigationMenuLink>
+                        </li>
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <a
+                              href="/terms-conditions"
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-medium leading-none">Terms & Conditions</div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                Terms of use for our website and services
                               </p>
                             </a>
                           </NavigationMenuLink>
@@ -492,6 +518,28 @@ export function Header() {
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Media Kit
+                        </a>
+                        <a
+                          href="/privacy-policy"
+                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
+                            pathname === '/privacy-policy' 
+                              ? 'text-[#F5A623] bg-orange-50' 
+                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                          }`}
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Privacy Policy
+                        </a>
+                        <a
+                          href="/terms-conditions"
+                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
+                            pathname === '/terms-conditions' 
+                              ? 'text-[#F5A623] bg-orange-50' 
+                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                          }`}
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Terms & Conditions
                         </a>
                       </div>
                     </div>
