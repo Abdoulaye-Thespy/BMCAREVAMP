@@ -12,11 +12,13 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { usePathname } from "next/navigation"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isDarkTheme, setIsDarkTheme] = useState(false)
   const [isSticky, setIsSticky] = useState(false)
+  const pathname = usePathname()
 
   const toggleTheme = () => {
     setIsDarkTheme(!isDarkTheme)
@@ -31,20 +33,20 @@ export function Header() {
     }
   }
 
+  // Check if current path is under programs
+  const isProgramsPath = pathname?.startsWith('/programs') || pathname === '/kiteuh'
+  // Check if current path is under resources
+  const isResourcesPath = pathname?.startsWith('/resources')
+
   useEffect(() => {
     const handleScroll = () => {
-      // Check if we've scrolled past the first navbar (48px height)
       const scrollTop = window.scrollY || document.documentElement.scrollTop
-      setIsSticky(scrollTop > 48) // 48px is the height of the first navbar (h-12)
+      setIsSticky(scrollTop > 48)
     }
 
-    // Add scroll event listener
     window.addEventListener('scroll', handleScroll)
-    
-    // Check initial position
     handleScroll()
 
-    // Cleanup
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -124,7 +126,11 @@ export function Header() {
                   <NavigationMenuItem>
                     <NavigationMenuLink 
                       href="/"
-                      className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium text-[#F5A623] hover:bg-accent hover:text-[#F5A623]/80 focus:bg-accent focus:text-[#F5A623]/80"
+                      className={`group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors ${
+                        pathname === '/' 
+                          ? 'text-[#F5A623] hover:text-[#F5A623]/80' 
+                          : 'text-gray-700 hover:text-[#F5A623]'
+                      }`}
                     >
                       Home
                     </NavigationMenuLink>
@@ -133,7 +139,11 @@ export function Header() {
                   <NavigationMenuItem>
                     <NavigationMenuLink 
                       href="/about"
-                      className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium text-gray-700 hover:bg-accent hover:text-[#F5A623] focus:bg-accent focus:text-[#F5A623]"
+                      className={`group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors ${
+                        pathname === '/about' 
+                          ? 'text-[#F5A623] hover:text-[#F5A623]/80' 
+                          : 'text-gray-700 hover:text-[#F5A623]'
+                      }`}
                     >
                       About
                     </NavigationMenuLink>
@@ -142,14 +152,24 @@ export function Header() {
                   <NavigationMenuItem>
                     <NavigationMenuLink 
                       href="/convention"
-                      className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium text-gray-700 hover:bg-accent hover:text-[#F5A623] focus:bg-accent focus:text-[#F5A623]"
+                      className={`group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors ${
+                        pathname === '/convention' 
+                          ? 'text-[#F5A623] hover:text-[#F5A623]/80' 
+                          : 'text-gray-700 hover:text-[#F5A623]'
+                      }`}
                     >
                       Convention
                     </NavigationMenuLink>
                   </NavigationMenuItem>
 
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="text-sm font-medium text-gray-700 hover:text-[#F5A623] data-[state=open]:text-[#F5A623]">
+                    <NavigationMenuTrigger 
+                      className={`text-sm font-medium transition-colors hover:text-[#F5A623] ${
+                        isProgramsPath 
+                          ? 'text-[#F5A623] data-[state=open]:text-[#F5A623]' 
+                          : 'text-gray-700 data-[state=open]:text-[#F5A623]'
+                      }`}
+                    >
                       Programs
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
@@ -237,7 +257,13 @@ export function Header() {
                   </NavigationMenuItem>
 
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="text-sm font-medium text-gray-700 hover:text-[#F5A623] data-[state=open]:text-[#F5A623]">
+                    <NavigationMenuTrigger 
+                      className={`text-sm font-medium transition-colors hover:text-[#F5A623] ${
+                        isResourcesPath 
+                          ? 'text-[#F5A623] data-[state=open]:text-[#F5A623]' 
+                          : 'text-gray-700 data-[state=open]:text-[#F5A623]'
+                      }`}
+                    >
                       Resources
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
@@ -301,7 +327,11 @@ export function Header() {
                   <NavigationMenuItem>
                     <NavigationMenuLink 
                       href="/contact"
-                      className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium text-gray-700 hover:bg-accent hover:text-[#F5A623] focus:bg-accent focus:text-[#F5A623]"
+                      className={`group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors ${
+                        pathname === '/contact' 
+                          ? 'text-[#F5A623] hover:text-[#F5A623]/80' 
+                          : 'text-gray-700 hover:text-[#F5A623]'
+                      }`}
                     >
                       Contact
                     </NavigationMenuLink>
@@ -343,86 +373,114 @@ export function Header() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                   <SheetHeader>
-                    <SheetTitle>Menu</SheetTitle>
+                    <SheetTitle className="text-left">Menu</SheetTitle>
                   </SheetHeader>
-                  <nav className="flex flex-col gap-4 mt-8">
-                    {/* Theme Toggle in Mobile Menu */}
-                    <div className="flex items-center justify-between py-2 border-b pb-4">
-                      <span className="text-lg font-medium">Theme</span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={toggleTheme}
-                        className="flex items-center gap-2"
-                      >
-                        {isDarkTheme ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                        <span>{isDarkTheme ? "Light Mode" : "Dark Mode"}</span>
-                      </Button>
-                    </div>
-
+                  <nav className="flex flex-col gap-2 mt-8">
                     <a
                       href="/"
-                      className="text-lg font-medium text-[#F5A623] hover:text-[#F5A623]/80 transition-colors py-2"
+                      className={`text-lg font-medium transition-colors py-3 px-4 rounded-lg ${
+                        pathname === '/' 
+                          ? 'text-[#F5A623] bg-orange-50' 
+                          : 'text-gray-700 hover:text-[#F5A623] hover:bg-gray-50'
+                      }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Home
                     </a>
                     <a
                       href="/about"
-                      className="text-lg font-medium text-gray-700 hover:text-[#F5A623] transition-colors py-2"
+                      className={`text-lg font-medium transition-colors py-3 px-4 rounded-lg ${
+                        pathname === '/about' 
+                          ? 'text-[#F5A623] bg-orange-50' 
+                          : 'text-gray-700 hover:text-[#F5A623] hover:bg-gray-50'
+                      }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       About
                     </a>
                     <a
                       href="/convention"
-                      className="text-lg font-medium text-gray-700 hover:text-[#F5A623] transition-colors py-2"
+                      className={`text-lg font-medium transition-colors py-3 px-4 rounded-lg ${
+                        pathname === '/convention' 
+                          ? 'text-[#F5A623] bg-orange-50' 
+                          : 'text-gray-700 hover:text-[#F5A623] hover:bg-gray-50'
+                      }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Convention
                     </a>
 
-                    <div className="space-y-2 py-2">
-                      <div className="text-lg font-medium text-muted-foreground">Programs</div>
-                      <div className="pl-4 space-y-2">
+                    <div className="space-y-1 py-2">
+                      <div className={`text-lg font-medium py-3 px-4 rounded-lg ${
+                        isProgramsPath 
+                          ? 'text-[#F5A623] bg-orange-50' 
+                          : 'text-gray-700'
+                      }`}>
+                        Programs
+                      </div>
+                      <div className="pl-6 space-y-1">
                         <a
                           href="/programs/education"
-                          className="block text-base hover:text-[#F5A623] transition-colors py-2"
+                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
+                            pathname === '/programs/education' 
+                              ? 'text-[#F5A623] bg-orange-50' 
+                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                          }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Education
                         </a>
                         <a
                           href="/programs/water"
-                          className="block text-base hover:text-[#F5A623] transition-colors py-2"
+                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
+                            pathname === '/programs/water' 
+                              ? 'text-[#F5A623] bg-orange-50' 
+                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                          }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Water
                         </a>
                         <a
-                          href="/programs/culture-arts"
-                          className="block text-base hover:text-[#F5A623] transition-colors py-2"
+                          href="/programs/culture-art"
+                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
+                            pathname === '/programs/culture-art' 
+                              ? 'text-[#F5A623] bg-orange-50' 
+                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                          }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Culture & Arts
                         </a>
                         <a
-                          href="/programs/health-fitness"
-                          className="block text-base hover:text-[#F5A623] transition-colors py-2"
+                          href="/programs/health"
+                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
+                            pathname === '/programs/health' 
+                              ? 'text-[#F5A623] bg-orange-50' 
+                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                          }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Health & Fitness
                         </a>
                         <a
-                          href="/programs/kiteuh"
-                          className="block text-base hover:text-[#F5A623] transition-colors py-2"
+                          href="/kiteuh"
+                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
+                            pathname === '/kiteuh' 
+                              ? 'text-[#F5A623] bg-orange-50' 
+                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                          }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Kiteuh Mutual Assurance
                         </a>
                         <a
                           href="/programs/infrastructure"
-                          className="block text-base hover:text-[#F5A623] transition-colors py-2"
+                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
+                            pathname === '/programs/infrastructure' 
+                              ? 'text-[#F5A623] bg-orange-50' 
+                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                          }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Infrastructure
@@ -430,33 +488,55 @@ export function Header() {
                       </div>
                     </div>
 
-                    <div className="space-y-2 py-2">
-                      <div className="text-lg font-medium text-muted-foreground">Resources</div>
-                      <div className="pl-4 space-y-2">
+                    <div className="space-y-1 py-2">
+                      <div className={`text-lg font-medium py-3 px-4 rounded-lg ${
+                        isResourcesPath 
+                          ? 'text-[#F5A623] bg-orange-50' 
+                          : 'text-gray-700'
+                      }`}>
+                        Resources
+                      </div>
+                      <div className="pl-6 space-y-1">
                         <a
                           href="/resources/annual-reports"
-                          className="block text-base hover:text-[#F5A623] transition-colors py-2"
+                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
+                            pathname === '/resources/annual-reports' 
+                              ? 'text-[#F5A623] bg-orange-50' 
+                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                          }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Annual Reports
                         </a>
                         <a
                           href="/resources/documents"
-                          className="block text-base hover:text-[#F5A623] transition-colors py-2"
+                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
+                            pathname === '/resources/documents' 
+                              ? 'text-[#F5A623] bg-orange-50' 
+                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                          }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Documents & Forms
                         </a>
                         <a
                           href="/resources/media-kit"
-                          className="block text-base hover:text-[#F5A623] transition-colors py-2"
+                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
+                            pathname === '/resources/media-kit' 
+                              ? 'text-[#F5A623] bg-orange-50' 
+                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                          }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Media Kit
                         </a>
                         <a
                           href="/resources/newsletter"
-                          className="block text-base hover:text-[#F5A623] transition-colors py-2"
+                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
+                            pathname === '/resources/newsletter' 
+                              ? 'text-[#F5A623] bg-orange-50' 
+                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                          }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Newsletter Archive
@@ -466,15 +546,19 @@ export function Header() {
 
                     <a
                       href="/contact"
-                      className="text-lg font-medium text-gray-700 hover:text-[#F5A623] transition-colors py-2"
+                      className={`text-lg font-medium transition-colors py-3 px-4 rounded-lg ${
+                        pathname === '/contact' 
+                          ? 'text-[#F5A623] bg-orange-50' 
+                          : 'text-gray-700 hover:text-[#F5A623] hover:bg-gray-50'
+                      }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Contact
                     </a>
 
-                    <div className="pt-4 space-y-2 border-t">
+                    <div className="pt-6 space-y-3 border-t mt-4">
                       <a href="/login" className="block" onClick={() => setMobileMenuOpen(false)}>
-                        <Button variant="outline" className="w-full bg-transparent">
+                        <Button variant="outline" className="w-full bg-transparent border-gray-300 hover:bg-gray-50">
                           Log in
                         </Button>
                       </a>
