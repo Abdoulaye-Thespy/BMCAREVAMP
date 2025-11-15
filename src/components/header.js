@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Mail, Phone, ShoppingCart, Menu, Sun, Moon } from "lucide-react"
+import { Mail, Phone, ShoppingCart, Menu, Sun, Moon } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
@@ -12,13 +12,16 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { usePathname } from "next/navigation"
+import { usePathname } from 'next/navigation'
+import Link from "next/link"
+import { useCart } from "@/context/cart-context"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isDarkTheme, setIsDarkTheme] = useState(false)
   const [isSticky, setIsSticky] = useState(false)
   const pathname = usePathname()
+  const { cartItems } = useCart()
 
   const toggleTheme = () => {
     setIsDarkTheme(!isDarkTheme)
@@ -49,6 +52,8 @@ export function Header() {
 
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <header className="w-full">
@@ -125,40 +130,40 @@ export function Header() {
                 <NavigationMenuList>
                   <NavigationMenuItem>
                     <NavigationMenuLink 
-                      href="/"
+                      asChild
                       className={`group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors ${
                         pathname === '/' 
                           ? 'text-[#F5A623] hover:text-[#F5A623]/80' 
                           : 'text-gray-700 hover:text-[#F5A623]'
                       }`}
                     >
-                      Home
+                      <Link href="/">Home</Link>
                     </NavigationMenuLink>
                   </NavigationMenuItem>
 
                   <NavigationMenuItem>
                     <NavigationMenuLink 
-                      href="/about"
+                      asChild
                       className={`group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors ${
                         pathname === '/about' 
                           ? 'text-[#F5A623] hover:text-[#F5A623]/80' 
                           : 'text-gray-700 hover:text-[#F5A623]'
                       }`}
                     >
-                      About
+                      <Link href="/about">About</Link>
                     </NavigationMenuLink>
                   </NavigationMenuItem>
 
                   <NavigationMenuItem>
                     <NavigationMenuLink 
-                      href="/convention"
+                      asChild
                       className={`group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors ${
                         pathname === '/convention' 
                           ? 'text-[#F5A623] hover:text-[#F5A623]/80' 
                           : 'text-gray-700 hover:text-[#F5A623]'
                       }`}
                     >
-                      Convention
+                      <Link href="/convention">Convention</Link>
                     </NavigationMenuLink>
                   </NavigationMenuItem>
 
@@ -328,14 +333,14 @@ export function Header() {
 
                   <NavigationMenuItem>
                     <NavigationMenuLink 
-                      href="/contact"
+                      asChild
                       className={`group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors ${
                         pathname === '/contact' 
                           ? 'text-[#F5A623] hover:text-[#F5A623]/80' 
                           : 'text-gray-700 hover:text-[#F5A623]'
                       }`}
                     >
-                      Contact
+                      <Link href="/contact">Contact</Link>
                     </NavigationMenuLink>
                   </NavigationMenuItem>
                 </NavigationMenuList>
@@ -344,20 +349,20 @@ export function Header() {
 
             {/* Right Column - Actions */}
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" className="hidden lg:flex">
-                <ShoppingCart className="h-5 w-5" />
-                <span className="sr-only">Shopping Cart</span>
+              <Button variant="ghost" size="icon" className="hidden lg:flex relative" asChild>
+                <Link href="/cart" className="relative">
+                  <ShoppingCart className="h-5 w-5" />
+                  {totalCartItems > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold">
+                      {totalCartItems}
+                    </span>
+                  )}
+                  <span className="sr-only">Shopping Cart</span>
+                </Link>
               </Button>
 
-              {/* <a
-                href="/login"
-                className="hidden text-sm font-medium text-[#F5A623] transition-colors hover:text-[#F5A623]/80 lg:inline-block"
-              >
-                Log in
-              </a> */}
-
-              <Button size="default" className="hidden bg-[#F5A623] text-white hover:bg-[#F5A623]/90 lg:inline-flex">
-                Donate Now
+              <Button size="default" className="hidden bg-[#F5A623] text-white hover:bg-[#F5A623]/90 lg:inline-flex" asChild>
+                <a href="/donate">Donate Now</a>
               </Button>
 
               {/* Mobile Menu */}
@@ -367,7 +372,6 @@ export function Header() {
                     variant="ghost" 
                     size="icon" 
                     className="lg:hidden"
-                    onClick={() => setMobileMenuOpen(true)}
                   >
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle menu</span>
@@ -557,16 +561,12 @@ export function Header() {
                     </a>
 
                     <div className="pt-6 space-y-3 border-t mt-4">
-                      <a href="/login" className="block" onClick={() => setMobileMenuOpen(false)}>
-                        <Button variant="outline" className="w-full bg-transparent border-gray-300 hover:bg-gray-50">
-                          Log in
-                        </Button>
-                      </a>
-                      <a href="/donate" className="block" onClick={() => setMobileMenuOpen(false)}>
-                        <Button className="w-full bg-[#F5A623] hover:bg-[#F5A623]/90 text-white">
-                          Donate Now
-                        </Button>
-                      </a>
+                      <Button variant="outline" className="w-full bg-transparent border-gray-300 hover:bg-gray-50" asChild>
+                        <a href="/login">Log in</a>
+                      </Button>
+                      <Button className="w-full bg-[#F5A623] hover:bg-[#F5A623]/90 text-white" asChild onClick={() => setMobileMenuOpen(false)}>
+                        <a href="/donate">Donate Now</a>
+                      </Button>
                     </div>
                   </nav>
                 </SheetContent>
@@ -578,3 +578,5 @@ export function Header() {
     </header>
   )
 }
+
+export default Header
