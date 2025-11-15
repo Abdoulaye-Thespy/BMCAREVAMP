@@ -666,7 +666,7 @@ export default function ConventionPage() {
             <div className="flex flex-wrap justify-center gap-4 text-base text-gray-500">
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
-                <span>Convention Center, Beirut</span>
+                <span>Convention Center, LA</span>
               </div>
               <div className="flex items-center gap-1">
                 <Users className="h-4 w-4" />
