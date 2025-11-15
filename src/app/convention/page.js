@@ -5,8 +5,8 @@ import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useCart } from '@/context/cart-context'
-import { useState, useMemo } from 'react'
-import { Check, Filter, Star, Users, Calendar, MapPin, X, Plus, Minus } from 'lucide-react'
+import { useState, useMemo, useEffect } from 'react'
+import { Check, Filter, Star, Users, Calendar, MapPin, X, Plus, Minus, ShoppingCart } from 'lucide-react'
 
 // Temporary Badge component (remove this after installing shadcn badge)
 const Badge = ({ children, className = '', ...props }) => {
@@ -18,8 +18,16 @@ const Badge = ({ children, className = '', ...props }) => {
 }
 
 // Confirmation Popup Component
-const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm }) => {
+const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0 }) => {
   const [quantity, setQuantity] = useState(1)
+
+  useEffect(() => {
+    if (currentQuantity > 0) {
+      setQuantity(currentQuantity + 1)
+    } else {
+      setQuantity(1)
+    }
+  }, [currentQuantity, isOpen])
 
   if (!isOpen) return null
 
@@ -27,7 +35,6 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm }) => {
 
   const handleConfirm = () => {
     onConfirm(pkg, quantity)
-    setQuantity(1)
   }
 
   const increment = () => setQuantity(prev => prev + 1)
@@ -40,8 +47,12 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm }) => {
         <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white p-6 rounded-t-2xl">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="text-xl font-bold">Add to Cart</h3>
-              <p className="text-orange-100 mt-1">Confirm your selection</p>
+              <h3 className="text-xl font-bold">
+                {currentQuantity > 0 ? 'Update Cart' : 'Add to Cart'}
+              </h3>
+              <p className="text-orange-100 mt-1">
+                {currentQuantity > 0 ? 'Update your selection' : 'Confirm your selection'}
+              </p>
             </div>
             <button
               onClick={onClose}
@@ -60,12 +71,19 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm }) => {
             <div>
               <h4 className="font-semibold text-gray-900">{pkg.name}</h4>
               <p className="text-gray-600 text-sm">{pkg.description}</p>
+              {currentQuantity > 0 && (
+                <div className="text-sm text-orange-600 mt-1">
+                  Currently in cart: {currentQuantity}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Quantity Selector */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">Quantity</label>
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              {currentQuantity > 0 ? 'Update Quantity' : 'Quantity'}
+            </label>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <button
@@ -121,7 +139,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm }) => {
             onClick={handleConfirm}
             className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg hover:shadow-xl transition-all"
           >
-            Add to Cart
+            {currentQuantity > 0 ? 'Update Cart' : 'Add to Cart'}
           </Button>
         </div>
       </div>
@@ -129,6 +147,139 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm }) => {
   )
 }
 
+// Sidebar Filters Component
+const SidebarFilters = ({ 
+  selectedCategory, 
+  setSelectedCategory, 
+  selectedEventType, 
+  setSelectedEventType, 
+  sortBy, 
+  setSortBy,
+  filteredCount,
+  totalCount
+}) => {
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-fit sticky top-24">
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-6 pb-4 border-b border-gray-200">
+        <Filter className="h-5 w-5 text-orange-500" />
+        <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
+        <div className="ml-auto text-sm text-gray-500">
+          {filteredCount} of {totalCount}
+        </div>
+      </div>
+
+      {/* Category Filter */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-3">Category</label>
+        <div className="space-y-2">
+          <button
+            onClick={() => setSelectedCategory('all')}
+            className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+              selectedCategory === 'all' 
+                ? 'bg-orange-100 text-orange-800 border border-orange-300' 
+                : 'text-gray-700 hover:bg-gray-100 border border-transparent'
+            }`}
+          >
+            All Categories
+          </button>
+          {Object.entries(categoryLabels).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setSelectedCategory(key)}
+              className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                selectedCategory === key 
+                  ? 'bg-orange-100 text-orange-800 border border-orange-300' 
+                  : 'text-gray-700 hover:bg-gray-100 border border-transparent'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Event Type Filter */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-3">Event Type</label>
+        <div className="space-y-2">
+          {eventTypes.map(type => (
+            <button
+              key={type.id}
+              onClick={() => setSelectedEventType(type.id)}
+              className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                selectedEventType === type.id 
+                  ? 'bg-orange-100 text-orange-800 border border-orange-300' 
+                  : 'text-gray-700 hover:bg-gray-100 border border-transparent'
+              }`}
+            >
+              {type.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Sort Filter */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-3">Sort By</label>
+        <select 
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+        >
+          <option value="default">Default</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="popular">Most Popular</option>
+        </select>
+      </div>
+
+      {/* Active Filters */}
+      {(selectedCategory !== 'all' || selectedEventType !== 'all') && (
+        <div className="pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium text-gray-700">Active Filters</span>
+            <button
+              onClick={() => {
+                setSelectedCategory('all')
+                setSelectedEventType('all')
+              }}
+              className="text-sm text-orange-600 hover:text-orange-700"
+            >
+              Clear All
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {selectedCategory !== 'all' && (
+              <Badge className="bg-orange-100 text-orange-800 text-xs">
+                {categoryLabels[selectedCategory]}
+                <button
+                  onClick={() => setSelectedCategory('all')}
+                  className="ml-1 hover:text-orange-900"
+                >
+                  ×
+                </button>
+              </Badge>
+            )}
+            {selectedEventType !== 'all' && (
+              <Badge className="bg-orange-100 text-orange-800 text-xs">
+                {eventTypes.find(t => t.id === selectedEventType)?.label}
+                <button
+                  onClick={() => setSelectedEventType('all')}
+                  className="ml-1 hover:text-orange-900"
+                >
+                  ×
+                </button>
+              </Badge>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Complete packages array
 const conventionPackages = [
   {
     id: 'kids-cost',
@@ -313,12 +464,18 @@ const eventTypes = [
 ]
 
 export default function ConventionPage() {
-  const { addToCart } = useCart()
+  const { addToCart, cartItems } = useCart()
   const [selectedPackage, setSelectedPackage] = useState(null)
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedEventType, setSelectedEventType] = useState('all')
   const [sortBy, setSortBy] = useState('default')
+
+  // Get current quantity for a package in cart
+  const getCurrentQuantity = (pkgId) => {
+    const cartItem = cartItems.find(item => item.id === pkgId)
+    return cartItem ? cartItem.quantity : 0
+  }
 
   const handleAddToCartClick = (pkg) => {
     setSelectedPackage(pkg)
@@ -391,6 +548,7 @@ export default function ConventionPage() {
           isOpen={isPopupOpen}
           onClose={handleClosePopup}
           onConfirm={handleConfirmAddToCart}
+          currentQuantity={getCurrentQuantity(selectedPackage.id)}
         />
       )}
       
@@ -412,7 +570,7 @@ export default function ConventionPage() {
             <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
-                <span>Convention Center, Beirut</span>
+                <span>Convention Center, LA</span>
               </div>
               <div className="flex items-center gap-1">
                 <Users className="h-4 w-4" />
@@ -421,217 +579,196 @@ export default function ConventionPage() {
             </div>
           </div>
 
-          {/* Filters Section */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-12">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <Filter className="h-5 w-5 text-orange-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Filter Packages</h3>
-              </div>
-              
-              <div className="flex flex-wrap gap-4">
-                {/* Category Filter */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">Category</label>
-                  <select 
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                  >
-                    <option value="all">All Categories</option>
-                    <option value="kids">Kids</option>
-                    <option value="adult">Adult</option>
-                    <option value="couple">Couple</option>
-                    <option value="elderly">Elderly</option>
-                    <option value="non-registered">Non-Registered</option>
-                  </select>
-                </div>
-
-                {/* Event Type Filter */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">Event Type</label>
-                  <select 
-                    value={selectedEventType}
-                    onChange={(e) => setSelectedEventType(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                  >
-                    {eventTypes.map(type => (
-                      <option key={type.id} value={type.id}>{type.label}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Sort Filter */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">Sort By</label>
-                  <select 
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                  >
-                    <option value="default">Default</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="popular">Most Popular</option>
-                  </select>
-                </div>
-              </div>
+          {/* Main Content with Sidebar */}
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Sidebar Filters */}
+            <div className="lg:w-80 flex-shrink-0">
+              <SidebarFilters
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                selectedEventType={selectedEventType}
+                setSelectedEventType={setSelectedEventType}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+                filteredCount={filteredAndSortedPackages.length}
+                totalCount={conventionPackages.length}
+              />
             </div>
 
-            {/* Active Filters Display */}
-            <div className="flex flex-wrap gap-2 mt-4">
-              {selectedCategory !== 'all' && (
-                <Badge className="bg-orange-100 text-orange-800">
-                  Category: {categoryLabels[selectedCategory]}
-                </Badge>
-              )}
-              {selectedEventType !== 'all' && (
-                <Badge className="bg-orange-100 text-orange-800">
-                  {eventTypes.find(t => t.id === selectedEventType)?.label}
-                </Badge>
-              )}
-              {sortBy !== 'default' && (
-                <Badge className="bg-orange-100 text-orange-800">
-                  Sorted by {sortBy.replace('-', ' ')}
-                </Badge>
-              )}
-            </div>
-          </div>
-
-          {/* Results Count */}
-          <div className="mb-8">
-            <p className="text-gray-600">
-              Showing <span className="font-semibold text-orange-600">{filteredAndSortedPackages.length}</span> packages
-            </p>
-          </div>
-
-          {/* Packages by Category */}
-          {categoryOrder.map((category) => (
-            groupedPackages[category] && groupedPackages[category].length > 0 && (
-              <div key={category} className="mb-16">
-                <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-3">
-                    {categoryLabels[category]}
+            {/* Packages Grid */}
+            <div className="flex-1">
+              {/* Results Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    Convention Packages
                   </h2>
-                  <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-amber-500 mx-auto rounded-full"></div>
+                  <p className="text-gray-600 mt-1">
+                    Showing <span className="font-semibold text-orange-600">{filteredAndSortedPackages.length}</span> of {conventionPackages.length} packages
+                  </p>
                 </div>
-                
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {groupedPackages[category].map((pkg) => (
-                    <Card
-                      key={pkg.id}
-                      className={`flex flex-col hover:shadow-xl transition-all duration-300 overflow-hidden border-2 ${
-                        pkg.popular 
-                          ? 'border-orange-300 shadow-lg ring-2 ring-orange-200' 
-                          : 'border-gray-200 hover:border-orange-200'
-                      }`}
-                    >
-                      {pkg.popular && (
-                        <div className="absolute top-4 right-4 z-10">
-                          <Badge className="bg-gradient-to-r from-orange-500 to-amber-500 text-white flex items-center gap-1">
-                            <Star className="h-3 w-3 fill-current" />
-                            Popular
-                          </Badge>
-                        </div>
-                      )}
-                      
-                      <CardHeader className={`relative pb-4 ${
-                        pkg.popular 
-                          ? 'bg-gradient-to-r from-orange-500 to-amber-500' 
-                          : 'bg-gradient-to-r from-orange-600 to-amber-600'
-                      } text-white`}>
-                        <div className="text-5xl mb-3 text-center">{pkg.icon}</div>
-                        <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
-                        <CardDescription className="text-white/90 text-center">{pkg.description}</CardDescription>
-                      </CardHeader>
-                      
-                      <CardContent className="flex-grow pt-6">
-                        {/* Price */}
-                        <div className="text-center mb-6">
-                          <span className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                            ${pkg.price}
-                          </span>
-                          <p className="text-sm text-gray-500 mt-1">per person</p>
-                        </div>
-
-                        {/* Features */}
-                        <div className="space-y-3 mb-6">
-                          {pkg.features.map((feature, idx) => (
-                            <div key={idx} className="flex items-start gap-3">
-                              <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
-                                <Check className="h-3 w-3 text-green-600" />
-                              </div>
-                              <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-
-                      {/* Add to Cart Button */}
-                      <div className="p-6 pt-0">
-                        <Button
-                          onClick={() => handleAddToCartClick(pkg)}
-                          className="w-full py-3 text-base font-semibold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg hover:shadow-xl transition-all"
-                        >
-                          Add to Cart - ${pkg.price}
-                        </Button>
-                      </div>
-                    </Card>
-                  ))}
+                <div className="flex items-center gap-4 mt-4 sm:mt-0">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <ShoppingCart className="h-4 w-4" />
+                    <span>{cartItems.reduce((sum, item) => sum + item.quantity, 0)} items in cart</span>
+                  </div>
                 </div>
               </div>
-            )
-          ))}
 
-          {/* No Results Message */}
-          {filteredAndSortedPackages.length === 0 && (
-            <div className="text-center py-16">
-              <div className="text-6xl mb-4">😔</div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">No packages found</h3>
-              <p className="text-gray-600 mb-6">Try adjusting your filters to see more options.</p>
-              <Button
-                onClick={() => {
-                  setSelectedCategory('all')
-                  setSelectedEventType('all')
-                  setSortBy('default')
-                }}
-                className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white"
-              >
-                Clear All Filters
-              </Button>
-            </div>
-          )}
+              {/* Packages by Category */}
+              {categoryOrder.map((category) => (
+                groupedPackages[category] && groupedPackages[category].length > 0 && (
+                  <div key={category} className="mb-12">
+                    <div className="text-center mb-8">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                        {categoryLabels[category]}
+                      </h3>
+                      <div className="w-20 h-1 bg-gradient-to-r from-orange-500 to-amber-500 mx-auto rounded-full"></div>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {groupedPackages[category].map((pkg) => {
+                        const currentQuantity = getCurrentQuantity(pkg.id)
+                        return (
+                          <Card
+                            key={pkg.id}
+                            className={`flex flex-col hover:shadow-xl transition-all duration-300 overflow-hidden border-2 ${
+                              pkg.popular 
+                                ? 'border-orange-300 shadow-lg ring-2 ring-orange-200' 
+                                : 'border-gray-200 hover:border-orange-200'
+                            } ${currentQuantity > 0 ? 'ring-2 ring-green-200 border-green-300' : ''}`}
+                          >
+                            {/* Popular Badge */}
+                            {pkg.popular && (
+                              <div className="absolute top-4 right-4 z-10">
+                                <Badge className="bg-gradient-to-r from-orange-500 to-amber-500 text-white flex items-center gap-1">
+                                  <Star className="h-3 w-3 fill-current" />
+                                  Popular
+                                </Badge>
+                              </div>
+                            )}
 
-          {/* Continue Shopping CTA */}
-          {filteredAndSortedPackages.length > 0 && (
-            <div className="text-center mt-16 pt-12 border-t border-gray-200">
-              <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-8 max-w-2xl mx-auto">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Ready to complete your selection?</h3>
-                <p className="text-gray-600 mb-6">Review your chosen packages and proceed to checkout.</p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            {/* Cart Indicator */}
+                            {currentQuantity > 0 && (
+                              <div className="absolute top-4 left-4 z-10">
+                                <Badge className="bg-green-500 text-white flex items-center gap-1">
+                                  <ShoppingCart className="h-3 w-3" />
+                                  {currentQuantity} in cart
+                                </Badge>
+                              </div>
+                            )}
+                            
+                            <CardHeader className={`relative pb-4 ${
+                              pkg.popular 
+                                ? 'bg-gradient-to-r from-orange-500 to-amber-500' 
+                                : 'bg-gradient-to-r from-orange-600 to-amber-600'
+                            } text-white`}>
+                              <div className="text-5xl mb-3 text-center">{pkg.icon}</div>
+                              <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
+                              <CardDescription className="text-white/90 text-center">{pkg.description}</CardDescription>
+                            </CardHeader>
+                            
+                            <CardContent className="flex-grow pt-6">
+                              {/* Price */}
+                              <div className="text-center mb-6">
+                                <span className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
+                                  ${pkg.price}
+                                </span>
+                                <p className="text-sm text-gray-500 mt-1">per person</p>
+                              </div>
+
+                              {/* Features */}
+                              <div className="space-y-3 mb-6">
+                                {pkg.features.map((feature, idx) => (
+                                  <div key={idx} className="flex items-start gap-3">
+                                    <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                                      <Check className="h-3 w-3 text-green-600" />
+                                    </div>
+                                    <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </CardContent>
+
+                            {/* Add to Cart Button */}
+                            <div className="p-6 pt-0">
+                              <Button
+                                onClick={() => handleAddToCartClick(pkg)}
+                                className={`w-full py-3 text-base font-semibold transition-all ${
+                                  currentQuantity > 0
+                                    ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                                    : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600'
+                                } text-white shadow-lg hover:shadow-xl`}
+                              >
+                                {currentQuantity > 0 ? (
+                                  <span className="flex items-center gap-2">
+                                    <ShoppingCart className="h-4 w-4" />
+                                    Update Cart ({currentQuantity})
+                                  </span>
+                                ) : (
+                                  `Add to Cart - $${pkg.price}`
+                                )}
+                              </Button>
+                            </div>
+                          </Card>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              ))}
+
+              {/* No Results Message */}
+              {filteredAndSortedPackages.length === 0 && (
+                <div className="text-center py-16">
+                  <div className="text-6xl mb-4">😔</div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">No packages found</h3>
+                  <p className="text-gray-600 mb-6">Try adjusting your filters to see more options.</p>
                   <Button
-                    size="lg"
-                    className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg hover:shadow-xl transition-all"
-                    onClick={() => window.location.href = '/cart'}
-                  >
-                    View Cart & Checkout
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
                     onClick={() => {
                       setSelectedCategory('all')
                       setSelectedEventType('all')
                       setSortBy('default')
                     }}
-                    className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                    className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white"
                   >
-                    Explore All Packages
+                    Clear All Filters
                   </Button>
                 </div>
-              </div>
+              )}
+
+              {/* Continue Shopping CTA */}
+              {filteredAndSortedPackages.length > 0 && (
+                <div className="text-center mt-16 pt-12 border-t border-gray-200">
+                  <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-8 max-w-2xl mx-auto">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3">Ready to complete your selection?</h3>
+                    <p className="text-gray-600 mb-6">Review your chosen packages and proceed to checkout.</p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <Button
+                        size="lg"
+                        className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg hover:shadow-xl transition-all"
+                        onClick={() => window.location.href = '/cart'}
+                      >
+                        View Cart & Checkout
+                      </Button>
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedCategory('all')
+                          setSelectedEventType('all')
+                          setSortBy('default')
+                        }}
+                        className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                      >
+                        Explore All Packages
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </section>
 
