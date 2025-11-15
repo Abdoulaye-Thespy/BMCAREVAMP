@@ -349,6 +349,7 @@ export function Header() {
 
             {/* Right Column - Actions */}
             <div className="flex items-center gap-4">
+              {/* Desktop Cart Button */}
               <Button variant="ghost" size="icon" className="hidden lg:flex relative" asChild>
                 <Link href="/cart" className="relative">
                   <ShoppingCart className="h-5 w-5" />
@@ -361,6 +362,20 @@ export function Header() {
                 </Link>
               </Button>
 
+              {/* Mobile Cart Button - Now visible on mobile */}
+              <Button variant="ghost" size="icon" className="lg:hidden relative" asChild>
+                <Link href="/cart" className="relative">
+                  <ShoppingCart className="h-5 w-5" />
+                  {totalCartItems > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center text-xs font-bold">
+                      {totalCartItems}
+                    </span>
+                  )}
+                  <span className="sr-only">Shopping Cart</span>
+                </Link>
+              </Button>
+
+              {/* Donate Button - Desktop Only */}
               <Button size="default" className="hidden bg-[#F5A623] text-white hover:bg-[#F5A623]/90 lg:inline-flex" asChild>
                 <a href="/donate">Donate Now</a>
               </Button>
