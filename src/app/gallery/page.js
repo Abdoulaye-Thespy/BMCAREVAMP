@@ -118,7 +118,7 @@ export default function GalleryPage() {
     modal.className = 'fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4'
     modal.innerHTML = `
       <div class="relative w-full max-w-4xl">
-        <button class="absolute -top-12 right-0 text-white hover:text-gray-300 text-2xl z-10">
+        <button class="absolute -top-12 right-0 text-white hover:text-orange-300 text-2xl z-10 transition-colors">
           ×
         </button>
         <div class="relative aspect-video w-full">
@@ -155,18 +155,18 @@ export default function GalleryPage() {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-12 text-center">
-            <p className="text-primary font-semibold mb-2">Our Gallery</p>
+            <p className="text-orange-600 font-semibold mb-2">BMCA Gallery</p>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Moments & Memories
+              BMCA Moments & Memories
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Explore our collection of photos and videos from events, programs, and community initiatives
+              Explore our collection of photos and videos from BMCA events, programs, conventions, and community initiatives
             </p>
           </div>
 
           {/* Media Type Tabs */}
           <div className="flex justify-center mb-8">
-            <div className="inline-flex bg-card border border-border rounded-lg p-1">
+            <div className="inline-flex bg-card border border-orange-200 rounded-lg p-1">
               {[
                 { id: 'all', label: 'All Media' },
                 { id: 'images', label: 'Photos' },
@@ -177,8 +177,8 @@ export default function GalleryPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-6 py-2 rounded-md font-medium transition-colors ${
                     activeTab === tab.id
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-foreground hover:bg-accent'
+                      ? 'bg-orange-600 text-white shadow-md'
+                      : 'text-foreground hover:bg-orange-50 hover:text-orange-700'
                   }`}
                 >
                   {tab.label}
@@ -195,7 +195,7 @@ export default function GalleryPage() {
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="appearance-none bg-card border border-border rounded-lg px-4 py-2 pr-10 text-foreground cursor-pointer hover:border-primary transition-colors"
+                className="appearance-none bg-card border border-orange-200 rounded-lg px-4 py-2 pr-10 text-foreground cursor-pointer hover:border-orange-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-colors"
               >
                 <option value="all">All Years</option>
                 {years.filter(y => y !== 'all').map(year => (
@@ -204,7 +204,7 @@ export default function GalleryPage() {
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-9 w-4 h-4 pointer-events-none text-muted-foreground" />
+              <ChevronDown className="absolute right-3 top-9 w-4 h-4 pointer-events-none text-orange-500" />
             </div>
 
             {/* Category Filter */}
@@ -213,7 +213,7 @@ export default function GalleryPage() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="appearance-none bg-card border border-border rounded-lg px-4 py-2 pr-10 text-foreground cursor-pointer hover:border-primary transition-colors"
+                className="appearance-none bg-card border border-orange-200 rounded-lg px-4 py-2 pr-10 text-foreground cursor-pointer hover:border-orange-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-colors"
               >
                 <option value="all">All Categories</option>
                 {categories.filter(c => c !== 'all').map(category => (
@@ -222,7 +222,7 @@ export default function GalleryPage() {
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-9 w-4 h-4 pointer-events-none text-muted-foreground" />
+              <ChevronDown className="absolute right-3 top-9 w-4 h-4 pointer-events-none text-orange-500" />
             </div>
 
             {/* Clear Filters */}
@@ -233,7 +233,7 @@ export default function GalleryPage() {
                   setSelectedCategory('all')
                   setActiveTab('all')
                 }}
-                className="mt-auto px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity font-medium"
+                className="mt-auto px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 focus:ring-2 focus:ring-orange-200 transition-colors font-medium shadow-md hover:shadow-lg"
               >
                 Clear Filters
               </button>
@@ -243,30 +243,32 @@ export default function GalleryPage() {
           {/* Content Sections */}
           {activeTab !== 'videos' && images.length > 0 && (
             <div className="mb-16">
-              <h2 className="text-2xl font-bold text-foreground mb-8 text-center">Photos</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <h2 className="text-2xl font-bold text-foreground mb-8 text-center border-b-2 border-orange-500 pb-2 inline-block">
+                BMCA Photos
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
                 {images.map((item) => (
                   <div
                     key={item.id}
-                    className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer bg-card border border-border"
+                    className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer bg-card border border-orange-100"
                   >
                     <img
                       src={item.thumbnail || "/placeholder.svg"}
                       alt={item.title}
                       className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
                     />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-orange-900/20 transition-colors duration-300 flex items-center justify-center">
                       <ImageIcon className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                     
                     {/* Overlay Info */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                    <div className="absolute inset-0 bg-gradient-to-t from-orange-900/90 via-orange-800/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                       <h3 className="text-white font-semibold text-sm mb-2 line-clamp-2">{item.title}</h3>
                       <div className="flex justify-between items-center">
-                        <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
+                        <span className="text-xs bg-orange-600 text-white px-2 py-1 rounded font-medium">
                           {item.category}
                         </span>
-                        <span className="text-xs text-gray-300">{item.year}</span>
+                        <span className="text-xs text-orange-200 font-medium">{item.year}</span>
                       </div>
                     </div>
                   </div>
@@ -277,12 +279,14 @@ export default function GalleryPage() {
 
           {activeTab !== 'images' && videos.length > 0 && (
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-8 text-center">Videos</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <h2 className="text-2xl font-bold text-foreground mb-8 text-center border-b-2 border-orange-500 pb-2 inline-block">
+                BMCA Videos
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
                 {videos.map((item) => (
                   <div
                     key={item.id}
-                    className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer bg-card border border-border"
+                    className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer bg-card border border-orange-100"
                     onClick={() => openVideoModal(item.youtubeId, item.title)}
                   >
                     <div className="relative w-full h-64 bg-black flex items-center justify-center overflow-hidden">
@@ -291,19 +295,21 @@ export default function GalleryPage() {
                         alt={item.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300 flex items-center justify-center">
-                        <Play className="w-12 h-12 text-white fill-white opacity-90 group-hover:opacity-100 transition-opacity" />
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-orange-900/40 transition-colors duration-300 flex items-center justify-center">
+                        <div className="bg-orange-600 rounded-full p-4 group-hover:bg-orange-700 transition-colors shadow-lg">
+                          <Play className="w-8 h-8 text-white fill-white" />
+                        </div>
                       </div>
                     </div>
                     
                     {/* Overlay Info */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                    <div className="absolute inset-0 bg-gradient-to-t from-orange-900/90 via-orange-800/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                       <h3 className="text-white font-semibold text-sm mb-2 line-clamp-2">{item.title}</h3>
                       <div className="flex justify-between items-center">
-                        <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
+                        <span className="text-xs bg-orange-600 text-white px-2 py-1 rounded font-medium">
                           {item.category}
                         </span>
-                        <span className="text-xs text-gray-300">{item.year}</span>
+                        <span className="text-xs text-orange-200 font-medium">{item.year}</span>
                       </div>
                     </div>
                   </div>
@@ -315,15 +321,15 @@ export default function GalleryPage() {
           {/* No Results */}
           {filteredItems.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20">
-              <ImageIcon className="w-16 h-16 text-muted-foreground mb-4" />
-              <p className="text-lg text-muted-foreground font-medium">No items found</p>
-              <p className="text-sm text-muted-foreground">Try adjusting your filters</p>
+              <ImageIcon className="w-16 h-16 text-orange-400 mb-4" />
+              <p className="text-lg text-orange-800 font-medium mb-2">No items found</p>
+              <p className="text-sm text-orange-600">Try adjusting your filters</p>
             </div>
           )}
 
           {/* Results Count */}
-          <div className="mt-8 text-center text-muted-foreground">
-            Showing {filteredItems.length} of {galleryItems.length} items
+          <div className="mt-8 text-center text-orange-700 font-medium">
+            Showing {filteredItems.length} of {galleryItems.length} BMCA items
             {activeTab === 'images' && ` (${images.length} photos)`}
             {activeTab === 'videos' && ` (${videos.length} videos)`}
           </div>
