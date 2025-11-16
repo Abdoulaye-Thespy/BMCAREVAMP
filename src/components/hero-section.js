@@ -213,13 +213,19 @@ export function HeroSection() {
           style={{
             transitionDelay: '700ms'
           }}>
-            <Button 
-              size="lg" 
-              className="bg-[#F5A623] hover:bg-[#F5A623]/90 text-white transform transition-all duration-500 hover:scale-105 text-base py-6 px-8 md:py-4 md:px-6 md:text-sm"
+            <a 
+              href="https://buy.stripe.com/bIY5nYbnAaWaePe3cc" 
+              target="_blank" 
+              rel="noopener noreferrer"
             >
-              <CreditCard className="mr-2 h-5 w-5 md:h-4 md:w-4" />
-              {currentSlideData.buttonText}
-            </Button>
+              <Button 
+                size="lg" 
+                className="bg-[#F5A623] hover:bg-[#F5A623]/90 text-white transform transition-all duration-500 hover:scale-105 text-base py-6 px-8 md:py-4 md:px-6 md:text-sm cursor-pointer"
+              >
+                <CreditCard className="mr-2 h-5 w-5 md:h-4 md:w-4" />
+                {currentSlideData.buttonText}
+              </Button>
+            </a>
           </div>
         </div>
       </div>

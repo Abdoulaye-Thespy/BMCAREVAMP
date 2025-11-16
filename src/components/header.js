@@ -377,7 +377,7 @@ export function Header() {
 
               {/* Donate Button - Desktop Only */}
               <Button size="default" className="hidden bg-[#F5A623] text-white hover:bg-[#F5A623]/90 lg:inline-flex" asChild>
-                <a href="/donate">Donate Now</a>
+                <a target="_blank" href="https://buy.stripe.com/bIY5nYbnAaWaePe3cc">Donate Now</a>
               </Button>
 
               {/* Mobile Menu */}
@@ -576,11 +576,11 @@ export function Header() {
                     </a>
 
                     <div className="pt-6 space-y-3 border-t mt-4">
-                      <Button variant="outline" className="w-full bg-transparent border-gray-300 hover:bg-gray-50" asChild>
+                      {/* <Button variant="outline" className="w-full bg-transparent border-gray-300 hover:bg-gray-50" asChild>
                         <a href="/login">Log in</a>
-                      </Button>
+                      </Button> */}
                       <Button className="w-full bg-[#F5A623] hover:bg-[#F5A623]/90 text-white" asChild onClick={() => setMobileMenuOpen(false)}>
-                        <a href="/donate">Donate Now</a>
+                        <a target="_blank" href="https://buy.stripe.com/bIY5nYbnAaWaePe3cc">Donate Now</a>
                       </Button>
                     </div>
                   </nav>
