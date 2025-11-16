@@ -9,27 +9,19 @@ const galleryItems = [
   // 2024 Items
   {
     id: 1,
-    title: 'Community Water Drive 2024',
-    year: 2024,
-    category: 'Water',
+    title: 'Education Program Launch',
+    year: 2025,
+    category: 'Education',
     type: 'image',
-    thumbnail: '/community-water-drive-2024.jpg',
+    thumbnail: '/education2.jpg',
   },
   {
     id: 2,
     title: 'Education Program Launch',
-    year: 2024,
+    year: 2025,
     category: 'Education',
     type: 'image',
-    thumbnail: '/education-program-launch.jpg',
-  },
-  {
-    id: 3,
-    title: 'Convention 2024 Highlights',
-    year: 2024,
-    category: 'Convention 2024',
-    type: 'video',
-    youtubeId: 'dQw4w9WgXcQ',
+    thumbnail: '/education1.jpg',
   },
   {
     id: 4,
@@ -37,40 +29,41 @@ const galleryItems = [
     year: 2024,
     category: 'Events',
     type: 'image',
-    thumbnail: '/community-outreach-event.jpg',
+    thumbnail: '/outreach.jpg',
   },
   // 2023 Items
   {
     id: 5,
-    title: 'Convention 2023 Opening',
+    title: 'Washington DC Chapter Bafut Manjong Cultural Ass. 23rd Annual convention Texas',
     year: 2023,
     category: 'Convention 2023',
     type: 'video',
-    youtubeId: 'dQw4w9WgXcQ',
+    youtubeId: 'e5EpF4KbIyA',
   },
   {
-    id: 6,
-    title: 'Health Initiative 2023',
-    year: 2023,
-    category: 'Health',
+    id: 4,
+    title: 'Community Outreach Event',
+    year: 2024,
+    category: 'Events',
     type: 'image',
-    thumbnail: '/health-initiative-2023.jpg',
+    thumbnail: '/outreach1.jpg',
   },
+  // 2023 Items
   {
     id: 7,
     title: 'Cultural Arts Program',
     year: 2023,
     category: 'Culture & Arts',
     type: 'image',
-    thumbnail: '/cultural-arts-program.jpg',
+    thumbnail: '/bmcawater3.jpg',
   },
   {
     id: 8,
-    title: 'Convention 2023 Ceremony',
+    title: 'Minnesota Chapter Bafut Manjong Cultural Ass. 23rd Annual convention Texas',
     year: 2023,
     category: 'Convention 2023',
     type: 'video',
-    youtubeId: 'dQw4w9WgXcQ',
+    youtubeId: 'jTHU3NWAzvY',
   },
   // 2022 Items
   {
@@ -79,32 +72,80 @@ const galleryItems = [
     year: 2022,
     category: 'Water',
     type: 'image',
-    thumbnail: '/water-project-completion.jpg',
+    thumbnail: '/bmcawater2.jpg',
   },
   {
     id: 10,
-    title: 'Convention 2022 Recap',
+    title: 'Dallas Chapter Bafut Manjong Cultural Ass. 23rd Annual convention Texas',
     year: 2022,
     category: 'Convention 2022',
     type: 'video',
-    youtubeId: 'dQw4w9WgXcQ',
+    youtubeId: 'N7cj_1TjP1c',
   },
 ]
 
 export default function GalleryPage() {
   const [selectedYear, setSelectedYear] = useState('all')
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [activeTab, setActiveTab] = useState('all')
 
   const years = ['all', ...new Set(galleryItems.map(item => item.year))]
   const categories = ['all', ...new Set(galleryItems.map(item => item.category))]
 
   const filteredItems = useMemo(() => {
-    return galleryItems.filter(item => {
+    let filtered = galleryItems.filter(item => {
       const yearMatch = selectedYear === 'all' || item.year === parseInt(selectedYear)
       const categoryMatch = selectedCategory === 'all' || item.category === selectedCategory
       return yearMatch && categoryMatch
     })
-  }, [selectedYear, selectedCategory])
+
+    // Filter by media type based on active tab
+    if (activeTab === 'images') {
+      filtered = filtered.filter(item => item.type === 'image')
+    } else if (activeTab === 'videos') {
+      filtered = filtered.filter(item => item.type === 'video')
+    }
+
+    return filtered
+  }, [selectedYear, selectedCategory, activeTab])
+
+  const images = filteredItems.filter(item => item.type === 'image')
+  const videos = filteredItems.filter(item => item.type === 'video')
+
+  const openVideoModal = (youtubeId, title) => {
+    // Create modal for video playback
+    const modal = document.createElement('div')
+    modal.className = 'fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4'
+    modal.innerHTML = `
+      <div class="relative w-full max-w-4xl">
+        <button class="absolute -top-12 right-0 text-white hover:text-gray-300 text-2xl z-10">
+          ×
+        </button>
+        <div class="relative aspect-video w-full">
+          <iframe 
+            src="https://www.youtube.com/embed/${youtubeId}?autoplay=1" 
+            class="w-full h-full rounded-lg"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            title="${title}"
+          ></iframe>
+        </div>
+      </div>
+    `
+    
+    const closeModal = () => {
+      document.body.removeChild(modal)
+      document.body.style.overflow = 'auto'
+    }
+    
+    modal.querySelector('button').onclick = closeModal
+    modal.onclick = (e) => {
+      if (e.target === modal) closeModal()
+    }
+    
+    document.body.style.overflow = 'hidden'
+    document.body.appendChild(modal)
+  }
 
   return (
     <main className="min-h-screen bg-background">
@@ -121,6 +162,29 @@ export default function GalleryPage() {
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Explore our collection of photos and videos from events, programs, and community initiatives
             </p>
+          </div>
+
+          {/* Media Type Tabs */}
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex bg-card border border-border rounded-lg p-1">
+              {[
+                { id: 'all', label: 'All Media' },
+                { id: 'images', label: 'Photos' },
+                { id: 'videos', label: 'Videos' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-6 py-2 rounded-md font-medium transition-colors ${
+                    activeTab === tab.id
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-foreground hover:bg-accent'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Filters */}
@@ -162,11 +226,12 @@ export default function GalleryPage() {
             </div>
 
             {/* Clear Filters */}
-            {(selectedYear !== 'all' || selectedCategory !== 'all') && (
+            {(selectedYear !== 'all' || selectedCategory !== 'all' || activeTab !== 'all') && (
               <button
                 onClick={() => {
                   setSelectedYear('all')
                   setSelectedCategory('all')
+                  setActiveTab('all')
                 }}
                 className="mt-auto px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity font-medium"
               >
@@ -175,54 +240,80 @@ export default function GalleryPage() {
             )}
           </div>
 
-          {/* Gallery Grid */}
-          {filteredItems.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer bg-card border border-border"
-                >
-                  {item.type === 'image' ? (
-                    <>
-                      <img
-                        src={item.thumbnail || "/placeholder.svg"}
-                        alt={item.title}
-                        className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
-                        <ImageIcon className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+          {/* Content Sections */}
+          {activeTab !== 'videos' && images.length > 0 && (
+            <div className="mb-16">
+              <h2 className="text-2xl font-bold text-foreground mb-8 text-center">Photos</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {images.map((item) => (
+                  <div
+                    key={item.id}
+                    className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer bg-card border border-border"
+                  >
+                    <img
+                      src={item.thumbnail || "/placeholder.svg"}
+                      alt={item.title}
+                      className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
+                      <ImageIcon className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    
+                    {/* Overlay Info */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                      <h3 className="text-white font-semibold text-sm mb-2 line-clamp-2">{item.title}</h3>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
+                          {item.category}
+                        </span>
+                        <span className="text-xs text-gray-300">{item.year}</span>
                       </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="relative w-full h-64 bg-black flex items-center justify-center overflow-hidden">
-                        <img
-                          src={`https://img.youtube.com/vi/${item.youtubeId}/mqdefault.jpg`}
-                          alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        />
-                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300 flex items-center justify-center">
-                          <Play className="w-12 h-12 text-white fill-white opacity-90 group-hover:opacity-100 transition-opacity" />
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  {/* Overlay Info */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                    <h3 className="text-white font-semibold text-sm mb-2 line-clamp-2">{item.title}</h3>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
-                        {item.category}
-                      </span>
-                      <span className="text-xs text-gray-300">{item.year}</span>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          ) : (
+          )}
+
+          {activeTab !== 'images' && videos.length > 0 && (
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-8 text-center">Videos</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {videos.map((item) => (
+                  <div
+                    key={item.id}
+                    className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer bg-card border border-border"
+                    onClick={() => openVideoModal(item.youtubeId, item.title)}
+                  >
+                    <div className="relative w-full h-64 bg-black flex items-center justify-center overflow-hidden">
+                      <img
+                        src={`https://img.youtube.com/vi/${item.youtubeId}/mqdefault.jpg`}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300 flex items-center justify-center">
+                        <Play className="w-12 h-12 text-white fill-white opacity-90 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                    </div>
+                    
+                    {/* Overlay Info */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                      <h3 className="text-white font-semibold text-sm mb-2 line-clamp-2">{item.title}</h3>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
+                          {item.category}
+                        </span>
+                        <span className="text-xs text-gray-300">{item.year}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* No Results */}
+          {filteredItems.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20">
               <ImageIcon className="w-16 h-16 text-muted-foreground mb-4" />
               <p className="text-lg text-muted-foreground font-medium">No items found</p>
@@ -233,6 +324,8 @@ export default function GalleryPage() {
           {/* Results Count */}
           <div className="mt-8 text-center text-muted-foreground">
             Showing {filteredItems.length} of {galleryItems.length} items
+            {activeTab === 'images' && ` (${images.length} photos)`}
+            {activeTab === 'videos' && ` (${videos.length} videos)`}
           </div>
         </div>
       </section>
