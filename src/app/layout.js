@@ -3,8 +3,8 @@ import { CartProvider } from "@/context/cart-context"
 import "./globals.css"
 
 export const metadata = {
-  title: "BMCA - Building Beirut Communities",
-  description: "Empowering communities in Beirut through meals, volunteers, and sustainable impact",
+  title: "BMCA - Building Bafut Communities",
+  description: "Empowering communities in Bafut through meals, volunteers, and sustainable impact",
   generator: "v0.app",
 }
 
