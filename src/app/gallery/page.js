@@ -24,7 +24,7 @@ const galleryItems = [
     thumbnail: '/education1.jpg',
   },
   {
-    id: 4,
+    id: 3,
     title: 'Community Outreach Event',
     year: 2024,
     category: 'Events',
@@ -33,7 +33,7 @@ const galleryItems = [
   },
   // 2023 Items
   {
-    id: 5,
+    id: 4,
     title: 'Washington DC Chapter Bafut Manjong Cultural Ass. 23rd Annual convention Texas',
     year: 2023,
     category: 'Convention 2023',
@@ -41,7 +41,7 @@ const galleryItems = [
     youtubeId: 'e5EpF4KbIyA',
   },
   {
-    id: 4,
+    id: 5,
     title: 'Community Outreach Event',
     year: 2024,
     category: 'Events',
@@ -50,7 +50,7 @@ const galleryItems = [
   },
   // 2023 Items
   {
-    id: 7,
+    id: 6,
     title: 'Cultural Arts Program',
     year: 2023,
     category: 'Culture & Arts',
@@ -58,7 +58,7 @@ const galleryItems = [
     thumbnail: '/bmcawater3.jpg',
   },
   {
-    id: 8,
+    id: 7,
     title: 'Minnesota Chapter Bafut Manjong Cultural Ass. 23rd Annual convention Texas',
     year: 2023,
     category: 'Convention 2023',
@@ -67,7 +67,7 @@ const galleryItems = [
   },
   // 2022 Items
   {
-    id: 9,
+    id: 8,
     title: 'Water Project Completion',
     year: 2022,
     category: 'Water',
@@ -75,7 +75,7 @@ const galleryItems = [
     thumbnail: '/bmcawater2.jpg',
   },
   {
-    id: 10,
+    id: 9,
     title: 'Dallas Chapter Bafut Manjong Cultural Ass. 23rd Annual convention Texas',
     year: 2022,
     category: 'Convention 2022',
