@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Phone, Mail, MapPin, Users, X, ChevronDown, ChevronUp } from "lucide-react"
+import { Phone, Mail, MapPin, Users, X, ChevronDown, ChevronUp, Globe } from "lucide-react"
 
 const chaptersData = [
   {
@@ -12,6 +12,11 @@ const chaptersData = [
     email: "houston@bmca.org",
     address: "123 Main St, Houston, TX 77002",
     members: 45,
+    website: "https://houston.bmca.org",
+    president: {
+      name: "Michael Rodriguez",
+      photo: "/president-placeholder.jpg"
+    }
   },
   {
     id: 2,
@@ -21,6 +26,11 @@ const chaptersData = [
     email: "dallas@bmca.org",
     address: "456 Oak Ave, Dallas, TX 75201",
     members: 32,
+    website: "https://dallas.bmca.org",
+    president: {
+      name: "Sarah Johnson",
+      photo: "/president-placeholder.jpg"
+    }
   },
   {
     id: 3,
@@ -30,6 +40,11 @@ const chaptersData = [
     email: "florida@bmca.org",
     address: "789 Beach Blvd, Miami, FL 33101",
     members: 28,
+    website: "https://florida.bmca.org",
+    president: {
+      name: "David Thompson",
+      photo: "/president-placeholder.jpg"
+    }
   },
   {
     id: 4,
@@ -39,6 +54,11 @@ const chaptersData = [
     email: "newengland@bmca.org",
     address: "321 Harbor St, Boston, MA 02101",
     members: 38,
+    website: "https://newengland.bmca.org",
+    president: {
+      name: "Jennifer Williams",
+      photo: "/president-placeholder.jpg"
+    }
   },
   {
     id: 5,
@@ -48,6 +68,11 @@ const chaptersData = [
     email: "greatlakes@bmca.org",
     address: "654 Lake View Dr, Chicago, IL 60601",
     members: 41,
+    website: "https://greatlakes.bmca.org",
+    president: {
+      name: "Robert Chen",
+      photo: "/president-placeholder.jpg"
+    }
   },
   {
     id: 6,
@@ -57,6 +82,11 @@ const chaptersData = [
     email: "losangeles@bmca.org",
     address: "987 Sunset Blvd, Los Angeles, CA 90001",
     members: 52,
+    website: "https://losangeles.bmca.org",
+    president: {
+      name: "Maria Garcia",
+      photo: "/president-placeholder.jpg"
+    }
   },
   {
     id: 7,
@@ -66,6 +96,11 @@ const chaptersData = [
     email: "westcoast@bmca.org",
     address: "555 Pacific Hwy, San Francisco, CA 94101",
     members: 67,
+    website: "https://westcoast.bmca.org",
+    president: {
+      name: "James Wilson",
+      photo: "/president-placeholder.jpg"
+    }
   },
   {
     id: 8,
@@ -75,6 +110,11 @@ const chaptersData = [
     email: "minnesota@bmca.org",
     address: "222 Lake St, Minneapolis, MN 55401",
     members: 23,
+    website: "https://minnesota.bmca.org",
+    president: {
+      name: "Lisa Anderson",
+      photo: "/president-placeholder.jpg"
+    }
   },
   {
     id: 9,
@@ -84,6 +124,11 @@ const chaptersData = [
     email: "dcmetro@bmca.org",
     address: "444 Capitol St, Washington, DC 20001",
     members: 35,
+    website: "https://dcmetro.bmca.org",
+    president: {
+      name: "Thomas Brown",
+      photo: "/president-placeholder.jpg"
+    }
   },
   {
     id: 10,
@@ -93,6 +138,11 @@ const chaptersData = [
     email: "delaware@bmca.org",
     address: "111 Liberty St, Wilmington, DE 19801",
     members: 19,
+    website: "https://delaware.bmca.org",
+    president: {
+      name: "Patricia Davis",
+      photo: "/president-placeholder.jpg"
+    }
   },
   {
     id: 11,
@@ -102,6 +152,11 @@ const chaptersData = [
     email: "midwest@bmca.org",
     address: "333 Plains Ave, Kansas City, MO 64101",
     members: 44,
+    website: "https://midwest.bmca.org",
+    president: {
+      name: "Christopher Miller",
+      photo: "/president-placeholder.jpg"
+    }
   },
   {
     id: 12,
@@ -111,6 +166,11 @@ const chaptersData = [
     email: "northcarolina@bmca.org",
     address: "777 Pine St, Charlotte, NC 28201",
     members: 31,
+    website: "https://northcarolina.bmca.org",
+    president: {
+      name: "Amanda Taylor",
+      photo: "/president-placeholder.jpg"
+    }
   },
   {
     id: 13,
@@ -120,6 +180,11 @@ const chaptersData = [
     email: "northeast@bmca.org",
     address: "888 Empire St, New York, NY 10001",
     members: 58,
+    website: "https://northeast.bmca.org",
+    president: {
+      name: "Daniel Moore",
+      photo: "/president-placeholder.jpg"
+    }
   },
 ]
 
@@ -184,6 +249,21 @@ export default function ChaptersSection() {
                   {chapter.description}
                 </p>
 
+                {/* President Preview */}
+                <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
+                  <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={chapter.president.photo || "/president-placeholder.jpg"} 
+                      alt={chapter.president.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Chapter President</p>
+                    <p className="text-sm font-semibold text-gray-900">{chapter.president.name}</p>
+                  </div>
+                </div>
+
                 {/* Quick Info Preview */}
                 <div className="mt-4 space-y-2 mb-4">
                   <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -239,36 +319,72 @@ export default function ChaptersSection() {
 
       {/* Modal */}
       {isModalOpen && selectedChapter && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-30 backdrop-blur-sm">
           <div 
-            className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-auto transform transition-all duration-300 scale-95 animate-in fade-in-0 zoom-in-95"
+            className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-auto transform transition-all duration-300 scale-95 animate-in fade-in-0 zoom-in-95 border border-gray-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="relative p-6 border-b border-gray-200">
+            <div className="relative p-6 border-b border-gray-200 bg-gradient-to-r from-orange-50 to-white">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-orange-100">
-                  <Users size={24} className="text-orange-600" />
+                <div className="w-16 h-16 rounded-full flex items-center justify-center bg-orange-100 border-2 border-orange-200">
+                  <Users size={28} className="text-orange-600" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <h3 className="text-2xl font-bold text-gray-900">{selectedChapter.name}</h3>
                   <p className="text-gray-600">{selectedChapter.description}</p>
                 </div>
               </div>
               <button
                 onClick={closeModal}
-                className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                className="absolute top-4 right-4 p-2 hover:bg-orange-100 rounded-full transition-colors duration-200"
               >
-                <X size={20} className="text-gray-500" />
+                <X size={20} className="text-gray-600" />
               </button>
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto">
+              {/* President Section */}
+              <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
+                <h4 className="text-lg font-semibold text-gray-900 mb-3">Chapter President</h4>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden border-2 border-white shadow-md">
+                    <img 
+                      src={selectedChapter.president.photo || "/president-placeholder.jpg"} 
+                      alt={selectedChapter.president.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-xl font-bold text-gray-900">{selectedChapter.president.name}</p>
+                    <p className="text-gray-600">Chapter President</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Website */}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <Globe size={18} className="text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <label className="text-sm font-semibold text-gray-500 block mb-1">Website</label>
+                  <a 
+                    href={selectedChapter.website} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline break-all"
+                  >
+                    {selectedChapter.website}
+                  </a>
+                </div>
+              </div>
+
               {/* Phone */}
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-                  <Phone size={18} className="text-orange-600" />
+                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <Phone size={18} className="text-green-600" />
                 </div>
                 <div className="flex-1">
                   <label className="text-sm font-semibold text-gray-500 block mb-1">Phone</label>
@@ -278,19 +394,24 @@ export default function ChaptersSection() {
 
               {/* Email */}
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-                  <Mail size={18} className="text-orange-600" />
+                <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                  <Mail size={18} className="text-purple-600" />
                 </div>
                 <div className="flex-1">
                   <label className="text-sm font-semibold text-gray-500 block mb-1">Email</label>
-                  <p className="text-gray-900 break-all">{selectedChapter.email}</p>
+                  <a 
+                    href={`mailto:${selectedChapter.email}`}
+                    className="text-gray-900 break-all hover:text-orange-600"
+                  >
+                    {selectedChapter.email}
+                  </a>
                 </div>
               </div>
 
               {/* Address */}
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-                  <MapPin size={18} className="text-orange-600" />
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                  <MapPin size={18} className="text-red-600" />
                 </div>
                 <div className="flex-1">
                   <label className="text-sm font-semibold text-gray-500 block mb-1">Address</label>
@@ -311,10 +432,10 @@ export default function ChaptersSection() {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-6 border-t border-gray-200">
+            <div className="p-6 border-t border-gray-200 bg-gray-50">
               <button
                 onClick={closeModal}
-                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded-md transition-all duration-300"
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
               >
                 Close
               </button>

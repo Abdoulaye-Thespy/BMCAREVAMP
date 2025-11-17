@@ -1,6 +1,6 @@
 "use client"
 
-import { Heart, Users, TrendingUp } from "lucide-react"
+import { Droplets, TrendingUp, School } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
 export function StatsSection() {
@@ -9,18 +9,18 @@ export function StatsSection() {
 
   const stats = [
     {
-      icon: Heart,
+      icon: School,
       value: 8123,
-      label: "Meals Donated",
+      label: "pupils supported",
     },
     {
-      icon: Users,
-      value: 500,
-      label: "Members",
+      icon: Droplets,
+      value: 20,
+      label: "Water projects",
     },
     {
       icon: TrendingUp,
-      value: 30000,
+      value: 90000,
       label: "People Impacted",
     },
   ]

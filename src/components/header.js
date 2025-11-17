@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Mail, Phone, ShoppingCart, Menu, Sun, Moon } from 'lucide-react'
+import { Mail, Phone, ShoppingCart, Menu, Sun, Moon, ChevronDown, ChevronUp } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
@@ -20,6 +20,8 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isDarkTheme, setIsDarkTheme] = useState(false)
   const [isSticky, setIsSticky] = useState(false)
+  const [mobileProgramsOpen, setMobileProgramsOpen] = useState(false)
+  const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false)
   const pathname = usePathname()
   const { cartItems } = useCart()
 
@@ -234,6 +236,19 @@ export function Header() {
                         <li>
                           <NavigationMenuLink asChild>
                             <a
+                              href="/programs/community-outreach"
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-medium leading-none">Community Outreach</div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                Community engagement and support programs
+                              </p>
+                            </a>
+                          </NavigationMenuLink>
+                        </li>
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <a
                               href="/kiteuh"
                               className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             >
@@ -392,14 +407,14 @@ export function Header() {
                     <span className="sr-only">Toggle menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <SheetContent side="right" className="w-[300px] sm:w-[400px] overflow-y-auto max-h-screen">
                   <SheetHeader>
                     <SheetTitle className="text-left">Menu</SheetTitle>
                   </SheetHeader>
-                  <nav className="flex flex-col gap-2 mt-8">
+                  <nav className="flex flex-col gap-1 mt-6">
                     <a
                       href="/"
-                      className={`text-lg font-medium transition-colors py-3 px-4 rounded-lg ${
+                      className={`text-base font-medium transition-colors py-3 px-4 rounded-lg ${
                         pathname === '/' 
                           ? 'text-[#F5A623] bg-orange-50' 
                           : 'text-gray-700 hover:text-[#F5A623] hover:bg-gray-50'
@@ -410,7 +425,7 @@ export function Header() {
                     </a>
                     <a
                       href="/about"
-                      className={`text-lg font-medium transition-colors py-3 px-4 rounded-lg ${
+                      className={`text-base font-medium transition-colors py-3 px-4 rounded-lg ${
                         pathname === '/about' 
                           ? 'text-[#F5A623] bg-orange-50' 
                           : 'text-gray-700 hover:text-[#F5A623] hover:bg-gray-50'
@@ -421,7 +436,7 @@ export function Header() {
                     </a>
                     <a
                       href="/convention"
-                      className={`text-lg font-medium transition-colors py-3 px-4 rounded-lg ${
+                      className={`text-base font-medium transition-colors py-3 px-4 rounded-lg ${
                         pathname === '/convention' 
                           ? 'text-[#F5A623] bg-orange-50' 
                           : 'text-gray-700 hover:text-[#F5A623] hover:bg-gray-50'
@@ -431,141 +446,166 @@ export function Header() {
                       Convention
                     </a>
 
-                    <div className="space-y-1 py-2">
-                      <div className={`text-lg font-medium py-3 px-4 rounded-lg ${
-                        isProgramsPath 
-                          ? 'text-[#F5A623] bg-orange-50' 
-                          : 'text-gray-700'
-                      }`}>
-                        Programs
-                      </div>
-                      <div className="pl-6 space-y-1">
-                        <a
-                          href="/programs/education"
-                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/programs/education' 
-                              ? 'text-[#F5A623] bg-orange-50' 
-                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Education
-                        </a>
-                        <a
-                          href="/programs/water"
-                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/programs/water' 
-                              ? 'text-[#F5A623] bg-orange-50' 
-                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Water
-                        </a>
-                        <a
-                          href="/programs/culture-art"
-                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/programs/culture-art' 
-                              ? 'text-[#F5A623] bg-orange-50' 
-                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Culture & Arts
-                        </a>
-                        <a
-                          href="/programs/health"
-                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/programs/health' 
-                              ? 'text-[#F5A623] bg-orange-50' 
-                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Health & Fitness
-                        </a>
-                        <a
-                          href="/kiteuh"
-                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/kiteuh' 
-                              ? 'text-[#F5A623] bg-orange-50' 
-                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Kiteuh Mutual Assurance
-                        </a>
-                        <a
-                          href="/programs/infrastructure"
-                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/programs/infrastructure' 
-                              ? 'text-[#F5A623] bg-orange-50' 
-                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Infrastructure
-                        </a>
-                      </div>
+                    {/* Programs Dropdown */}
+                    <div className="space-y-1">
+                      <button
+                        onClick={() => setMobileProgramsOpen(!mobileProgramsOpen)}
+                        className={`w-full flex items-center justify-between text-base font-medium py-3 px-4 rounded-lg transition-colors ${
+                          isProgramsPath 
+                            ? 'text-[#F5A623] bg-orange-50' 
+                            : 'text-gray-700 hover:text-[#F5A623] hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>Programs</span>
+                        {mobileProgramsOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </button>
+                      {mobileProgramsOpen && (
+                        <div className="pl-4 space-y-1 border-l-2 border-gray-200 ml-4">
+                          <a
+                            href="/programs/education"
+                            className={`block text-sm transition-colors py-2 px-4 rounded-lg ${
+                              pathname === '/programs/education' 
+                                ? 'text-[#F5A623] bg-orange-50' 
+                                : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                            }`}
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Education
+                          </a>
+                          <a
+                            href="/programs/water"
+                            className={`block text-sm transition-colors py-2 px-4 rounded-lg ${
+                              pathname === '/programs/water' 
+                                ? 'text-[#F5A623] bg-orange-50' 
+                                : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                            }`}
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Water
+                          </a>
+                          <a
+                            href="/programs/culture-art"
+                            className={`block text-sm transition-colors py-2 px-4 rounded-lg ${
+                              pathname === '/programs/culture-art' 
+                                ? 'text-[#F5A623] bg-orange-50' 
+                                : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                            }`}
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Culture & Arts
+                          </a>
+                          <a
+                            href="/programs/health"
+                            className={`block text-sm transition-colors py-2 px-4 rounded-lg ${
+                              pathname === '/programs/health' 
+                                ? 'text-[#F5A623] bg-orange-50' 
+                                : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                            }`}
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Health & Fitness
+                          </a>
+                          <a
+                            href="/programs/community-outreach"
+                            className={`block text-sm transition-colors py-2 px-4 rounded-lg ${
+                              pathname === '/programs/community-outreach' 
+                                ? 'text-[#F5A623] bg-orange-50' 
+                                : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                            }`}
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Community Outreach
+                          </a>
+                          <a
+                            href="/kiteuh"
+                            className={`block text-sm transition-colors py-2 px-4 rounded-lg ${
+                              pathname === '/kiteuh' 
+                                ? 'text-[#F5A623] bg-orange-50' 
+                                : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                            }`}
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Kiteuh Mutual Assurance
+                          </a>
+                          <a
+                            href="/programs/infrastructure"
+                            className={`block text-sm transition-colors py-2 px-4 rounded-lg ${
+                              pathname === '/programs/infrastructure' 
+                                ? 'text-[#F5A623] bg-orange-50' 
+                                : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                            }`}
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Infrastructure
+                          </a>
+                        </div>
+                      )}
                     </div>
 
-                    <div className="space-y-1 py-2">
-                      <div className={`text-lg font-medium py-3 px-4 rounded-lg ${
-                        isResourcesPath 
-                          ? 'text-[#F5A623] bg-orange-50' 
-                          : 'text-gray-700'
-                      }`}>
-                        Resources
-                      </div>
-                      <div className="pl-6 space-y-1">
-                        <a
-                          href="https://drive.google.com/file/d/1Br73YDJmiZmAFNc1ho7YK22EhzGjBcqW/view"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block text-base transition-colors py-2 px-4 rounded-lg text-gray-600 hover:text-[#F5A623] hover:bg-gray-50"
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          BMCA USA Constitution
-                        </a>
-                        <a
-                          href="/gallery"
-                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/gallery' 
-                              ? 'text-[#F5A623] bg-orange-50' 
-                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Media Kit
-                        </a>
-                        <a
-                          href="/privacy-policy"
-                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/privacy-policy' 
-                              ? 'text-[#F5A623] bg-orange-50' 
-                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Privacy Policy
-                        </a>
-                        <a
-                          href="/terms-conditions"
-                          className={`block text-base transition-colors py-2 px-4 rounded-lg ${
-                            pathname === '/terms-conditions' 
-                              ? 'text-[#F5A623] bg-orange-50' 
-                              : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Terms & Conditions
-                        </a>
-                      </div>
+                    {/* Resources Dropdown */}
+                    <div className="space-y-1">
+                      <button
+                        onClick={() => setMobileResourcesOpen(!mobileResourcesOpen)}
+                        className={`w-full flex items-center justify-between text-base font-medium py-3 px-4 rounded-lg transition-colors ${
+                          isResourcesPath 
+                            ? 'text-[#F5A623] bg-orange-50' 
+                            : 'text-gray-700 hover:text-[#F5A623] hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>Resources</span>
+                        {mobileResourcesOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </button>
+                      {mobileResourcesOpen && (
+                        <div className="pl-4 space-y-1 border-l-2 border-gray-200 ml-4">
+                          <a
+                            href="https://drive.google.com/file/d/1Br73YDJmiZmAFNc1ho7YK22EhzGjBcqW/view"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block text-sm transition-colors py-2 px-4 rounded-lg text-gray-600 hover:text-[#F5A623] hover:bg-gray-50"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            BMCA USA Constitution
+                          </a>
+                          <a
+                            href="/gallery"
+                            className={`block text-sm transition-colors py-2 px-4 rounded-lg ${
+                              pathname === '/gallery' 
+                                ? 'text-[#F5A623] bg-orange-50' 
+                                : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                            }`}
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Media Kit
+                          </a>
+                          <a
+                            href="/privacy-policy"
+                            className={`block text-sm transition-colors py-2 px-4 rounded-lg ${
+                              pathname === '/privacy-policy' 
+                                ? 'text-[#F5A623] bg-orange-50' 
+                                : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                            }`}
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Privacy Policy
+                          </a>
+                          <a
+                            href="/terms-conditions"
+                            className={`block text-sm transition-colors py-2 px-4 rounded-lg ${
+                              pathname === '/terms-conditions' 
+                                ? 'text-[#F5A623] bg-orange-50' 
+                                : 'text-gray-600 hover:text-[#F5A623] hover:bg-gray-50'
+                            }`}
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Terms & Conditions
+                          </a>
+                        </div>
+                      )}
                     </div>
 
                     <a
                       href="/contact"
-                      className={`text-lg font-medium transition-colors py-3 px-4 rounded-lg ${
+                      className={`text-base font-medium transition-colors py-3 px-4 rounded-lg ${
                         pathname === '/contact' 
                           ? 'text-[#F5A623] bg-orange-50' 
                           : 'text-gray-700 hover:text-[#F5A623] hover:bg-gray-50'
@@ -575,10 +615,7 @@ export function Header() {
                       Contact
                     </a>
 
-                    <div className="pt-6 space-y-3 border-t mt-4">
-                      {/* <Button variant="outline" className="w-full bg-transparent border-gray-300 hover:bg-gray-50" asChild>
-                        <a href="/login">Log in</a>
-                      </Button> */}
+                    <div className="pt-4 space-y-3 border-t mt-4">
                       <Button className="w-full bg-[#F5A623] hover:bg-[#F5A623]/90 text-white" asChild onClick={() => setMobileMenuOpen(false)}>
                         <a target="_blank" href="https://buy.stripe.com/bIY5nYbnAaWaePe3cc">Donate Now</a>
                       </Button>
