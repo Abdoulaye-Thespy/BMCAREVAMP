@@ -1,55 +1,46 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { BookOpen, Droplet, Palette, Heart, Users, Building2, Plus, ArrowRight } from "lucide-react"
+import { BookOpen, Droplet, Palette, Heart, Users, Building2, ArrowRight } from "lucide-react"
 
 export default function ProgramsSection() {
-  const router = useRouter()
-  const [activeCategory, setActiveCategory] = useState(null)
-
   const programs = [
     {
       id: "education",
       name: "Education",
       icon: BookOpen,
+      href: "/programs/education"
     },
     {
       id: "water",
       name: "Water",
       icon: Droplet,
+      href: "/programs/water"
     },
     {
       id: "culture-art",
       name: "Culture & Art",
       icon: Palette,
+      href: "/programs/culture-art"
     },
     {
       id: "health",
       name: "Health & Fitness",
       icon: Heart,
+      href: "/programs/health"
     },
     {
-      id: "kiteuh",
-      name: "Kiteuh",
+      id: "community-outreach",
+      name: "Community Outreach",
       icon: Users,
+      href: "/programs/community-outreach"
     },
     {
       id: "infrastructure",
       name: "Infrastructure",
       icon: Building2,
+      href: "/programs/infrastructure"
     },
   ]
-
-  const handleProgramClick = (programId) => {
-    if (programId <= 6) {
-      router.push(`/programs/${programId}`)
-    }
-  }
-
-  const handleDonate = () => {
-    router.push("/donate")
-  }
 
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
@@ -59,7 +50,7 @@ export default function ProgramsSection() {
           <p className="text-orange-500 font-semibold text-sm uppercase tracking-wide mb-2">Programs</p>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Explore our programs</h2>
           <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-            Bafut Fondom programs and the overall well-being and development of the community through sub programs
+            Bafut Manjong programs and the overall well-being and development of the community through sub programs
           </p>
         </div>
 
@@ -68,12 +59,10 @@ export default function ProgramsSection() {
           {programs.map((program) => {
             const Icon = program.icon
             return (
-              <div
+              <a
                 key={program.id}
-                onClick={() => handleProgramClick(program.id)}
-                className={`bg-orange-50 rounded-lg p-6 hover:shadow-lg transition-shadow ${
-                  program.isMore ? "cursor-default" : "cursor-pointer group"
-                }`}
+                href={program.href}
+                className="bg-orange-50 rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer group block"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -82,11 +71,9 @@ export default function ProgramsSection() {
                     </div>
                     <span className="text-gray-900 font-semibold text-lg">{program.name}</span>
                   </div>
-                  {!program.isMore && (
-                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-orange-500 transition-colors" />
-                  )}
+                  <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-orange-500 transition-colors" />
                 </div>
-              </div>
+              </a>
             )
           })}
         </div>
@@ -95,12 +82,12 @@ export default function ProgramsSection() {
         <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg p-8 text-center">
           <h3 className="text-3xl font-bold mb-4">Want to Make a Difference?</h3>
           <p className="text-orange-50 mb-6 text-lg">Support our programs and help us build stronger communities</p>
-          <button
-            onClick={() => router.push("/donate")}
-            className="bg-white text-orange-500 hover:bg-orange-50 px-8 py-3 rounded-lg font-bold transition-colors"
+          <a
+            href="/donate"
+            className="inline-block bg-white text-orange-500 hover:bg-orange-50 px-8 py-3 rounded-lg font-bold transition-colors"
           >
             Donate Now
-          </button>
+          </a>
         </div>
       </div>
     </section>
