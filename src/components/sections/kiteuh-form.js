@@ -30,16 +30,19 @@ const steps = [
 export default function KiteuhForm() {
   const [currentStep, setCurrentStep] = useState(1)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [useSameAddress, setUseSameAddress] = useState(false)
   const [errors, setErrors] = useState({})
 
   const [formData, setFormData] = useState({
     chapter: "",
     memberFirstName: "",
-    memberMiddleInitial: "",
+    memberMiddleName: "",
     memberLastName: "",
     memberDateOfBirth: "",
     memberAddress: "",
-    memberResidence: "",
+    memberCity: "",
+    memberState: "",
+    memberZipCode: "",
     memberEmail: "",
     memberPhone: "",
     beneficiaryFirstName: "",
@@ -48,7 +51,9 @@ export default function KiteuhForm() {
     beneficiaryEmail: "",
     beneficiaryPhone: "",
     beneficiaryAddress: "",
-    beneficiaryResidence: "",
+    beneficiaryCity: "",
+    beneficiaryState: "",
+    beneficiaryZipCode: "",
     memberId: "",
     memberName: "",
     memberDate: "",
@@ -105,6 +110,29 @@ export default function KiteuhForm() {
     }
   }
 
+  const handleUseSameAddressChange = (e) => {
+    const checked = e.target.checked
+    setUseSameAddress(checked)
+    
+    if (checked) {
+      setFormData((prev) => ({
+        ...prev,
+        beneficiaryAddress: prev.memberAddress,
+        beneficiaryCity: prev.memberCity,
+        beneficiaryState: prev.memberState,
+        beneficiaryZipCode: prev.memberZipCode,
+      }))
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        beneficiaryAddress: "",
+        beneficiaryCity: "",
+        beneficiaryState: "",
+        beneficiaryZipCode: "",
+      }))
+    }
+  }
+
   const handleNext = () => {
     if (currentStep === 4) {
       setShowConfirmModal(true)
@@ -130,11 +158,13 @@ export default function KiteuhForm() {
     setFormData({
       chapter: "",
       memberFirstName: "",
-      memberMiddleInitial: "",
+      memberMiddleName: "",
       memberLastName: "",
       memberDateOfBirth: "",
       memberAddress: "",
-      memberResidence: "",
+      memberCity: "",
+      memberState: "",
+      memberZipCode: "",
       memberEmail: "",
       memberPhone: "",
       beneficiaryFirstName: "",
@@ -143,13 +173,16 @@ export default function KiteuhForm() {
       beneficiaryEmail: "",
       beneficiaryPhone: "",
       beneficiaryAddress: "",
-      beneficiaryResidence: "",
+      beneficiaryCity: "",
+      beneficiaryState: "",
+      beneficiaryZipCode: "",
       memberId: "",
       memberName: "",
       memberDate: "",
       termsAccepted: false,
     })
     setErrors({})
+    setUseSameAddress(false)
   }
 
   return (
@@ -212,8 +245,8 @@ export default function KiteuhForm() {
           <div>
             <h2 className="text-2xl font-bold text-orange-600 mb-6">Member Information</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-              <div className="md:col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div>
                 <input
                   type="text"
                   name="memberFirstName"
@@ -226,7 +259,17 @@ export default function KiteuhForm() {
                   <p className="text-red-500 text-sm mt-1">{errors.memberFirstName}</p>
                 )}
               </div>
-              <div className="md:col-span-1">
+              <div>
+                <input
+                  type="text"
+                  name="memberMiddleName"
+                  placeholder="Middle Name or MI"
+                  value={formData.memberMiddleName}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
+              <div>
                 <input
                   type="text"
                   name="memberLastName"
@@ -238,18 +281,6 @@ export default function KiteuhForm() {
                 {errors.memberLastName && (
                   <p className="text-red-500 text-sm mt-1">{errors.memberLastName}</p>
                 )}
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  name="memberMiddleInitial"
-                  placeholder="MI"
-                  value={formData.memberMiddleInitial}
-                  onChange={handleInputChange}
-                  maxLength={1}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-center"
-                />
               </div>
             </div>
 
@@ -283,19 +314,37 @@ export default function KiteuhForm() {
               <input
                 type="text"
                 name="memberAddress"
-                placeholder="City of Residence"
+                placeholder="Street Address"
                 value={formData.memberAddress}
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-2"
               />
-              <input
-                type="text"
-                name="memberResidence"
-                placeholder="State of Residence"
-                value={formData.memberResidence}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                <input
+                  type="text"
+                  name="memberCity"
+                  placeholder="City"
+                  value={formData.memberCity}
+                  onChange={handleInputChange}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+                <input
+                  type="text"
+                  name="memberState"
+                  placeholder="State"
+                  value={formData.memberState}
+                  onChange={handleInputChange}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+                <input
+                  type="text"
+                  name="memberZipCode"
+                  placeholder="ZIP Code"
+                  value={formData.memberZipCode}
+                  onChange={handleInputChange}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
             </div>
 
             <div className="mb-4">
@@ -348,7 +397,7 @@ export default function KiteuhForm() {
               <input
                 type="text"
                 name="beneficiaryMiddleName"
-                placeholder="Middle Name"
+                placeholder="Middle Name or MI"
                 value={formData.beneficiaryMiddleName}
                 onChange={handleInputChange}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -393,23 +442,57 @@ export default function KiteuhForm() {
             </div>
 
             <div className="mb-4">
-              <label className="text-sm font-medium text-gray-700 block mb-2">Address (Optional)</label>
+              <div className="flex items-start gap-3 mb-3">
+                <input
+                  type="checkbox"
+                  checked={useSameAddress}
+                  onChange={handleUseSameAddressChange}
+                  className="mt-1"
+                />
+                <label className="text-sm text-gray-700">
+                  Use same address as member
+                </label>
+              </div>
+
+              <label className="text-sm font-medium text-gray-700 block mb-2">Address</label>
               <input
                 type="text"
                 name="beneficiaryAddress"
-                placeholder="City of residence"
+                placeholder="Street Address"
                 value={formData.beneficiaryAddress}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-2"
+                disabled={useSameAddress}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-2 disabled:bg-gray-100 disabled:text-gray-500"
               />
-              <input
-                type="text"
-                name="beneficiaryResidence"
-                placeholder="State of residence"
-                value={formData.beneficiaryResidence}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                <input
+                  type="text"
+                  name="beneficiaryCity"
+                  placeholder="City"
+                  value={formData.beneficiaryCity}
+                  onChange={handleInputChange}
+                  disabled={useSameAddress}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:bg-gray-100 disabled:text-gray-500"
+                />
+                <input
+                  type="text"
+                  name="beneficiaryState"
+                  placeholder="State"
+                  value={formData.beneficiaryState}
+                  onChange={handleInputChange}
+                  disabled={useSameAddress}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:bg-gray-100 disabled:text-gray-500"
+                />
+                <input
+                  type="text"
+                  name="beneficiaryZipCode"
+                  placeholder="ZIP Code"
+                  value={formData.beneficiaryZipCode}
+                  onChange={handleInputChange}
+                  disabled={useSameAddress}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:bg-gray-100 disabled:text-gray-500"
+                />
+              </div>
             </div>
           </div>
         )}
@@ -513,7 +596,7 @@ export default function KiteuhForm() {
                 )}
                 {formData.memberFirstName && (
                   <p>
-                    <strong>Member:</strong> {formData.memberFirstName} {formData.memberMiddleInitial && `${formData.memberMiddleInitial}. `}{formData.memberLastName}
+                    <strong>Member:</strong> {formData.memberFirstName} {formData.memberMiddleName && `${formData.memberMiddleName} `}{formData.memberLastName}
                   </p>
                 )}
                 {formData.memberDateOfBirth && (
