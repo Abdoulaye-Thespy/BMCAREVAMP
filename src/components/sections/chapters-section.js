@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Phone, Mail, MapPin, Users, X, ChevronDown, ChevronUp, Globe } from "lucide-react"
+import { Phone, Mail, MapPin, Users, X, ChevronDown, ChevronUp, Globe, User } from "lucide-react"
 
 const chaptersData = [
   {
@@ -210,6 +210,15 @@ export default function ChaptersSection() {
     setShowAllChapters(!showAllChapters)
   }
 
+  const handleImageError = (e) => {
+    const target = e.target
+    target.style.display = 'none'
+    const fallback = target.nextSibling
+    if (fallback) {
+      fallback.style.display = 'flex'
+    }
+  }
+
   return (
     <section className="py-16 px-4 md:px-8 bg-gradient-to-b from-white to-orange-50">
       <div className="max-w-7xl mx-auto">
@@ -249,14 +258,10 @@ export default function ChaptersSection() {
                   {chapter.description}
                 </p>
 
-                {/* President Preview */}
+                {/* President Preview - Name Only */}
                 <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
-                    <img 
-                      src={chapter.president.photo || "/president-placeholder.jpg"} 
-                      alt={chapter.president.name}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                    <User size={16} className="text-orange-600" />
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Chapter President</p>
@@ -349,12 +354,18 @@ export default function ChaptersSection() {
               <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
                 <h4 className="text-lg font-semibold text-gray-900 mb-3">Chapter President</h4>
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden border-2 border-white shadow-md">
-                    <img 
-                      src={selectedChapter.president.photo || "/president-placeholder.jpg"} 
-                      alt={selectedChapter.president.name}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center overflow-hidden border-2 border-white shadow-md">
+                    {selectedChapter.president.photo ? (
+                      <img 
+                        src={selectedChapter.president.photo} 
+                        alt={selectedChapter.president.name}
+                        className="w-full h-full object-cover"
+                        onError={handleImageError}
+                      />
+                    ) : null}
+                    <div className="w-full h-full hidden items-center justify-center bg-orange-100">
+                      <User size={24} className="text-orange-600" />
+                    </div>
                   </div>
                   <div>
                     <p className="text-xl font-bold text-gray-900">{selectedChapter.president.name}</p>
