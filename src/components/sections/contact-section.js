@@ -69,9 +69,9 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">Location</h3>
-                  <p className="text-gray-600 text-sm mb-2">Come say hello at our office.</p>
-                  <p className="text-gray-700 font-medium">Yaounde</p>
-                  <p className="text-gray-700 font-medium">Cameroon</p>
+                  <p className="text-gray-700 font-medium">BAFUT MANJONG CULTURAL ASSOCIATION</p>
+                  <p className="text-gray-700 font-medium">9115 BRIARCHIP ST</p>
+                  <p className="text-gray-700 font-medium">LAUREL, MD 20708</p>
                   <p className="text-orange-500 font-medium mt-2">United States</p>
                 </div>
               </div>
