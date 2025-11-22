@@ -33,7 +33,7 @@ export default function ProgramDetailPage() {
           "xmOI0nfEzE8", 
           "_lkzxpQkKCQ"
         ],
-        bmcaDescription: "BMCA (Bafut-Mankon Cultural Association) is dedicated to empowering communities through education, healthcare, water access, and infrastructure development. Our mission is to create sustainable change by addressing fundamental needs and fostering community growth in the Northwest region of Cameroon.",
+        bmcaDescription: "BMCA (Bafut-Manjong Cultural Association) is dedicated to empowering communities through education, healthcare, water access, and infrastructure development. Our mission is to create sustainable change by addressing fundamental needs and fostering community growth in the Northwest region of Cameroon.",
         programBenefits: "The Book Distribution Program directly supports students' academic success by providing essential learning materials, reducing financial burdens on families, and ensuring equal educational opportunities for all children in our community. This initiative has shown measurable improvements in student attendance and academic performance."
       },
       {
