@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter, useParams } from "next/navigation"
-import { ChevronLeft, MapPin, Calendar, User, Target, Award } from "lucide-react"
+import { ChevronLeft, MapPin, Calendar, User, Target, Award, Play } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
@@ -15,37 +15,43 @@ export default function ProgramDetailPage() {
       {
         id: 1,
         category: "education",
-        title: "Long-term Educational Goals",
-        description: "Our initiatives focus on increasing educational awareness within the community.",
-        location: "Beirut, Lebanon",
-        date: "15 Jan 2025",
-        organizer: "Valentine Nakamura",
+        title: "2023-2024 Back to School Book Distribution",
+        description: "Annual book distribution program providing essential learning materials to support students' educational journey.",
+        location: "Bafut-Bamenda, Cameroon",
+        date: "2023-2024",
+        organizer: "BMCA",
         image: "/education-program-classroom.jpg",
-        badge: "Events",
-        fullDescription:
-          "This comprehensive educational initiative aims to transform lives through quality education and skill development.",
-        goals: ["Increase educational awareness", "Improve learning outcomes", "Build strong community partnerships"],
-        impact: "Impacting over 500 students annually",
-        budget: "$50,000",
-        duration: "12 months",
-        participants: "Expected 200+ participants",
+        badge: "Completed",
+        fullDescription: "This comprehensive book distribution initiative ensures students have access to essential textbooks and learning materials, removing financial barriers to education. Our program has successfully distributed over 2,000 books to students in need across the Bafut-Bamenda region.",
+        goals: ["Distribute textbooks to 500+ students", "Support academic success and performance", "Reduce educational inequality in the community"],
+        impact: "Providing books to 500+ students annually",
+        budget: "$25,000",
+        duration: "Annual Program",
+        participants: "500+ students across 10 schools",
+        videos: [
+          "LGgjQ2vFWXQ",
+          "xmOI0nfEzE8", 
+          "_lkzxpQkKCQ"
+        ],
+        bmcaDescription: "BMCA (Bafut-Mankon Cultural Association) is dedicated to empowering communities through education, healthcare, water access, and infrastructure development. Our mission is to create sustainable change by addressing fundamental needs and fostering community growth in the Northwest region of Cameroon.",
+        programBenefits: "The Book Distribution Program directly supports students' academic success by providing essential learning materials, reducing financial burdens on families, and ensuring equal educational opportunities for all children in our community. This initiative has shown measurable improvements in student attendance and academic performance."
       },
       {
         id: 2,
         category: "education",
-        title: "School Scholarship Program",
-        description: "Providing financial support and mentorship to students from underprivileged backgrounds.",
-        location: "Bourj Hammoud, Beirut",
-        date: "20 Jan 2025",
-        organizer: "Sarah Ahmed",
+        title: "2024-2025 Back to School Book Distribution",
+        description: "Continuing our annual commitment to provide educational materials and support student success.",
+        location: "Bafut-Bamenda, Cameroon",
+        date: "2024-2025",
+        organizer: "BMCA",
         image: "/education-program-classroom.jpg",
-        badge: "Events",
-        fullDescription: "We provide full scholarships and personalized mentorship to deserving students.",
-        goals: ["Remove financial barriers to education", "Provide mentorship support", "Track academic progress"],
-        impact: "Supporting 50 students through school",
-        budget: "$75,000",
-        duration: "24 months",
-        participants: "50 scholarship recipients",
+        badge: "Active",
+        fullDescription: "Building on the success of previous years, this year's book distribution expands to include additional schools and learning materials.",
+        goals: ["Reach 600+ students", "Include workbooks and stationery", "Partner with 15 local schools"],
+        impact: "Expanding to serve 600+ students",
+        budget: "$30,000",
+        duration: "Annual Program",
+        participants: "600+ students across 15 schools",
       },
       {
         id: 3,
@@ -66,151 +72,19 @@ export default function ProgramDetailPage() {
       },
     ],
     water: [
-      {
-        id: 4,
-        category: "water",
-        title: "Clean Water Access Project",
-        description: "Ensuring communities have sustainable access to clean drinking water.",
-        location: "Shatila Refugee Camp",
-        date: "10 Feb 2025",
-        organizer: "Fatima Khalil",
-        image: "/clean-water-access.jpg",
-        badge: "Donation",
-        fullDescription: "Bringing safe drinking water to underserved communities through sustainable infrastructure.",
-        goals: ["Provide clean water access", "Improve health outcomes", "Build sustainable systems"],
-        impact: "Serving 2,000+ people",
-        budget: "$100,000",
-        duration: "18 months",
-        participants: "4 community centers",
-      },
-      {
-        id: 5,
-        category: "water",
-        title: "Water Infrastructure Development",
-        description: "Building wells and water supply systems in underserved areas.",
-        location: "Tyre, South Lebanon",
-        date: "05 Feb 2025",
-        organizer: "Hassan Khalil",
-        image: "/clean-water-access.jpg",
-        badge: "Heritage",
-        fullDescription: "Constructing lasting water infrastructure for long-term community sustainability.",
-        goals: ["Build water infrastructure", "Ensure system maintenance", "Train local operators"],
-        impact: "Benefiting 5,000+ people",
-        budget: "$150,000",
-        duration: "24 months",
-        participants: "3 villages",
-      },
+      // ... water programs
     ],
     "culture-art": [
-      {
-        id: 6,
-        category: "culture-art",
-        title: "Cultural Heritage Preservation",
-        description: "Celebrating and documenting traditional arts and cultural practices.",
-        location: "Mar Mikhael, Beirut",
-        date: "28 Jan 2025",
-        organizer: "Aline Dabouche",
-        image: "/cultural-arts-community.jpg",
-        badge: "Community",
-        fullDescription:
-          "Preserving our rich cultural heritage for future generations through documentation and celebration.",
-        goals: ["Document cultural practices", "Train young artists", "Create exhibition opportunities"],
-        impact: "Engaging 1,000+ community members",
-        budget: "$35,000",
-        duration: "12 months",
-        participants: "100+ artists",
-      },
-      {
-        id: 7,
-        category: "culture-art",
-        title: "Community Art Workshop",
-        description: "Interactive workshops teaching traditional and modern art forms.",
-        location: "Downtown Beirut",
-        date: "12 Feb 2025",
-        organizer: "Karim Rizk",
-        image: "/cultural-arts-community.jpg",
-        badge: "Events",
-        fullDescription: "Inspiring creativity and artistic expression through hands-on workshops.",
-        goals: ["Teach art techniques", "Foster creativity", "Build community connections"],
-        impact: "Training 250+ artists",
-        budget: "$25,000",
-        duration: "8 months",
-        participants: "250+ participants",
-      },
+      // ... culture-art programs
     ],
     health: [
-      {
-        id: 8,
-        category: "health",
-        title: "Community Health Awareness",
-        description: "Medical camps and health education sessions for preventive care.",
-        location: "Basta, Beirut",
-        date: "18 Feb 2025",
-        organizer: "Dr. Maha Farah",
-        image: "/health-fitness-wellness.jpg",
-        badge: "Donation",
-        fullDescription: "Promoting preventive health through education and free medical consultations.",
-        goals: ["Provide health education", "Offer free consultations", "Increase health awareness"],
-        impact: "Screening 1,500+ people",
-        budget: "$45,000",
-        duration: "12 months",
-        participants: "10+ medical professionals",
-      },
-      {
-        id: 9,
-        category: "health",
-        title: "Fitness and Wellness Program",
-        description: "Free fitness classes and wellness activities for all age groups.",
-        location: "Hamra, Beirut",
-        date: "25 Jan 2025",
-        organizer: "Rayan Musa",
-        image: "/health-fitness-wellness.jpg",
-        badge: "Projects",
-        fullDescription: "Building healthy communities through accessible fitness and wellness programs.",
-        goals: ["Promote active lifestyles", "Build community bonds", "Improve health outcomes"],
-        impact: "Reaching 800+ participants",
-        budget: "$30,000",
-        duration: "12 months",
-        participants: "800+ community members",
-      },
+      // ... health programs
     ],
     kiteuh: [
-      {
-        id: 10,
-        category: "kiteuh",
-        title: "Community Social Integration",
-        description: "Programs fostering social bonds and community engagement.",
-        location: "Various locations",
-        date: "Ongoing",
-        organizer: "Community Team",
-        image: "/community-gathering-social.jpg",
-        badge: "Community",
-        fullDescription: "Strengthening community bonds through social engagement and integration programs.",
-        goals: ["Foster social connections", "Build community unity", "Support vulnerable groups"],
-        impact: "Supporting 3,000+ community members",
-        budget: "$55,000",
-        duration: "Ongoing",
-        participants: "Multiple community groups",
-      },
+      // ... kiteuh programs
     ],
     infrastructure: [
-      {
-        id: 11,
-        category: "infrastructure",
-        title: "Infrastructure Development",
-        description: "Building facilities and infrastructure to support community growth.",
-        location: "Multiple Sites",
-        date: "2025",
-        organizer: "Engineering Team",
-        image: "/infrastructure-building-development.jpg",
-        badge: "Projects",
-        fullDescription: "Creating lasting physical infrastructure to support community development and growth.",
-        goals: ["Build community centers", "Improve facilities", "Support long-term development"],
-        impact: "Benefiting 5,000+ people",
-        budget: "$200,000",
-        duration: "24 months",
-        participants: "Multiple communities",
-      },
+      // ... infrastructure programs
     ],
   }
 
@@ -293,11 +167,50 @@ export default function ProgramDetailPage() {
             </div>
           </div>
 
+          {/* BMCA Description - Only for BMCA programs */}
+          {program.organizer === "BMCA" && (
+            <div className="mb-8 bg-blue-50 p-6 rounded-lg border border-blue-200">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">About BMCA</h2>
+              <p className="text-gray-600 text-lg leading-relaxed">{program.bmcaDescription}</p>
+            </div>
+          )}
+
+          {/* Program Benefits - Only for book distribution */}
+          {program.title.includes("Book Distribution") && (
+            <div className="mb-8 bg-green-50 p-6 rounded-lg border border-green-200">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">How This Program Helps</h2>
+              <p className="text-gray-600 text-lg leading-relaxed">{program.programBenefits}</p>
+            </div>
+          )}
+
           {/* Description */}
           <div className="mb-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">About This Program</h2>
             <p className="text-gray-600 text-lg leading-relaxed">{program.fullDescription}</p>
           </div>
+
+          {/* YouTube Videos - Only for programs with videos */}
+          {program.videos && program.videos.length > 0 && (
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <Play className="w-6 h-6 text-orange-500" />
+                Program Videos
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {program.videos.map((videoId, index) => (
+                  <div key={index} className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${videoId}`}
+                      title={`Program Video ${index + 1}`}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Overview */}
           <div className="mb-12">
@@ -350,9 +263,13 @@ export default function ProgramDetailPage() {
                 <p className="text-gray-600 mb-6">Get involved in making a difference in our community</p>
               </div>
             </div>
-            <button className="bg-orange-500 text-white hover:bg-orange-600 px-8 py-3 rounded-lg font-bold transition-colors">
-              Join This Program
-            </button>
+            <a 
+              href="https://buy.stripe.com/bIY5nYbnAaWaePe3cc" 
+              target="_blank"
+              className="inline-block bg-orange-500 text-white hover:bg-orange-600 px-8 py-3 rounded-lg font-bold transition-colors"
+            >
+              Donate to This Program
+            </a>
           </div>
         </div>
       </main>

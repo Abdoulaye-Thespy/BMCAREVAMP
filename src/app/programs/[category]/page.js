@@ -21,239 +21,239 @@ export default function CategoryPage() {
             {
                 id: 1,
                 category: "education",
-                title: "Bamenda School Renovation",
-                description: "Renovating and equipping classrooms to provide better learning environment for students.",
-                location: "Bamenda, Cameroon",
-                date: "In Progress",
+                title: "2023-2024 Back to School Book Distribution",
+                description: "2023-2024: Distributed textbooks and educational materials to students across multiple schools in preparation for the academic year.",
+                location: "Bafut-Bamenda, Cameroon",
+                date: "2023-2024",
                 organizer: "BMCA",
                 image: "/education-program-classroom.jpg",
-                status: "active",
+                status: "completed",
             },
             {
                 id: 2,
                 category: "education",
-                title: "Bafut Scholarship Program",
-                description: "Providing financial support and educational materials to underprivileged students.",
-                location: "Bafut, Cameroon",
-                date: "Ongoing",
+                title: "2024-2025 Back to School Book Distribution",
+                description: "2024-2025: Annual book distribution program providing essential learning materials to support students' educational journey.",
+                location: "Bafut-Bamenda, Cameroon",
+                date: "2024-2025",
                 organizer: "BMCA",
                 image: "/education-program-classroom.jpg",
-                status: "active",
+                status: "completed",
             },
             {
-                id: 3,
+                id: 22,
                 category: "education",
-                title: "Digital Literacy Initiative",
-                description: "Establishing computer labs and technology training for youth in rural communities.",
-                location: "Bamenda, Cameroon",
-                date: "2025",
+                title: "2025-2026 Back to School Book Distribution",
+                description: "2025-2026: Annual book distribution initiative to equip students with necessary textbooks and learning resources for the new school year.",
+                location: "Bafut-Bamenda, Cameroon",
+                date: "2025-2026",
                 organizer: "BMCA",
-                image: "/education-program-classroom.jpg",
-                status: "planning",
-            },
-        ],
-        water: [
-            {
-                id: 4,
-                category: "water",
-                title: "Mforya Water Project",
-                description:
-                    "Providing sustainable clean water access to the Mforya community with modern infrastructure and maintenance systems.",
-                location: "Mforya, Cameroon",
-                date: "Completed",
-                organizer: "BMCA",
-                image: "/bmcawater2.jpg",
+                image: "/education1.jpg",
                 status: "completed",
             },
-            {
-                id: 5,
-                category: "water",
-                title: "Njimbee Water Project",
-                description:
-                    "Installing water supply systems and wells to ensure reliable access to clean water for local residents.",
-                location: "Njimbee, Cameroon",
-                date: "Completed",
-                organizer: "BMCA",
-                image: "/bcmcawater3.jpg",
-                status: "completed",
-            },
-            {
-                id: 6,
-                category: "water",
-                title: "Njibujang Water Project",
-                description:
-                    "Building comprehensive water infrastructure to serve the community's daily needs and ensure long-term sustainability.",
-                location: "Njibujang, Cameroon",
-                date: "Completed",
-                organizer: "BMCA",
-                image: "/clean-water-access.jpg",
-                status: "completed",
-            },
-            {
-                id: 7,
-                category: "water",
-                title: "Nsem Water Project",
-                description:
-                    "Establishing water sources and distribution networks for improved health and wellbeing in the Nsem area.",
-                location: "Nsem, Cameroon",
-                date: "Completed",
-                organizer: "BMCA",
-                image: "/clean-water-access.jpg",
-                status: "completed",
-            },
-            {
-                id: 8,
-                category: "water",
-                title: "Mbebali Water Project",
-                description:
-                    "Under evaluation to support water infrastructure development in the Mbebali region with BMCA's expertise.",
-                location: "Mbebali, Cameroon",
-                date: "In Discussion",
-                organizer: "BMCA",
-                image: "/clean-water-access.jpg",
-                status: "pending",
-            },
-            {
-                id: 9,
-                category: "water",
-                title: "Bawum Water Project",
-                description: "Proposed initiative to bring clean water solutions to the Bawum community pending board decision.",
-                location: "Bawum, Cameroon",
-                date: "In Discussion",
-                organizer: "BMCA",
-                image: "/clean-water-access.jpg",
-                status: "pending",
-            },
-        ],
-        health: [
-            {
-                id: 10,
-                category: "health",
-                title: "Bamenda Health Center Support",
-                description: "Providing medical equipment and supplies to local health centers in Bamenda.",
-                location: "Bamenda, Cameroon",
-                date: "Active",
-                organizer: "BMCA",
-                image: "/health-fitness-wellness.jpg",
-                status: "active",
-            },
-            {
-                id: 11,
-                category: "health",
-                title: "Community Health Outreach",
-                description: "Mobile medical clinics and health education programs in rural communities.",
-                location: "Bafut, Cameroon",
-                date: "Monthly",
-                organizer: "BMCA",
-                image: "/health-fitness-wellness.jpg",
-                status: "active",
-            },
-            {
-                id: 12,
-                category: "health",
-                title: "Maternal Health Program",
-                description: "Improving maternal and child healthcare services in remote areas.",
-                location: "Bamenda, Cameroon",
-                date: "2025",
-                organizer: "BMCA",
-                image: "/health-fitness-wellness.jpg",
-                status: "planning",
-            },
-        ],
-        "culture-art": [
-            {
-                id: 13,
-                category: "culture-art",
-                title: "Cultural Heritage Preservation",
-                description: "Documenting and preserving traditional customs and cultural practices.",
-                location: "Bafut, Cameroon",
-                date: "Ongoing",
-                organizer: "BMCA",
-                image: "/community-gathering-social.jpg",
-                status: "active",
-            },
-            {
-                id: 14,
-                category: "culture-art",
-                title: "Traditional Arts Workshop",
-                description: "Supporting local artisans and traditional craft-making techniques.",
-                location: "Bamenda, Cameroon",
-                date: "Quarterly",
-                organizer: "BMCA",
-                image: "/community-gathering-social.jpg",
-                status: "active",
-            },
-        ],
-        infrastructure: [
-            {
-                id: 15,
-                category: "infrastructure",
-                title: "Community Center Construction",
-                description: "Building multi-purpose community centers for events and gatherings.",
-                location: "Bamenda, Cameroon",
-                date: "2025",
-                organizer: "BMCA",
-                image: "/infrastructure-building-development.jpg",
-                status: "planning",
-            },
-            {
-                id: 16,
-                category: "infrastructure",
-                title: "Road Improvement Initiative",
-                description: "Improving access roads to enhance connectivity between communities.",
-                location: "Bafut, Cameroon",
-                date: "In Discussion",
-                organizer: "BMCA",
-                image: "/infrastructure-building-development.jpg",
-                status: "pending",
-            },
-        ],
-        "community-outreach": [
-            {
-                id: 17,
-                category: "community-outreach",
-                title: "Community Empowerment Workshops",
-                description: "Organizing skill-building and leadership development workshops for community members.",
-                location: "Bamenda, Cameroon",
-                date: "Monthly",
-                organizer: "BMCA",
-                image: "/community-gathering-social.jpg",
-                status: "active",
-            },
-            {
-                id: 18,
-                category: "community-outreach",
-                title: "Youth Mentorship Program",
-                description: "Pairing youth with mentors to provide guidance and support for personal and professional growth.",
-                location: "Bafut, Cameroon",
-                date: "Ongoing",
-                organizer: "BMCA",
-                image: "/community-gathering-social.jpg",
-                status: "active",
-            },
-            {
-                id: 19,
-                category: "community-outreach",
-                title: "Elderly Support Initiative",
-                description: "Providing essential supplies and social support for elderly community members.",
-                location: "Bamenda, Cameroon",
-                date: "Quarterly",
-                organizer: "BMCA",
-                image: "/community-gathering-social.jpg",
-                status: "active",
-            },
-            {
-                id: 20,
-                category: "community-outreach",
-                title: "Community Food Distribution",
-                description: "Organizing food drives and distribution programs for families in need.",
-                location: "Various Locations",
-                date: "Monthly",
-                organizer: "BMCA",
-                image: "/community-gathering-social.jpg",
-                status: "active",
-            }
-        ]
+            ],
+            water: [
+                {
+                    id: 4,
+                    category: "water",
+                    title: "Mforya Water Project",
+                    description:
+                        "Providing sustainable clean water access to the Mforya community with modern infrastructure and maintenance systems.",
+                    location: "Mforya, Cameroon",
+                    date: "Completed",
+                    organizer: "BMCA",
+                    image: "/bmcawater2.jpg",
+                    status: "completed",
+                },
+                {
+                    id: 5,
+                    category: "water",
+                    title: "Njimbee Water Project",
+                    description:
+                        "Installing water supply systems and wells to ensure reliable access to clean water for local residents.",
+                    location: "Njimbee, Cameroon",
+                    date: "Completed",
+                    organizer: "BMCA",
+                    image: "/bcmcawater3.jpg",
+                    status: "completed",
+                },
+                {
+                    id: 6,
+                    category: "water",
+                    title: "Njibujang Water Project",
+                    description:
+                        "Building comprehensive water infrastructure to serve the community's daily needs and ensure long-term sustainability.",
+                    location: "Njibujang, Cameroon",
+                    date: "Completed",
+                    organizer: "BMCA",
+                    image: "/clean-water-access.jpg",
+                    status: "completed",
+                },
+                {
+                    id: 7,
+                    category: "water",
+                    title: "Nsem Water Project",
+                    description:
+                        "Establishing water sources and distribution networks for improved health and wellbeing in the Nsem area.",
+                    location: "Nsem, Cameroon",
+                    date: "Completed",
+                    organizer: "BMCA",
+                    image: "/clean-water-access.jpg",
+                    status: "completed",
+                },
+                {
+                    id: 8,
+                    category: "water",
+                    title: "Mbebali Water Project",
+                    description:
+                        "Under evaluation to support water infrastructure development in the Mbebali region with BMCA's expertise.",
+                    location: "Mbebali, Cameroon",
+                    date: "In Discussion",
+                    organizer: "BMCA",
+                    image: "/clean-water-access.jpg",
+                    status: "pending",
+                },
+                {
+                    id: 9,
+                    category: "water",
+                    title: "Bawum Water Project",
+                    description: "Proposed initiative to bring clean water solutions to the Bawum community pending board decision.",
+                    location: "Bawum, Cameroon",
+                    date: "In Discussion",
+                    organizer: "BMCA",
+                    image: "/clean-water-access.jpg",
+                    status: "pending",
+                },
+            ],
+            health: [
+                {
+                    id: 10,
+                    category: "health",
+                    title: "Bamenda Health Center Support",
+                    description: "Providing medical equipment and supplies to local health centers in Bamenda.",
+                    location: "Bamenda, Cameroon",
+                    date: "Active",
+                    organizer: "BMCA",
+                    image: "/health-fitness-wellness.jpg",
+                    status: "active",
+                },
+                {
+                    id: 11,
+                    category: "health",
+                    title: "Community Health Outreach",
+                    description: "Mobile medical clinics and health education programs in rural communities.",
+                    location: "Bafut, Cameroon",
+                    date: "Monthly",
+                    organizer: "BMCA",
+                    image: "/health-fitness-wellness.jpg",
+                    status: "active",
+                },
+                {
+                    id: 12,
+                    category: "health",
+                    title: "Maternal Health Program",
+                    description: "Improving maternal and child healthcare services in remote areas.",
+                    location: "Bamenda, Cameroon",
+                    date: "2025",
+                    organizer: "BMCA",
+                    image: "/health-fitness-wellness.jpg",
+                    status: "planning",
+                },
+            ],
+            "culture-art": [
+                {
+                    id: 13,
+                    category: "culture-art",
+                    title: "Cultural Heritage Preservation",
+                    description: "Documenting and preserving traditional customs and cultural practices.",
+                    location: "Bafut, Cameroon",
+                    date: "Ongoing",
+                    organizer: "BMCA",
+                    image: "/community-gathering-social.jpg",
+                    status: "active",
+                },
+                {
+                    id: 14,
+                    category: "culture-art",
+                    title: "Traditional Arts Workshop",
+                    description: "Supporting local artisans and traditional craft-making techniques.",
+                    location: "Bamenda, Cameroon",
+                    date: "Quarterly",
+                    organizer: "BMCA",
+                    image: "/community-gathering-social.jpg",
+                    status: "active",
+                },
+            ],
+            infrastructure: [
+                {
+                    id: 15,
+                    category: "infrastructure",
+                    title: "Community Center Construction",
+                    description: "Building multi-purpose community centers for events and gatherings.",
+                    location: "Bamenda, Cameroon",
+                    date: "2025",
+                    organizer: "BMCA",
+                    image: "/infrastructure-building-development.jpg",
+                    status: "planning",
+                },
+                {
+                    id: 16,
+                    category: "infrastructure",
+                    title: "Road Improvement Initiative",
+                    description: "Improving access roads to enhance connectivity between communities.",
+                    location: "Bafut, Cameroon",
+                    date: "In Discussion",
+                    organizer: "BMCA",
+                    image: "/infrastructure-building-development.jpg",
+                    status: "pending",
+                },
+            ],
+            "community-outreach": [
+                {
+                    id: 17,
+                    category: "community-outreach",
+                    title: "Community Empowerment Workshops",
+                    description: "Organizing skill-building and leadership development workshops for community members.",
+                    location: "Bamenda, Cameroon",
+                    date: "Monthly",
+                    organizer: "BMCA",
+                    image: "/community-gathering-social.jpg",
+                    status: "active",
+                },
+                {
+                    id: 18,
+                    category: "community-outreach",
+                    title: "Youth Mentorship Program",
+                    description: "Pairing youth with mentors to provide guidance and support for personal and professional growth.",
+                    location: "Bafut, Cameroon",
+                    date: "Ongoing",
+                    organizer: "BMCA",
+                    image: "/community-gathering-social.jpg",
+                    status: "active",
+                },
+                {
+                    id: 19,
+                    category: "community-outreach",
+                    title: "Elderly Support Initiative",
+                    description: "Providing essential supplies and social support for elderly community members.",
+                    location: "Bamenda, Cameroon",
+                    date: "Quarterly",
+                    organizer: "BMCA",
+                    image: "/community-gathering-social.jpg",
+                    status: "active",
+                },
+                {
+                    id: 20,
+                    category: "community-outreach",
+                    title: "Community Food Distribution",
+                    description: "Organizing food drives and distribution programs for families in need.",
+                    location: "Various Locations",
+                    date: "Monthly",
+                    organizer: "BMCA",
+                    image: "/community-gathering-social.jpg",
+                    status: "active",
+                }
+            ]
     }
 
     const allPrograms = Object.values(programsByCategory).flat()
@@ -323,11 +323,10 @@ export default function CategoryPage() {
                                         <button
                                             key={category.id}
                                             onClick={() => handleCategoryChange(category.id)}
-                                            className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
-                                                categoryId === category.id
-                                                    ? "bg-orange-500 text-white shadow-lg transform scale-105"
-                                                    : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 hover:border-gray-300"
-                                            }`}
+                                            className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${categoryId === category.id
+                                                ? "bg-orange-500 text-white shadow-lg transform scale-105"
+                                                : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 hover:border-gray-300"
+                                                }`}
                                         >
                                             {category.name}
                                         </button>
@@ -364,7 +363,7 @@ export default function CategoryPage() {
                                 <Filter className="w-4 h-4" />
                                 Filter & Search
                             </button>
-                            
+
                             {/* Search Indicator */}
                             {searchTerm && (
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -402,11 +401,10 @@ export default function CategoryPage() {
                                         <button
                                             key={category.id}
                                             onClick={() => handleCategoryChange(category.id)}
-                                            className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-colors ${
-                                                categoryId === category.id
-                                                    ? "bg-orange-500 text-white"
-                                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                            }`}
+                                            className={`w-full text-left px-4 py-3 rounded-lg font-semibold transition-colors ${categoryId === category.id
+                                                ? "bg-orange-500 text-white"
+                                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                                }`}
                                         >
                                             {category.name}
                                         </button>
