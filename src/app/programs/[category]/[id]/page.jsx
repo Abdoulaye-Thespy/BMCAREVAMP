@@ -33,43 +33,57 @@ export default function ProgramDetailPage() {
           "xmOI0nfEzE8", 
           "_lkzxpQkKCQ"
         ],
-        bmcaDescription: "BMCA (Bafut-Manjong Cultural Association) is dedicated to empowering communities through education, healthcare, water access, and infrastructure development. Our mission is to create sustainable change by addressing fundamental needs and fostering community growth in the Northwest region of Cameroon.",
+        bmcaDescription: "BMCA (Bafut Manjong Cultural Association) is dedicated to empowering communities through education, healthcare, water access, and infrastructure development. Our mission is to create sustainable change by addressing fundamental needs and fostering community growth in the Northwest region of Cameroon.",
         programBenefits: "The Book Distribution Program directly supports students' academic success by providing essential learning materials, reducing financial burdens on families, and ensuring equal educational opportunities for all children in our community. This initiative has shown measurable improvements in student attendance and academic performance."
       },
       {
         id: 2,
         category: "education",
         title: "2024-2025 Back to School Book Distribution",
-        description: "Continuing our annual commitment to provide educational materials and support student success.",
+        description: "Expanding our annual book distribution to reach more students and include additional educational resources.",
         location: "Bafut-Bamenda, Cameroon",
         date: "2024-2025",
         organizer: "BMCA",
         image: "/education-program-classroom.jpg",
         badge: "Active",
-        fullDescription: "Building on the success of previous years, this year's book distribution expands to include additional schools and learning materials.",
-        goals: ["Reach 600+ students", "Include workbooks and stationery", "Partner with 15 local schools"],
-        impact: "Expanding to serve 600+ students",
+        fullDescription: "Building on the tremendous success of our previous book distribution programs, this year's initiative expands to include 15 schools and incorporates workbooks, stationery, and digital learning tools to provide comprehensive educational support.",
+        goals: ["Distribute educational materials to 600+ students", "Include workbooks and digital learning resources", "Partner with 15 local schools for wider reach"],
+        impact: "Expanding educational access to 600+ students across 15 schools",
         budget: "$30,000",
         duration: "Annual Program",
         participants: "600+ students across 15 schools",
+        videos: [
+          "VIDEO_ID_2024_1",
+          "VIDEO_ID_2024_2",
+          "VIDEO_ID_2024_3"
+        ],
+        bmcaDescription: "BMCA (Bafut Manjong Cultural Association) is dedicated to empowering communities through education, healthcare, water access, and infrastructure development. Our mission is to create sustainable change by addressing fundamental needs and fostering community growth in the Northwest region of Cameroon.",
+        programBenefits: "This expanded book distribution program continues to break down financial barriers to education while introducing new learning resources that enhance student engagement and academic performance across the Bafut-Bamenda region."
       },
       {
         id: 3,
         category: "education",
-        title: "Vocational Training Initiative",
-        description: "Skills development workshops for youth to prepare them for employment.",
-        location: "Ashrafieh, Beirut",
-        date: "22 Jan 2025",
-        organizer: "Mohammed Hassan",
+        title: "2025-2026 Back to School Book Distribution",
+        description: "Continuing our commitment to educational equity through comprehensive book and resource distribution.",
+        location: "Bafut-Bamenda, Cameroon",
+        date: "2025-2026",
+        organizer: "BMCA",
         image: "/education-program-classroom.jpg",
-        badge: "Projects",
-        fullDescription: "Equipping youth with practical skills for sustainable employment opportunities.",
-        goals: ["Provide practical job skills", "Increase employment rates", "Build industry partnerships"],
-        impact: "Training 300+ youth annually",
-        budget: "$40,000",
-        duration: "6 months per cohort",
-        participants: "300+ youth trainees",
-      },
+        badge: "Planning",
+        fullDescription: "The third phase of our successful book distribution program aims to reach even more students while incorporating feedback from previous years to enhance impact. This initiative will focus on sustainability and long-term educational support.",
+        goals: ["Reach 700+ students with book distributions", "Establish sustainable resource sharing systems", "Include STEM learning materials for advanced students"],
+        impact: "Supporting 700+ students with comprehensive educational resources",
+        budget: "$35,000",
+        duration: "Annual Program",
+        participants: "700+ students across 20 schools",
+        videos: [
+          "VIDEO_ID_2025_1",
+          "VIDEO_ID_2025_2",
+          "VIDEO_ID_2025_3"
+        ],
+        bmcaDescription: "BMCA (Bafut Manjong Cultural Association) is dedicated to empowering communities through education, healthcare, water access, and infrastructure development. Our mission is to create sustainable change by addressing fundamental needs and fostering community growth in the Northwest region of Cameroon.",
+        programBenefits: "This ongoing book distribution program creates a sustainable cycle of educational support, ensuring that each new generation of students has access to the learning materials they need to succeed academically and build brighter futures."
+      }
     ],
     water: [
       // ... water programs
@@ -142,6 +156,10 @@ export default function ProgramDetailPage() {
                         ? "bg-green-100 text-green-600"
                         : program.badge === "Heritage"
                           ? "bg-purple-100 text-purple-600"
+                          : program.badge === "Active"
+                          ? "bg-green-100 text-green-600"
+                          : program.badge === "Planning"
+                          ? "bg-yellow-100 text-yellow-600"
                           : "bg-orange-100 text-orange-600"
                 }`}
               >
@@ -175,8 +193,8 @@ export default function ProgramDetailPage() {
             </div>
           )}
 
-          {/* Program Benefits - Only for book distribution */}
-          {program.title.includes("Book Distribution") && (
+          {/* Program Benefits - Only for education programs */}
+          {program.category === "education" && (
             <div className="mb-8 bg-green-50 p-6 rounded-lg border border-green-200">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">How This Program Helps</h2>
               <p className="text-gray-600 text-lg leading-relaxed">{program.programBenefits}</p>
@@ -264,8 +282,9 @@ export default function ProgramDetailPage() {
               </div>
             </div>
             <a 
-              href="https://buy.stripe.com/bIY5nYbnAaWaePe3cc" 
+              href="/donate" 
               target="_blank"
+              rel="noopener noreferrer"
               className="inline-block bg-orange-500 text-white hover:bg-orange-600 px-8 py-3 rounded-lg font-bold transition-colors"
             >
               Donate to This Program

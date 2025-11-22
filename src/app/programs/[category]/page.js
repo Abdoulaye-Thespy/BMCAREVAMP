@@ -26,7 +26,7 @@ export default function CategoryPage() {
                 location: "Bafut-Bamenda, Cameroon",
                 date: "2023-2024",
                 organizer: "BMCA",
-                image: "/education-program-classroom.jpg",
+                image: "/eduBMCA2023.jpg",
                 status: "completed",
             },
             {
@@ -37,11 +37,11 @@ export default function CategoryPage() {
                 location: "Bafut-Bamenda, Cameroon",
                 date: "2024-2025",
                 organizer: "BMCA",
-                image: "/education-program-classroom.jpg",
+                image: "/eduBMCA2024.jpg",
                 status: "completed",
             },
             {
-                id: 22,
+                id: 3,
                 category: "education",
                 title: "2025-2026 Back to School Book Distribution",
                 description: "2025-2026: Annual book distribution initiative to equip students with necessary textbooks and learning resources for the new school year.",
