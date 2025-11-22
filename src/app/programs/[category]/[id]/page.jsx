@@ -75,9 +75,9 @@ export default function ProgramDetailPage() {
         duration: "Annual Program",
         participants: "700+ students across 20 schools",
         videos: [
-          "VIDEO_ID_2025_1",
-          "VIDEO_ID_2025_2",
-          "VIDEO_ID_2025_3"
+          "B1ee1OAiB0U",
+          "aJfOB-O459g",
+          "Zm9l3GqNam0"
         ],
         bmcaDescription: "BMCA (Bafut Manjong Cultural Association) is dedicated to empowering communities through education, healthcare, water access, and infrastructure development. Our mission is to create sustainable change by addressing fundamental needs and fostering community growth in the Northwest region of Cameroon.",
         programBenefits: "This ongoing book distribution program creates a sustainable cycle of educational support, ensuring that each new generation of students has access to the learning materials they need to succeed academically and build brighter futures."
