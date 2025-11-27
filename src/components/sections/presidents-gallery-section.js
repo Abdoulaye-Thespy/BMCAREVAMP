@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { School, Droplets, TrendingUp } from "lucide-react"
+import { School, Droplets, TrendingUp, User } from "lucide-react"
 
 export function PresidentsGallerySection() {
   const [isVisible, setIsVisible] = useState(false)
@@ -28,29 +28,110 @@ export function PresidentsGallerySection() {
 
   const presidents = [
     {
-      id: 4,
-      name: "Emmanuel Neba",
-      year: "2024 - Present",
+      id: 1,
+      name: "Ntoonfor E. NIBA",
+      year: "2025 - Present",
       role: "Current President",
       image: "/VP-BMCA.png",
       achievement: "Leading BMCA into a new era with focus on infrastructure development and digital innovation in community services.",
       accomplishments: [
-        "Launched infrastructure development projects",
-        "Introduced digital literacy programs",
-        "Expanded kiteuh mutual assurance program"
+        "Continuing infrastructure development projects",
+        "Expanding digital literacy programs",
+        "Enhancing community healthcare initiatives"
+      ]
+    },
+    {
+      id: 2,
+      name: "Dr. Regina Tamon",
+      year: "2021 - 2025",
+      role: "President",
+      image: "/PR-BMCA.png",
+      achievement: "Successfully implemented Health, Education and Water projects, and grew the organization by adding United Chapter and Mid West Chapter.",
+      accomplishments: [
+        "Implemented comprehensive health projects",
+        "Expanded educational support programs",
+        "Completed multiple water projects",
+        "Added United Chapter and Mid West Chapter"
       ]
     },
     {
       id: 3,
-      name: "Mrs. Regina Tamun",
-      year: "2019 - 2024",
+      name: "Atangcho Nebaneh Nixon",
+      year: "2017 - 2021",
       role: "President",
-      image: "/PR-BMCA.png",
-      achievement: "Led the cultural preservation initiative and strengthened BMCA's commitment to women empowerment and education.",
+      image: null,
+      achievement: "Delivered COVID-19 relief packages to Bafut and grew organization by admitting Delaware Chapter.",
       accomplishments: [
-        "Launched cultural heritage preservation project",
-        "Established women's economic empowerment programs",
-        "Increased scholarship awards by 200%"
+        "Delivered COVID-19 relief packages to Bafut",
+        "Admitted Delaware Chapter to organization",
+        "Maintained operations during global pandemic"
+      ]
+    },
+    {
+      id: 4,
+      name: "Ms. Jullietta Nchang Neba",
+      year: "2011 - 2017",
+      role: "President",
+      image: null,
+      achievement: "Secured greater donations to support Bafut community development projects.",
+      accomplishments: [
+        "Secured significant donations for Bafut",
+        "Expanded donor base and funding sources",
+        "Strengthened community partnerships"
+      ]
+    },
+    {
+      id: 5,
+      name: "Denis Mufersi",
+      year: "2009 - 2011",
+      role: "President",
+      image: null,
+      achievement: "Provided steady leadership during transitional period for the organization.",
+      accomplishments: [
+        "Maintained organizational stability",
+        "Supported ongoing community projects",
+        "Strengthened internal operations"
+      ]
+    },
+    {
+      id: 6,
+      name: "Dr. John Mbonifor",
+      year: "2005 - 2009",
+      role: "President",
+      image: null,
+      achievement: "Successfully delivered Medical Supplies and Computers, and organized the visit of Fon Abumbi II to USA.",
+      accomplishments: [
+        "Delivered medical supplies to community",
+        "Provided computers for educational purposes",
+        "Organized Fon Abumbi II's visit to USA",
+        "Enhanced cultural exchange programs"
+      ]
+    },
+    {
+      id: 7,
+      name: "Tangie Neba Ngwa Suh",
+      year: "2001 - 2005",
+      role: "President",
+      image: null,
+      achievement: "Laid foundation for growth of the organization and established key operational frameworks.",
+      accomplishments: [
+        "Established organizational foundation",
+        "Created growth strategies",
+        "Built core operational frameworks"
+      ]
+    },
+    {
+      id: 8,
+      name: "Founding Leadership",
+      year: "2001",
+      role: "Founding Members",
+      image: null,
+      achievement: "Founded BMCA DC and organized First Convention chaired by Abong Emmanuel, with Kilian Songwe as Chair and Manka'a Fokwa as Vice Chair.",
+      accomplishments: [
+        "Founded BMCA DC organization",
+        "Organized First Convention",
+        "Established organizational vision and mission",
+        "Built initial membership base"
       ]
     }
   ]
@@ -96,15 +177,34 @@ export function PresidentsGallerySection() {
               }`}
               style={{ transitionDelay: `${index * 150}ms` }}
             >
-              <CardContent className="p-0">
-                <div className="grid md:grid-cols-2 gap-0">
-                  {/* Image Section */}
-                  <div className="relative h-64 md:h-auto overflow-hidden bg-gray-200">
-                    <img
-                      src={president.image || "/placeholder.svg"}
-                      alt={president.name}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                    />
+              <CardContent className="p-0 h-full">
+                <div className="grid md:grid-cols-2 gap-0 h-full">
+                  {/* Image Section - Left Column - Fixed Height */}
+                  <div className="relative h-80 md:h-full overflow-hidden bg-gray-200">
+                    {president.image ? (
+                      <img
+                        src={president.image}
+                        alt={president.name}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                        onError={(e) => {
+                          e.target.style.display = 'none'
+                          e.target.nextSibling.style.display = 'flex'
+                        }}
+                      />
+                    ) : null}
+                    <div 
+                      className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-orange-50 ${
+                        president.image ? 'hidden' : 'flex'
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center text-white text-lg font-bold mx-auto mb-3">
+                          {president.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        </div>
+                        <User className="w-10 h-10 text-orange-400 mx-auto mb-2" />
+                        <p className="text-orange-600 text-xs font-medium">No Image Available</p>
+                      </div>
+                    </div>
                     <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/20 to-transparent p-4">
                       <span className="inline-block bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
                         {president.year}
@@ -112,9 +212,9 @@ export function PresidentsGallerySection() {
                     </div>
                   </div>
 
-                  {/* Content Section */}
-                  <div className="p-6 flex flex-col justify-between">
-                    <div>
+                  {/* Content Section - Right Column - Scrollable if needed */}
+                  <div className="p-6 flex flex-col h-full">
+                    <div className="flex-1 overflow-y-auto">
                       <h3 className="text-2xl font-bold text-gray-900 mb-1">{president.name}</h3>
                       <p className="text-orange-600 font-semibold text-sm mb-4">{president.role}</p>
                       

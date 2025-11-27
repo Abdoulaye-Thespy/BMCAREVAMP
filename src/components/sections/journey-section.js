@@ -26,34 +26,44 @@ export function JourneySection() {
 
   const milestones = [
     {
-      year: "2010",
-      title: "Foundation Established",
-      description: "BMCA USA was founded with a vision to support Bafut communities through sustainable development programs."
+      year: "2001",
+      title: "Organization Founded",
+      description: "BMCA DC established with First Convention organized, marking the beginning of our community development journey."
     },
     {
-      year: "2012",
-      title: "First Water Project",
-      description: "Launched our inaugural water access initiative, bringing clean water to over 500 families in rural areas."
+      year: "2005",
+      title: "Foundation Building",
+      description: "Established organizational structure and laid groundwork for future growth and community impact."
     },
     {
-      year: "2015",
-      title: "Education Program Launch",
-      description: "Established comprehensive education programs supporting students and teachers across multiple schools."
+      year: "2009",
+      title: "Medical & Technology Support",
+      description: "Delivered vital medical supplies and computers to communities, organized cultural exchange with Fon Abumbi II's USA visit."
     },
     {
-      year: "2018",
-      title: "Healthcare Initiative",
-      description: "Began providing healthcare services and medical outreach programs to underserved communities."
+      year: "2011",
+      title: "Organizational Stability",
+      description: "Maintained operations and strengthened internal frameworks during transitional period."
+    },
+    {
+      year: "2017",
+      title: "Donor Expansion",
+      description: "Significantly increased funding and donor base to support larger-scale community development projects."
     },
     {
       year: "2021",
-      title: "Cultural Heritage Project",
-      description: "Started initiatives to preserve and promote traditional Bafut culture and arts throughout the region."
+      title: "COVID-19 Response & Expansion",
+      description: "Delivered critical relief packages during pandemic and expanded reach by admitting Delaware Chapter."
     },
     {
       year: "2024",
-      title: "Expanding Impact",
-      description: "Launched multiple economic development programs and expanded our reach to more communities across the region."
+      title: "Multi-Sector Growth",
+      description: "Implemented comprehensive Health, Education and Water projects while expanding to United Chapter and Mid West Chapter."
+    },
+    {
+      year: "2025",
+      title: "Digital Innovation Era",
+      description: "Focusing on infrastructure development and digital transformation of community services for greater impact."
     }
   ]
 
@@ -63,8 +73,8 @@ export function JourneySection() {
         {/* Section Title */}
         <div className="text-center mb-16">
           <p className="text-orange-600 font-semibold text-sm tracking-widest uppercase mb-4">Our History</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Our Journey</h2>
-          <p className="text-lg text-gray-600 mb-6">From humble beginnings to making a lasting impact</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">BMCA Journey Timeline</h2>
+          <p className="text-lg text-gray-600 mb-6">Two decades of growth, impact, and community transformation</p>
           <div className="w-16 h-1 bg-orange-500 mx-auto rounded-full" />
         </div>
 
