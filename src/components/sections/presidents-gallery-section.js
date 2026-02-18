@@ -30,14 +30,11 @@ export function PresidentsGallerySection() {
     {
       id: 1,
       name: "Ntoonfor E. NIBA",
-      year: "2025 - Present",
-      role: "Current President",
+      year: "2025 till Present",
+      role: "President",
       image: "/VP-BMCA.png",
-      achievement: "Leading BMCA into a new era with focus on infrastructure development and digital innovation in community services.",
       accomplishments: [
-        "Continuing infrastructure development projects",
-        "Expanding digital literacy programs",
-        "Enhancing community healthcare initiatives"
+        "Revamp the BMCA Website"
       ]
     },
     {
@@ -46,11 +43,15 @@ export function PresidentsGallerySection() {
       year: "2021 - 2025",
       role: "President",
       image: "/PR-BMCA.png",
-      achievement: "Successfully implemented Health, Education and Water projects, and grew the organization by adding United Chapter and Mid West Chapter.",
       accomplishments: [
-        "Implemented comprehensive health projects",
-        "Expanded educational support programs",
-        "Completed multiple water projects",
+        "Implemented the Education program",
+        "Initiated the water program",
+        "Created the First BMCA traditional JUJU dance group",
+        "Created United Chapters",
+        "Initiated the Kiteuh program",
+        "Implemented payment gateway for online transactions",
+        "Initiated the mini convention concept",
+        "Successful implementation of Health, Education and Water projects",
         "Added United Chapter and Mid West Chapter"
       ]
     },
@@ -60,11 +61,9 @@ export function PresidentsGallerySection() {
       year: "2017 - 2021",
       role: "President",
       image: null,
-      achievement: "Delivered COVID-19 relief packages to Bafut and grew organization by admitting Delaware Chapter.",
       accomplishments: [
-        "Delivered COVID-19 relief packages to Bafut",
-        "Admitted Delaware Chapter to organization",
-        "Maintained operations during global pandemic"
+        "Delivered COVID 19 relief packages to Bafut",
+        "Admitted Delaware Chapter"
       ]
     },
     {
@@ -73,11 +72,8 @@ export function PresidentsGallerySection() {
       year: "2011 - 2017",
       role: "President",
       image: null,
-      achievement: "Secured greater donations to support Bafut community development projects.",
       accomplishments: [
-        "Secured significant donations for Bafut",
-        "Expanded donor base and funding sources",
-        "Strengthened community partnerships"
+        "Grader donation to Bafut"
       ]
     },
     {
@@ -86,11 +82,8 @@ export function PresidentsGallerySection() {
       year: "2009 - 2011",
       role: "President",
       image: null,
-      achievement: "Provided steady leadership during transitional period for the organization.",
       accomplishments: [
-        "Maintained organizational stability",
-        "Supported ongoing community projects",
-        "Strengthened internal operations"
+        "Led organization through early growth phase"
       ]
     },
     {
@@ -99,12 +92,9 @@ export function PresidentsGallerySection() {
       year: "2005 - 2009",
       role: "President",
       image: null,
-      achievement: "Successfully delivered Medical Supplies and Computers, and organized the visit of Fon Abumbi II to USA.",
       accomplishments: [
-        "Delivered medical supplies to community",
-        "Provided computers for educational purposes",
-        "Organized Fon Abumbi II's visit to USA",
-        "Enhanced cultural exchange programs"
+        "Successful delivery of Medical Supplies and Computers",
+        "Organized the visit of Fon Abumbi ll to USA"
       ]
     },
     {
@@ -113,11 +103,8 @@ export function PresidentsGallerySection() {
       year: "2001 - 2005",
       role: "President",
       image: null,
-      achievement: "Laid foundation for growth of the organization and established key operational frameworks.",
       accomplishments: [
-        "Established organizational foundation",
-        "Created growth strategies",
-        "Built core operational frameworks"
+        "Laid foundation for growth of the organization"
       ]
     },
     {
@@ -126,12 +113,15 @@ export function PresidentsGallerySection() {
       year: "2001",
       role: "Founding Members",
       image: null,
-      achievement: "Founded BMCA DC and organized First Convention chaired by Abong Emmanuel, with Kilian Songwe as Chair and Manka'a Fokwa as Vice Chair.",
+      foundingMembers: true,
       accomplishments: [
-        "Founded BMCA DC organization",
-        "Organized First Convention",
-        "Established organizational vision and mission",
-        "Built initial membership base"
+        "Founding of BMCA DC",
+        "Organization of First Convention"
+      ],
+      foundingMembersList: [
+        "Abong Emmanuel",
+        "Kilian Songwe (Chair)",
+        "Manka'a Fokwa (Vice Chair)"
       ]
     }
   ]
@@ -218,12 +208,22 @@ export function PresidentsGallerySection() {
                       <h3 className="text-2xl font-bold text-gray-900 mb-1">{president.name}</h3>
                       <p className="text-orange-600 font-semibold text-sm mb-4">{president.role}</p>
                       
-                      <div className="mb-6 pb-6 border-b-2 border-orange-100">
-                        <p className="text-gray-700 leading-relaxed text-sm">
-                          {president.achievement}
-                        </p>
-                      </div>
-
+                      {/* Founding Members List - Special rendering for founding members */}
+                      {president.foundingMembers && president.foundingMembersList && (
+                        <div className="mb-4 pb-4 border-b-2 border-orange-100">
+                          <p className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-3">Founding Members</p>
+                          <ul className="space-y-2">
+                            {president.foundingMembersList.map((member, i) => (
+                              <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                                <span className="text-orange-500 font-bold mt-0.5">•</span>
+                                <span className="font-medium">{member}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      {/* Accomplishments List */}
                       <div className="space-y-2">
                         <p className="text-xs font-bold text-gray-600 uppercase tracking-widest">Key Accomplishments</p>
                         <ul className="space-y-2">
