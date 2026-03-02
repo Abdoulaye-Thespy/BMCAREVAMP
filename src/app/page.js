@@ -14,7 +14,6 @@ export default function Home() {
       <PresidentSection />
       <MissionSection />
       <StatsSection />
-      <ChaptersSection />
       <Footer />
     </main>
   )

@@ -8,13 +8,13 @@ const chaptersData = [
     id: 1,
     name: "Houston Chapter",
     description: "Serving the Houston community",
-    phone: "+1 (555) 123-4567",
-    email: "houston@bmca.org",
-    address: "123 Main St, Houston, TX 77002",
-    members: 45,
-    website: "https://houston.bmca.org",
+    phone: "443 599 6815",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
     president: {
-      name: "Michael Rodriguez",
+      name: "Conelius Ngwasina",
       photo: "/president-placeholder.jpg"
     }
   },
@@ -22,13 +22,13 @@ const chaptersData = [
     id: 2,
     name: "Dallas Chapter",
     description: "Serving the Dallas community",
-    phone: "+1 (555) 234-5678",
-    email: "dallas@bmca.org",
-    address: "456 Oak Ave, Dallas, TX 75201",
-    members: 32,
-    website: "https://dallas.bmca.org",
+    phone: "469 213 9470",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
     president: {
-      name: "Sarah Johnson",
+      name: "Ignatius Mfona",
       photo: "/president-placeholder.jpg"
     }
   },
@@ -36,27 +36,27 @@ const chaptersData = [
     id: 3,
     name: "Florida Chapter",
     description: "Serving the Florida community",
-    phone: "+1 (555) 345-6789",
-    email: "florida@bmca.org",
-    address: "789 Beach Blvd, Miami, FL 33101",
-    members: 28,
-    website: "https://florida.bmca.org",
+    phone: "813 802 5057",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
     president: {
-      name: "David Thompson",
+      name: "Francis Ntumngia",
       photo: "/president-placeholder.jpg"
     }
   },
   {
     id: 4,
-    name: "New England Chapter",
-    description: "Serving the New England community",
-    phone: "+1 (555) 456-7890",
-    email: "newengland@bmca.org",
-    address: "321 Harbor St, Boston, MA 02101",
-    members: 38,
-    website: "https://newengland.bmca.org",
+    name: "Boston Chapter",
+    description: "Serving the Boston community",
+    phone: "508 933 8654",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
     president: {
-      name: "Jennifer Williams",
+      name: "Oscar Nebangwa",
       photo: "/president-placeholder.jpg"
     }
   },
@@ -64,13 +64,13 @@ const chaptersData = [
     id: 5,
     name: "Great Lakes Chapter",
     description: "Serving the Great Lakes community",
-    phone: "+1 (555) 567-8901",
-    email: "greatlakes@bmca.org",
-    address: "654 Lake View Dr, Chicago, IL 60601",
-    members: 41,
-    website: "https://greatlakes.bmca.org",
+    phone: "240 701 9330",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
     president: {
-      name: "Robert Chen",
+      name: "Bonny Shuneh",
       photo: "/president-placeholder.jpg"
     }
   },
@@ -78,114 +78,100 @@ const chaptersData = [
     id: 6,
     name: "Los Angeles Chapter",
     description: "Serving the Los Angeles community",
-    phone: "+1 (555) 678-9012",
-    email: "losangeles@bmca.org",
-    address: "987 Sunset Blvd, Los Angeles, CA 90001",
-    members: 52,
-    website: "https://losangeles.bmca.org",
+    phone: "323 618 8093",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
     president: {
-      name: "Maria Garcia",
+      name: "Vivian Manna",
       photo: "/president-placeholder.jpg"
     }
   },
   {
     id: 7,
-    name: "United Chapter West Coast",
+    name: "United West Coast Chapter",
     description: "Serving the West Coast community",
-    phone: "+1 (555) 789-0123",
-    email: "westcoast@bmca.org",
-    address: "555 Pacific Hwy, San Francisco, CA 94101",
-    members: 67,
-    website: "https://westcoast.bmca.org",
+    phone: "424 391 2011",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
     president: {
-      name: "James Wilson",
+      name: "Rene Anita Sama",
       photo: "/president-placeholder.jpg"
     }
   },
   {
     id: 8,
-    name: "Minnesota Chapter",
-    description: "Serving the Minnesota community",
-    phone: "+1 (555) 890-1234",
-    email: "minnesota@bmca.org",
-    address: "222 Lake St, Minneapolis, MN 55401",
-    members: 23,
-    website: "https://minnesota.bmca.org",
+    name: "United East Coast Chapter",
+    description: "Serving the East Coast community",
+    phone: "917 270 0494",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
     president: {
-      name: "Lisa Anderson",
+      name: "Assumpta Tanifor",
       photo: "/president-placeholder.jpg"
     }
   },
   {
     id: 9,
-    name: "DC Metro Chapter",
-    description: "Serving the DC Metro community",
-    phone: "+1 (555) 901-2345",
-    email: "dcmetro@bmca.org",
-    address: "444 Capitol St, Washington, DC 20001",
-    members: 35,
-    website: "https://dcmetro.bmca.org",
+    name: "Minnesota Chapter",
+    description: "Serving the Minnesota community",
+    phone: "651 808 0464",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
     president: {
-      name: "Thomas Brown",
+      name: "Divine Awah",
       photo: "/president-placeholder.jpg"
     }
   },
   {
     id: 10,
-    name: "Delaware Chapter",
-    description: "Serving the Delaware community",
-    phone: "+1 (555) 012-3456",
-    email: "delaware@bmca.org",
-    address: "111 Liberty St, Wilmington, DE 19801",
-    members: 19,
-    website: "https://delaware.bmca.org",
+    name: "DC Metro Chapter",
+    description: "Serving the DC Metro community",
+    phone: "202 805 9426",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
     president: {
-      name: "Patricia Davis",
+      name: "Theo Fusi",
       photo: "/president-placeholder.jpg"
     }
   },
   {
     id: 11,
-    name: "Mid West Chapter",
-    description: "Serving the Mid West community",
-    phone: "+1 (555) 123-4567",
-    email: "midwest@bmca.org",
-    address: "333 Plains Ave, Kansas City, MO 64101",
-    members: 44,
-    website: "https://midwest.bmca.org",
+    name: "Delaware Chapter",
+    description: "Serving the Delaware community",
+    phone: "302 588 5841",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
     president: {
-      name: "Christopher Miller",
+      name: "Eric Neba",
       photo: "/president-placeholder.jpg"
     }
   },
   {
     id: 12,
-    name: "North Carolina Chapter",
-    description: "Serving the North Carolina community",
-    phone: "+1 (555) 234-5678",
-    email: "northcarolina@bmca.org",
-    address: "777 Pine St, Charlotte, NC 28201",
-    members: 31,
-    website: "https://northcarolina.bmca.org",
+    name: "Midwest Chapter",
+    description: "Serving the Midwest community",
+    phone: "208 220 0420",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
     president: {
-      name: "Amanda Taylor",
+      name: "Robinson Neba",
       photo: "/president-placeholder.jpg"
     }
-  },
-  {
-    id: 13,
-    name: "North East Chapter",
-    description: "Serving the North East community",
-    phone: "+1 (555) 345-6789",
-    email: "northeast@bmca.org",
-    address: "888 Empire St, New York, NY 10001",
-    members: 58,
-    website: "https://northeast.bmca.org",
-    president: {
-      name: "Daniel Moore",
-      photo: "/president-placeholder.jpg"
-    }
-  },
+  }
 ]
 
 export default function ChaptersSection() {
@@ -217,6 +203,13 @@ export default function ChaptersSection() {
     if (fallback) {
       fallback.style.display = 'flex'
     }
+  }
+
+  // Format phone number for display
+  const formatPhoneNumber = (phone) => {
+    if (phone === "Coming soon") return phone
+    // Add country code if needed
+    return `+1 ${phone}`
   }
 
   return (
@@ -272,12 +265,12 @@ export default function ChaptersSection() {
                 {/* Quick Info Preview */}
                 <div className="mt-4 space-y-2 mb-4">
                   <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <Users size={14} />
-                    <span>{chapter.members} active members</span>
+                    <Phone size={14} />
+                    <span>{formatPhoneNumber(chapter.phone)}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <MapPin size={14} />
-                    <span className="truncate">{chapter.address.split(',')[0]}</span>
+                    <span>{chapter.address === "Coming soon" ? "Location coming soon" : chapter.address.split(',')[0]}</span>
                   </div>
                 </div>
 
@@ -381,14 +374,18 @@ export default function ChaptersSection() {
                 </div>
                 <div className="flex-1">
                   <label className="text-sm font-semibold text-gray-500 block mb-1">Website</label>
-                  <a 
-                    href={selectedChapter.website} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 underline break-all"
-                  >
-                    {selectedChapter.website}
-                  </a>
+                  {selectedChapter.website !== "Coming soon" ? (
+                    <a 
+                      href={selectedChapter.website} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline break-all"
+                    >
+                      {selectedChapter.website}
+                    </a>
+                  ) : (
+                    <p className="text-gray-500 italic">Will be added soon</p>
+                  )}
                 </div>
               </div>
 
@@ -399,7 +396,7 @@ export default function ChaptersSection() {
                 </div>
                 <div className="flex-1">
                   <label className="text-sm font-semibold text-gray-500 block mb-1">Phone</label>
-                  <p className="text-gray-900">{selectedChapter.phone}</p>
+                  <p className="text-gray-900">{formatPhoneNumber(selectedChapter.phone)}</p>
                 </div>
               </div>
 
@@ -410,12 +407,16 @@ export default function ChaptersSection() {
                 </div>
                 <div className="flex-1">
                   <label className="text-sm font-semibold text-gray-500 block mb-1">Email</label>
-                  <a 
-                    href={`mailto:${selectedChapter.email}`}
-                    className="text-gray-900 break-all hover:text-orange-600"
-                  >
-                    {selectedChapter.email}
-                  </a>
+                  {selectedChapter.email !== "Coming soon" ? (
+                    <a 
+                      href={`mailto:${selectedChapter.email}`}
+                      className="text-gray-900 break-all hover:text-orange-600"
+                    >
+                      {selectedChapter.email}
+                    </a>
+                  ) : (
+                    <p className="text-gray-500 italic">Will be added soon</p>
+                  )}
                 </div>
               </div>
 
@@ -426,7 +427,11 @@ export default function ChaptersSection() {
                 </div>
                 <div className="flex-1">
                   <label className="text-sm font-semibold text-gray-500 block mb-1">Address</label>
-                  <p className="text-gray-900">{selectedChapter.address}</p>
+                  {selectedChapter.address !== "Coming soon" ? (
+                    <p className="text-gray-900">{selectedChapter.address}</p>
+                  ) : (
+                    <p className="text-gray-500 italic">Will be added soon</p>
+                  )}
                 </div>
               </div>
 
@@ -437,7 +442,11 @@ export default function ChaptersSection() {
                 </div>
                 <div className="flex-1">
                   <label className="text-sm font-semibold text-gray-500 block mb-1">Active Members</label>
-                  <p className="text-gray-900">{selectedChapter.members} members</p>
+                  {selectedChapter.members !== "TBD" ? (
+                    <p className="text-gray-900">{selectedChapter.members} members</p>
+                  ) : (
+                    <p className="text-gray-500 italic">To be determined</p>
+                  )}
                 </div>
               </div>
             </div>
