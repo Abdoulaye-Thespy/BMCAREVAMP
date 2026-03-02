@@ -6,9 +6,33 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useCart } from '@/context/cart-context'
 import { useState, useMemo, useEffect } from 'react'
-import { Check, Filter, Star, Users, Calendar, MapPin, X, Plus, Minus, ShoppingCart, ChevronDown } from 'lucide-react'
+import { Check, Filter, Star, Users, Calendar, MapPin, X, Plus, Minus, ShoppingCart, ChevronDown, Clock, Shirt } from 'lucide-react'
+import { HotelBooking } from '@/components/sections/hotel-booking'
 
-// Temporary Badge component (remove this after installing shadcn badge)
+// Deadline dates from the image (Central US/Canada time)
+const DEADLINES = {
+  EARLY_BIRD: { 
+    end: "May 31, 2026 23:59:59", 
+    label: "Early Bird",
+    description: "Save up to $40"
+  },
+  STANDARD: { 
+    start: "June 1, 2026 00:00:00",
+    end: "June 30, 2026 23:59:59", 
+    label: "Standard"
+  },
+  LATE: { 
+    start: "July 1, 2026 00:00:00",
+    end: "July 13, 2026 23:59:59", 
+    label: "Late",
+    description: "Limited availability"
+  }
+}
+
+// T-shirt sizes
+const TSHIRT_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
+
+// Temporary Badge component
 const Badge = ({ children, className = '', ...props }) => {
   return (
     <div className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold ${className}`} {...props}>
@@ -17,9 +41,25 @@ const Badge = ({ children, className = '', ...props }) => {
   )
 }
 
-// Confirmation Popup Component
-const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0 }) => {
+// Confirmation Popup Component with T-shirt sizes - FIXED
+const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0, deadline }) => {
   const [quantity, setQuantity] = useState(1)
+  const [tshirtSizes, setTshirtSizes] = useState([])
+  
+  // Calculate number of t-shirts needed based on package type and quantity
+  const getTshirtCount = () => {
+    if (pkg.category === 'couple') {
+      return quantity * 2 // Couple package needs 2 shirts per package × quantity
+    }
+    return quantity // All others need 1 shirt per package
+  }
+
+  const tshirtCount = getTshirtCount()
+
+  // Initialize t-shirt sizes array when quantity or package changes
+  useEffect(() => {
+    setTshirtSizes(Array(tshirtCount).fill('M'))
+  }, [tshirtCount, isOpen])
 
   useEffect(() => {
     if (currentQuantity > 0) {
@@ -34,29 +74,44 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0 }
   const totalPrice = pkg.price * quantity
 
   const handleConfirm = () => {
-    onConfirm(pkg, quantity)
+    onConfirm(pkg, quantity, tshirtSizes)
   }
 
   const increment = () => setQuantity(prev => prev + 1)
   const decrement = () => setQuantity(prev => prev > 1 ? prev - 1 : 1)
 
+  const updateTshirtSize = (index, size) => {
+    const newSizes = [...tshirtSizes]
+    newSizes[index] = size
+    setTshirtSizes(newSizes)
+  }
+
+  // Generate person labels for couple packages
+  const getPersonLabel = (index) => {
+    if (pkg.category !== 'couple') return `Person ${index + 1}`
+    
+    const packageNumber = Math.floor(index / 2) + 1
+    const personInPackage = index % 2 === 0 ? 'Person 1' : 'Person 2'
+    return `Package ${packageNumber} - ${personInPackage}`
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-auto">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-auto max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white p-6 rounded-t-2xl">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-t-2xl">
           <div className="flex justify-between items-start">
             <div>
               <h3 className="text-xl font-bold">
                 {currentQuantity > 0 ? 'Update Cart' : 'Add to Cart'}
               </h3>
-              <p className="text-orange-100 mt-1">
+              <p className="text-blue-100 mt-1">
                 {currentQuantity > 0 ? 'Update your selection' : 'Confirm your selection'}
               </p>
             </div>
             <button
               onClick={onClose}
-              className="text-white hover:text-orange-200 transition-colors"
+              className="text-white hover:text-blue-200 transition-colors"
             >
               <X className="h-6 w-6" />
             </button>
@@ -67,18 +122,29 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0 }
         <div className="p-6">
           {/* Package Info */}
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Star className="h-6 w-6 text-orange-600" />
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Star className="h-6 w-6 text-blue-600" />
             </div>
             <div>
               <h4 className="font-semibold text-gray-900 text-lg">{pkg.name}</h4>
               <p className="text-gray-600 text-base">{pkg.description}</p>
               {currentQuantity > 0 && (
-                <div className="text-base text-orange-600 mt-1">
+                <div className="text-base text-blue-600 mt-1">
                   Currently in cart: {currentQuantity}
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Price Period Indicator */}
+          <div className="mb-6 p-3 bg-blue-50 rounded-lg">
+            <div className="flex items-center gap-2 text-blue-800">
+              <Clock className="h-5 w-5" />
+              <span className="font-semibold">{deadline.label} Pricing</span>
+            </div>
+            <p className="text-sm text-blue-600 mt-1">
+              {deadline.description}
+            </p>
           </div>
 
           {/* Quantity Selector */}
@@ -90,30 +156,64 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0 }
               <div className="flex items-center gap-4">
                 <button
                   onClick={decrement}
-                  className="w-12 h-12 rounded-full border-2 border-orange-500 text-orange-500 flex items-center justify-center hover:bg-orange-50 transition-colors"
+                  className="w-12 h-12 rounded-full border-2 border-blue-500 text-blue-500 flex items-center justify-center hover:bg-blue-50 transition-colors"
                 >
                   <Minus className="h-5 w-5" />
                 </button>
                 <span className="text-3xl font-bold text-gray-900 w-12 text-center">{quantity}</span>
                 <button
                   onClick={increment}
-                  className="w-12 h-12 rounded-full border-2 border-orange-500 text-orange-500 flex items-center justify-center hover:bg-orange-50 transition-colors"
+                  className="w-12 h-12 rounded-full border-2 border-blue-500 text-blue-500 flex items-center justify-center hover:bg-blue-50 transition-colors"
                 >
                   <Plus className="h-5 w-5" />
                 </button>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-orange-600">${totalPrice}</div>
+                <div className="text-3xl font-bold text-blue-600">${totalPrice}</div>
                 <div className="text-base text-gray-500">${pkg.price} × {quantity}</div>
               </div>
             </div>
           </div>
 
-          {/* Features Preview - Two Columns */}
+          {/* T-shirt Size Selection */}
+          {tshirtCount > 0 && (
+            <div className="mb-6 border-t pt-4">
+              <div className="flex items-center gap-2 mb-4">
+                <Shirt className="h-5 w-5 text-blue-600" />
+                <h5 className="font-semibold text-gray-900 text-lg">
+                  T-shirt Sizes ({tshirtCount} {tshirtCount === 1 ? 'shirt' : 'shirts'})
+                </h5>
+                {pkg.category === 'couple' && (
+                  <p className="text-sm text-gray-500 ml-2">(2 shirts per couple package)</p>
+                )}
+              </div>
+              
+              <div className="space-y-3">
+                {Array.from({ length: tshirtCount }).map((_, index) => (
+                  <div key={index} className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
+                    <span className="text-sm font-medium text-gray-700 w-32">
+                      {getPersonLabel(index)}
+                    </span>
+                    <select
+                      value={tshirtSizes[index] || 'M'}
+                      onChange={(e) => updateTshirtSize(index, e.target.value)}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+                    >
+                      {TSHIRT_SIZES.map(size => (
+                        <option key={size} value={size}>{size}</option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Features Preview */}
           <div className="border-t pt-4">
             <h5 className="font-medium text-gray-900 text-lg mb-3">Includes:</h5>
             <div className="grid grid-cols-2 gap-2">
-              {pkg.features.map((feature, idx) => (
+              {pkg.features.slice(0, 6).map((feature, idx) => (
                 <div key={idx} className="flex items-center gap-2 text-base text-gray-600">
                   <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
                   <span className="text-sm">{feature}</span>
@@ -134,7 +234,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0 }
           </Button>
           <Button
             onClick={handleConfirm}
-            className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg hover:shadow-xl transition-all text-base"
+            className="flex-1 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-lg hover:shadow-xl transition-all text-base"
           >
             {currentQuantity > 0 ? 'Update Cart' : 'Add to Cart'}
           </Button>
@@ -144,14 +244,98 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0 }
   )
 }
 
-// Mobile Filters Component
+// Helper function to determine current pricing period based on date (Central US/Canada time)
+const getCurrentDeadline = () => {
+  const now = new Date()
+  
+  // Convert to Central US/Canada time
+  const centralTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Chicago' }))
+  
+  const earlyBirdEnd = new Date(DEADLINES.EARLY_BIRD.end)
+  const standardStart = new Date(DEADLINES.STANDARD.start)
+  const standardEnd = new Date(DEADLINES.STANDARD.end)
+  const lateStart = new Date(DEADLINES.LATE.start)
+  const lateEnd = new Date(DEADLINES.LATE.end)
+
+  if (centralTime <= earlyBirdEnd) {
+    return {
+      ...DEADLINES.EARLY_BIRD,
+      type: 'EARLY_BIRD'
+    }
+  } else if (centralTime >= standardStart && centralTime <= standardEnd) {
+    return {
+      ...DEADLINES.STANDARD,
+      type: 'STANDARD'
+    }
+  } else if (centralTime >= lateStart && centralTime <= lateEnd) {
+    return {
+      ...DEADLINES.LATE,
+      type: 'LATE'
+    }
+  } else {
+    // After late deadline
+    return {
+      ...DEADLINES.LATE,
+      type: 'LATE',
+      expired: true
+    }
+  }
+}
+
+// Get only Early Bird packages with simplified names
+const getEarlyBirdPackages = (packages) => {
+  return packages
+    .filter(pkg => pkg.name.toLowerCase().includes('early bird'))
+    .map(pkg => {
+      // Extract category from the full name
+      const fullName = pkg.name
+      let simpleName = pkg.category
+      let categoryKey = ''
+      
+      // Clean up the name and set proper category key for filtering
+      if (fullName.includes('Kids')) {
+        simpleName = 'Kids'
+        categoryKey = 'kids'
+      } else if (fullName.includes('Elderly')) {
+        simpleName = 'Elderly 75+'
+        categoryKey = 'elderly'
+      } else if (fullName.includes('Singles')) {
+        simpleName = 'Adult'
+        categoryKey = 'adult'
+      } else if (fullName.includes('Couples')) {
+        simpleName = 'Couple'
+        categoryKey = 'couple'
+      } else if (fullName.includes('Non-Registered')) {
+        simpleName = 'Non-Registered'
+        categoryKey = 'non-registered'
+      }
+      
+      return {
+        id: pkg.id.toString(),
+        name: simpleName,
+        originalName: pkg.name,
+        category: categoryKey, // Use the mapped category key
+        displayCategory: pkg.category,
+        price: pkg.price,
+        description: simpleName,
+        features: pkg.items.split(',').map(item => item.trim()),
+        popular: pkg.category.includes('Couple') || pkg.name.includes('Cultural'),
+      }
+    })
+}
+
+const categoryLabels = {
+  kids: 'Kids',
+  adult: 'Adult',
+  couple: 'Couple',
+  elderly: 'Elderly 75+',
+  'non-registered': 'Non-Registered Elites'
+}
+
+// Mobile Filters Component - Only Categories
 const MobileFilters = ({ 
   selectedCategory, 
   setSelectedCategory, 
-  selectedEventType, 
-  setSelectedEventType, 
-  sortBy, 
-  setSortBy,
   filteredCount,
   totalCount
 }) => {
@@ -159,15 +343,14 @@ const MobileFilters = ({
 
   return (
     <div className="lg:hidden mb-6">
-      {/* Mobile Filter Trigger */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between"
         >
           <div className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-orange-500" />
-            <span className="font-semibold text-gray-900 text-base">Filters</span>
+            <Filter className="h-5 w-5 text-blue-500" />
+            <span className="font-semibold text-gray-900 text-base">Filter by Category</span>
             <span className="text-base text-gray-500 ml-2">
               ({filteredCount} of {totalCount})
             </span>
@@ -176,16 +359,14 @@ const MobileFilters = ({
         </button>
       </div>
 
-      {/* Mobile Filter Dropdown */}
       {isOpen && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 mt-2 space-y-4">
-          {/* Category Filter */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 mt-2">
           <div>
             <label className="block text-base font-medium text-gray-700 mb-2">Category</label>
             <select 
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-base"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
             >
               <option value="all">All Categories</option>
               {Object.entries(categoryLabels).map(([key, label]) => (
@@ -194,61 +375,16 @@ const MobileFilters = ({
             </select>
           </div>
 
-          {/* Event Type Filter */}
-          <div>
-            <label className="block text-base font-medium text-gray-700 mb-2">Event Type</label>
-            <select 
-              value={selectedEventType}
-              onChange={(e) => setSelectedEventType(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-base"
-            >
-              {eventTypes.map(type => (
-                <option key={type.id} value={type.id}>{type.label}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Sort Filter */}
-          <div>
-            <label className="block text-base font-medium text-gray-700 mb-2">Sort By</label>
-            <select 
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-base"
-            >
-              <option value="default">Default</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="popular">Most Popular</option>
-            </select>
-          </div>
-
-          {/* Active Filters Display */}
-          {(selectedCategory !== 'all' || selectedEventType !== 'all') && (
-            <div className="pt-3 border-t border-gray-200">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-base font-medium text-gray-700">Active Filters</span>
+          {selectedCategory !== 'all' && (
+            <div className="pt-3 mt-3 border-t border-gray-200">
+              <div className="flex items-center justify-between">
+                <span className="text-base font-medium text-gray-700">Active Filter</span>
                 <button
-                  onClick={() => {
-                    setSelectedCategory('all')
-                    setSelectedEventType('all')
-                  }}
-                  className="text-base text-orange-600 hover:text-orange-700"
+                  onClick={() => setSelectedCategory('all')}
+                  className="text-base text-blue-600 hover:text-blue-700"
                 >
-                  Clear All
+                  Clear
                 </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {selectedCategory !== 'all' && (
-                  <Badge className="bg-orange-100 text-orange-800 text-sm">
-                    {categoryLabels[selectedCategory]}
-                  </Badge>
-                )}
-                {selectedEventType !== 'all' && (
-                  <Badge className="bg-orange-100 text-orange-800 text-sm">
-                    {eventTypes.find(t => t.id === selectedEventType)?.label}
-                  </Badge>
-                )}
               </div>
             </div>
           )}
@@ -258,314 +394,85 @@ const MobileFilters = ({
   )
 }
 
-// Sidebar Filters Component (Desktop)
+// Sidebar Filters Component - Only Categories (Desktop)
 const SidebarFilters = ({ 
   selectedCategory, 
   setSelectedCategory, 
-  selectedEventType, 
-  setSelectedEventType, 
-  sortBy, 
-  setSortBy,
   filteredCount,
   totalCount
 }) => {
   return (
     <div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-fit sticky top-24">
-      {/* Header */}
       <div className="flex items-center gap-2 mb-6 pb-4 border-b border-gray-200">
-        <Filter className="h-5 w-5 text-orange-500" />
-        <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
+        <Filter className="h-5 w-5 text-blue-500" />
+        <h3 className="text-lg font-semibold text-gray-900">Categories</h3>
         <div className="ml-auto text-base text-gray-500">
           {filteredCount} of {totalCount}
         </div>
       </div>
 
-      {/* Category Filter */}
-      <div className="mb-6">
-        <label className="block text-base font-medium text-gray-700 mb-3">Category</label>
-        <div className="space-y-2">
+      <div className="space-y-2">
+        <button
+          onClick={() => setSelectedCategory('all')}
+          className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${
+            selectedCategory === 'all' 
+              ? 'bg-blue-100 text-blue-800 border border-blue-300' 
+              : 'text-gray-700 hover:bg-gray-100 border border-transparent'
+          }`}
+        >
+          All Categories
+        </button>
+        {Object.entries(categoryLabels).map(([key, label]) => (
           <button
-            onClick={() => setSelectedCategory('all')}
+            key={key}
+            onClick={() => setSelectedCategory(key)}
             className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${
-              selectedCategory === 'all' 
-                ? 'bg-orange-100 text-orange-800 border border-orange-300' 
+              selectedCategory === key 
+                ? 'bg-blue-100 text-blue-800 border border-blue-300' 
                 : 'text-gray-700 hover:bg-gray-100 border border-transparent'
             }`}
           >
-            All Categories
+            {label}
           </button>
-          {Object.entries(categoryLabels).map(([key, label]) => (
-            <button
-              key={key}
-              onClick={() => setSelectedCategory(key)}
-              className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${
-                selectedCategory === key 
-                  ? 'bg-orange-100 text-orange-800 border border-orange-300' 
-                  : 'text-gray-700 hover:bg-gray-100 border border-transparent'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        ))}
       </div>
-
-      {/* Event Type Filter */}
-      <div className="mb-6">
-        <label className="block text-base font-medium text-gray-700 mb-3">Event Type</label>
-        <div className="space-y-2">
-          {eventTypes.map(type => (
-            <button
-              key={type.id}
-              onClick={() => setSelectedEventType(type.id)}
-              className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${
-                selectedEventType === type.id 
-                  ? 'bg-orange-100 text-orange-800 border border-orange-300' 
-                  : 'text-gray-700 hover:bg-gray-100 border border-transparent'
-              }`}
-            >
-              {type.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Sort Filter */}
-      <div className="mb-6">
-        <label className="block text-base font-medium text-gray-700 mb-3">Sort By</label>
-        <select 
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-base"
-        >
-          <option value="default">Default</option>
-          <option value="price-low">Price: Low to High</option>
-          <option value="price-high">Price: High to Low</option>
-          <option value="popular">Most Popular</option>
-        </select>
-      </div>
-
-      {/* Active Filters */}
-      {(selectedCategory !== 'all' || selectedEventType !== 'all') && (
-        <div className="pt-4 border-t border-gray-200">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-base font-medium text-gray-700">Active Filters</span>
-            <button
-              onClick={() => {
-                setSelectedCategory('all')
-                setSelectedEventType('all')
-              }}
-              className="text-base text-orange-600 hover:text-orange-700"
-            >
-              Clear All
-            </button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {selectedCategory !== 'all' && (
-              <Badge className="bg-orange-100 text-orange-800 text-sm">
-                {categoryLabels[selectedCategory]}
-                <button
-                  onClick={() => setSelectedCategory('all')}
-                  className="ml-1 hover:text-orange-900"
-                >
-                  ×
-                </button>
-              </Badge>
-            )}
-            {selectedEventType !== 'all' && (
-              <Badge className="bg-orange-100 text-orange-800 text-sm">
-                {eventTypes.find(t => t.id === selectedEventType)?.label}
-                <button
-                  onClick={() => setSelectedEventType('all')}
-                  className="ml-1 hover:text-orange-900"
-                >
-                  ×
-                </button>
-              </Badge>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
 }
 
-// Complete packages array without emojis
-const conventionPackages = [
-  {
-    id: 'kids-cost',
-    name: 'Kids Package',
-    category: 'kids',
-    price: 25,
-    description: 'Perfect for children and youth',
-    features: ['Convention Cost', 'T-Shirt', 'BBQ', 'Soft Drinks', 'Soccer Activity'],
-    popular: false,
-    includes: ['convention']
-  },
-  {
-    id: 'kids-cultural',
-    name: 'Kids + Cultural Night',
-    category: 'kids',
-    price: 35,
-    description: 'Kids package with cultural night access',
-    features: ['Convention Cost', 'Cultural Night', 'T-Shirt', 'BBQ', 'Soft Drinks', 'Soccer'],
-    popular: true,
-    includes: ['convention', 'cultural']
-  },
-  {
-    id: 'kids-gala',
-    name: 'Kids + Gala Night',
-    category: 'kids',
-    price: 40,
-    description: 'Kids package with gala night access',
-    features: ['Convention Cost', 'Gala Night', 'T-Shirt', 'BBQ', 'Drinks', 'Soccer'],
-    popular: false,
-    includes: ['convention', 'gala']
-  },
-  {
-    id: 'adult-cost',
-    name: 'Adult Package',
-    category: 'adult',
-    price: 50,
-    description: 'Standard adult convention package',
-    features: ['Convention Cost', 'T-Shirt', 'BBQ', 'Drinks', 'All Day Access'],
-    popular: false,
-    includes: ['convention']
-  },
-  {
-    id: 'adult-cultural',
-    name: 'Adult + Cultural Night',
-    category: 'adult',
-    price: 65,
-    description: 'Adult package with cultural night',
-    features: ['Convention Cost', 'Cultural Night', 'T-Shirt', 'BBQ', 'Drinks', 'All Day Access'],
-    popular: true,
-    includes: ['convention', 'cultural']
-  },
-  {
-    id: 'adult-gala',
-    name: 'Adult + Gala Night',
-    category: 'adult',
-    price: 75,
-    description: 'Adult package with gala night',
-    features: ['Convention Cost', 'Gala Night', 'T-Shirt', 'BBQ', 'Drinks', 'Premium Seating'],
-    popular: true,
-    includes: ['convention', 'gala']
-  },
-  {
-    id: 'couple-cost',
-    name: 'Couple Package',
-    category: 'couple',
-    price: 85,
-    description: 'For two people',
-    features: ['Convention Cost (x2)', 'T-Shirts (x2)', 'BBQ', 'Drinks', 'Couple Seating'],
-    popular: false,
-    includes: ['convention']
-  },
-  {
-    id: 'couple-cultural',
-    name: 'Couple + Cultural Night',
-    category: 'couple',
-    price: 110,
-    description: 'Couple package with cultural night',
-    features: ['Convention Cost (x2)', 'Cultural Night (x2)', 'T-Shirts (x2)', 'BBQ', 'Drinks', 'Premium Seating'],
-    popular: true,
-    includes: ['convention', 'cultural']
-  },
-  {
-    id: 'couple-gala',
-    name: 'Couple + Gala Night',
-    category: 'couple',
-    price: 130,
-    description: 'Couple package with gala night',
-    features: ['Convention Cost (x2)', 'Gala Night (x2)', 'T-Shirts (x2)', 'BBQ', 'Premium Drinks', 'VIP Seating'],
-    popular: false,
-    includes: ['convention', 'gala']
-  },
-  {
-    id: 'elderly-cost',
-    name: 'Elderly Package',
-    category: 'elderly',
-    price: 30,
-    description: 'Special rate for seniors',
-    features: ['Convention Cost', 'T-Shirt', 'BBQ', 'Soft Drinks', 'Reserved Seating'],
-    popular: false,
-    includes: ['convention']
-  },
-  {
-    id: 'elderly-cultural',
-    name: 'Elderly + Cultural Night',
-    category: 'elderly',
-    price: 45,
-    description: 'Elderly package with cultural night',
-    features: ['Convention Cost', 'Cultural Night', 'T-Shirt', 'BBQ', 'Soft Drinks', 'Reserved Seating'],
-    popular: false,
-    includes: ['convention', 'cultural']
-  },
-  {
-    id: 'elderly-gala',
-    name: 'Elderly + Gala Night',
-    category: 'elderly',
-    price: 55,
-    description: 'Elderly package with gala night',
-    features: ['Convention Cost', 'Gala Night', 'T-Shirt', 'BBQ', 'Drinks', 'VIP Reserved Seating'],
-    popular: false,
-    includes: ['convention', 'gala']
-  },
-  {
-    id: 'non-registered-cost',
-    name: 'Non-Registered Member Package',
-    category: 'non-registered',
-    price: 60,
-    description: 'For non-registered community members',
-    features: ['Convention Cost', 'T-Shirt', 'BBQ', 'Drinks', 'Full Access'],
-    popular: false,
-    includes: ['convention']
-  },
-  {
-    id: 'non-registered-cultural',
-    name: 'Non-Registered + Cultural Night',
-    category: 'non-registered',
-    price: 80,
-    description: 'Non-registered with cultural night',
-    features: ['Convention Cost', 'Cultural Night', 'T-Shirt', 'BBQ', 'Drinks', 'Full Access'],
-    popular: false,
-    includes: ['convention', 'cultural']
-  },
-  {
-    id: 'non-registered-gala',
-    name: 'Non-Registered + Gala Night',
-    category: 'non-registered',
-    price: 95,
-    description: 'Non-registered with gala night',
-    features: ['Convention Cost', 'Gala Night', 'T-Shirt', 'BBQ', 'Premium Drinks', 'Premium Seating'],
-    popular: false,
-    includes: ['convention', 'gala']
-  }
-]
-
-const categoryLabels = {
-  kids: 'Kids Packages',
-  adult: 'Adult Packages',
-  couple: 'Couple Packages',
-  elderly: 'Elderly Packages',
-  'non-registered': 'Non-Registered Member Packages'
-}
-
-const eventTypes = [
-  { id: 'all', label: 'All Packages' },
-  { id: 'convention', label: 'Convention Only' },
-  { id: 'cultural', label: 'With Cultural Night' },
-  { id: 'gala', label: 'With Gala Night' }
-]
-
 export default function ConventionPage() {
   const { addToCart, cartItems } = useCart()
+  const [packages, setPackages] = useState([])
+  const [loading, setLoading] = useState(true)
   const [selectedPackage, setSelectedPackage] = useState(null)
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('all')
-  const [selectedEventType, setSelectedEventType] = useState('all')
-  const [sortBy, setSortBy] = useState('default')
+
+  // Get current pricing period
+  const currentDeadline = getCurrentDeadline()
+
+  // Fetch packages from database
+  useEffect(() => {
+    fetchPackages()
+  }, [])
+
+  const fetchPackages = async () => {
+    try {
+      const res = await fetch('/api/packages')
+      const data = await res.json()
+      setPackages(data)
+    } catch (error) {
+      console.error('Failed to fetch packages:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Get only Early Bird packages with simplified names
+  const conventionPackages = useMemo(() => {
+    if (!packages.length) return []
+    return getEarlyBirdPackages(packages)
+  }, [packages])
 
   // Get current quantity for a package in cart
   const getCurrentQuantity = (pkgId) => {
@@ -578,13 +485,17 @@ export default function ConventionPage() {
     setIsPopupOpen(true)
   }
 
-  const handleConfirmAddToCart = (pkg, quantity) => {
+  const handleConfirmAddToCart = (pkg, quantity, tshirtSizes) => {
+    // For couple packages, we store that it's a couple package but quantity is always 1
+    // The tshirtSizes array will have 2 sizes for the couple
     addToCart({
       id: pkg.id,
       name: pkg.name,
       category: pkg.category,
       price: pkg.price,
-      quantity: quantity
+      quantity: quantity,
+      tshirtSizes: tshirtSizes,
+      isCouple: pkg.category === 'couple'
     })
     setIsPopupOpen(false)
     setSelectedPackage(null)
@@ -595,46 +506,42 @@ export default function ConventionPage() {
     setSelectedPackage(null)
   }
 
-  // Filter and sort packages
-  const filteredAndSortedPackages = useMemo(() => {
-    let filtered = conventionPackages
-
-    // Filter by category
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(pkg => pkg.category === selectedCategory)
+  // Filter packages by category only
+  const filteredPackages = useMemo(() => {
+    if (selectedCategory === 'all') {
+      return conventionPackages
     }
+    return conventionPackages.filter(pkg => pkg.category === selectedCategory)
+  }, [conventionPackages, selectedCategory])
 
-    // Filter by event type
-    if (selectedEventType !== 'all') {
-      filtered = filtered.filter(pkg => pkg.includes.includes(selectedEventType))
+  // Format deadline message
+  const getDeadlineMessage = () => {
+    if (currentDeadline.type === 'EARLY_BIRD') {
+      return `Early Bird prices end on ${currentDeadline.end}`
+    } else if (currentDeadline.type === 'STANDARD') {
+      return `Standard prices valid until ${currentDeadline.end}`
+    } else if (currentDeadline.type === 'LATE') {
+      return `Late registration ends on ${currentDeadline.end}`
     }
+    return ''
+  }
 
-    // Sort packages
-    switch (sortBy) {
-      case 'price-low':
-        return filtered.sort((a, b) => a.price - b.price)
-      case 'price-high':
-        return filtered.sort((a, b) => b.price - a.price)
-      case 'popular':
-        return filtered.sort((a, b) => (b.popular ? 1 : 0) - (a.popular ? 1 : 0))
-      default:
-        return filtered
-    }
-  }, [selectedCategory, selectedEventType, sortBy])
-
-  // Group filtered packages by category
-  const groupedPackages = useMemo(() => {
-    return filteredAndSortedPackages.reduce((acc, pkg) => {
-      if (!acc[pkg.category]) acc[pkg.category] = []
-      acc[pkg.category].push(pkg)
-      return acc
-    }, {})
-  }, [filteredAndSortedPackages])
-
-  const categoryOrder = ['kids', 'adult', 'couple', 'elderly', 'non-registered']
+  if (loading) {
+    return (
+      <main className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-blue-50">
+        <Header />
+        <section className="flex-grow py-8">
+          <div className="container mx-auto px-4 text-center">
+            <div className="text-gray-600">Loading packages...</div>
+          </div>
+        </section>
+        <Footer />
+      </main>
+    )
+  }
 
   return (
-    <main className="min-h-screen flex flex-col bg-gradient-to-br from-orange-50 via-white to-amber-50">
+    <main className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <Header />
       
       {/* Add to Cart Popup */}
@@ -645,6 +552,7 @@ export default function ConventionPage() {
           onClose={handleClosePopup}
           onConfirm={handleConfirmAddToCart}
           currentQuantity={getCurrentQuantity(selectedPackage.id)}
+          deadline={currentDeadline}
         />
       )}
       
@@ -652,21 +560,60 @@ export default function ConventionPage() {
         <div className="container mx-auto px-4">
           {/* Hero Section */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-800 px-4 py-2 rounded-full text-base font-medium mb-4">
+            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-base font-medium mb-4">
               <Calendar className="h-4 w-4" />
-              August 15-17, 2025
+              August 15-17, 2026
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-              Annual Convention 2025
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              BMCA 2026 Convention
             </h1>
             <p className="text-xl text-gray-600 mb-4 max-w-3xl mx-auto">
               Join us for an unforgettable experience filled with culture, celebration, and community. 
               Choose the perfect package that suits your needs.
             </p>
+            
+            {/* Deadline Banner */}
+            <div className="max-w-3xl mx-auto mb-6">
+              <div className={`p-4 rounded-xl ${
+                currentDeadline.type === 'EARLY_BIRD' ? 'bg-green-50 border border-green-200' :
+                currentDeadline.type === 'STANDARD' ? 'bg-orange-50 border border-orange-200' :
+                'bg-red-50 border border-red-200'
+              }`}>
+                <div className="flex items-center gap-3">
+                  <Clock className={`h-6 w-6 ${
+                    currentDeadline.type === 'EARLY_BIRD' ? 'text-green-600' :
+                    currentDeadline.type === 'STANDARD' ? 'text-orange-600' :
+                    'text-red-600'
+                  }`} />
+                  <div className="text-left">
+                    <p className={`font-semibold ${
+                      currentDeadline.type === 'EARLY_BIRD' ? 'text-green-800' :
+                      currentDeadline.type === 'STANDARD' ? 'text-orange-800' :
+                      'text-red-800'
+                    }`}>
+                      {currentDeadline.label} Pricing Active
+                    </p>
+                    <p className={`text-sm ${
+                      currentDeadline.type === 'EARLY_BIRD' ? 'text-green-600' :
+                      currentDeadline.type === 'STANDARD' ? 'text-orange-600' :
+                      'text-red-600'
+                    }`}>
+                      {getDeadlineMessage()} (Central US/Canada Time)
+                    </p>
+                    {currentDeadline.description && (
+                      <p className="text-sm mt-1 text-gray-600">
+                        {currentDeadline.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="flex flex-wrap justify-center gap-4 text-base text-gray-500">
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
-                <span>Convention Center, LA</span>
+                <span>Convention Center, Los Angeles</span>
               </div>
               <div className="flex items-center gap-1">
                 <Users className="h-4 w-4" />
@@ -675,44 +622,41 @@ export default function ConventionPage() {
             </div>
           </div>
 
-          {/* Mobile Filters */}
+          {/* Hotel Booking Section */}
+          <div className="mb-8">
+            <HotelBooking />
+          </div>
+
+          {/* Mobile Filters - Only Categories */}
           <MobileFilters
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
-            selectedEventType={selectedEventType}
-            setSelectedEventType={setSelectedEventType}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            filteredCount={filteredAndSortedPackages.length}
+            filteredCount={filteredPackages.length}
             totalCount={conventionPackages.length}
           />
 
           {/* Main Content with Sidebar */}
           <div className="flex flex-col lg:flex-row gap-6">
-            {/* Sidebar Filters (Desktop) */}
+            {/* Sidebar Filters (Desktop) - Only Categories */}
             <div className="hidden lg:block lg:w-64 flex-shrink-0">
               <SidebarFilters
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
-                selectedEventType={selectedEventType}
-                setSelectedEventType={setSelectedEventType}
-                sortBy={sortBy}
-                setSortBy={setSortBy}
-                filteredCount={filteredAndSortedPackages.length}
+                filteredCount={filteredPackages.length}
                 totalCount={conventionPackages.length}
               />
             </div>
 
-            {/* Packages Grid */}
+            {/* Packages Grid - All in one grid */}
             <div className="flex-1">
               {/* Results Header */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">
-                    Convention Packages
+                    Early Bird Packages
                   </h2>
                   <p className="text-gray-600 text-base mt-1">
-                    Showing <span className="font-semibold text-orange-600">{filteredAndSortedPackages.length}</span> of {conventionPackages.length} packages
+                    Showing <span className="font-semibold text-blue-600">{filteredPackages.length}</span> packages
                   </p>
                 </div>
                 <div className="flex items-center gap-4 mt-2 sm:mt-0">
@@ -723,155 +667,121 @@ export default function ConventionPage() {
                 </div>
               </div>
 
-              {/* Packages by Category */}
-              {categoryOrder.map((category) => (
-                groupedPackages[category] && groupedPackages[category].length > 0 && (
-                  <div key={category} className="mb-8">
-                    <div className="mb-6">
-                      <h3 className="text-2xl font-bold text-gray-900">
-                        {categoryLabels[category]}
-                      </h3>
-                      <div className="w-20 h-1 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full mt-2"></div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {groupedPackages[category].map((pkg) => {
-                        const currentQuantity = getCurrentQuantity(pkg.id)
-                        return (
-                          <Card
-                            key={pkg.id}
-                            className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${
-                              pkg.popular 
-                                ? 'border-orange-300 shadow-md' 
-                                : 'border-gray-200 hover:border-orange-200'
-                            } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
-                          >
-                            {/* Popular Badge */}
-                            {pkg.popular && (
-                              <div className="absolute top-3 right-3 z-10">
-                                <Badge className="bg-gradient-to-r from-orange-500 to-amber-500 text-white flex items-center gap-1 text-sm">
-                                  <Star className="h-3 w-3 fill-current" />
-                                  Popular
-                                </Badge>
-                              </div>
-                            )}
+              {/* Single Grid for All Packages */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredPackages.map((pkg) => {
+                  const currentQuantity = getCurrentQuantity(pkg.id)
+                  return (
+                    <Card
+                      key={pkg.id}
+                      className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${
+                        pkg.popular 
+                          ? 'border-blue-300 shadow-md' 
+                          : 'border-gray-200 hover:border-blue-200'
+                      } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
+                    >
+                      {/* Popular Badge */}
+                      {pkg.popular && (
+                        <div className="absolute top-3 right-3 z-10">
+                          <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
+                            <Star className="h-3 w-3 fill-current" />
+                            Popular
+                          </Badge>
+                        </div>
+                      )}
 
-                            {/* Cart Indicator */}
-                            {currentQuantity > 0 && (
-                              <div className="absolute top-3 left-3 z-10">
-                                <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
-                                  <ShoppingCart className="h-3 w-3" />
-                                  {currentQuantity}
-                                </Badge>
-                              </div>
-                            )}
-                            
-                            <CardHeader className={`relative p-5 ${
-                              pkg.popular 
-                                ? 'bg-gradient-to-r from-orange-500 to-amber-500' 
-                                : 'bg-gradient-to-r from-orange-600 to-amber-600'
-                            } text-white`}>
-                              <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
-                              <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
-                            </CardHeader>
-                            
-                            <CardContent className="flex-grow p-5">
-                              {/* Price */}
-                              <div className="text-center mb-5">
-                                <span className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                                  ${pkg.price}
-                                </span>
-                                <p className="text-sm text-gray-500 mt-1">per person</p>
-                              </div>
+                      {/* Deadline Badge */}
+                      <div className="absolute top-3 left-3 z-10">
+                        <Badge className={`${
+                          currentDeadline.type === 'EARLY_BIRD' ? 'bg-green-500' :
+                          currentDeadline.type === 'STANDARD' ? 'bg-orange-500' :
+                          'bg-red-500'
+                        } text-white flex items-center gap-1 text-sm`}>
+                          <Clock className="h-3 w-3" />
+                          Early Bird
+                        </Badge>
+                      </div>
 
-                              {/* Features - Two Columns */}
-                              <div className="mb-5">
-                                <div className="grid grid-cols-2 gap-3">
-                                  {pkg.features.map((feature, idx) => (
-                                    <div key={idx} className="flex items-start gap-2">
-                                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                      <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </CardContent>
+                      {/* Cart Indicator */}
+                      {currentQuantity > 0 && (
+                        <div className="absolute top-3 left-3 z-10 mt-8">
+                          <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
+                            <ShoppingCart className="h-3 w-3" />
+                            {currentQuantity}
+                          </Badge>
+                        </div>
+                      )}
+                      
+                      <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+                        <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
+                        <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
+                      </CardHeader>
+                      
+                      <CardContent className="flex-grow p-5">
+                        {/* Price with Early Bird indicator */}
+                        <div className="text-center mb-5">
+                          <div className="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full mb-2">
+                            Early Bird Price
+                          </div>
+                          <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                            ${pkg.price}
+                          </span>
+                          <p className="text-sm text-gray-500 mt-1">per person</p>
+                          {pkg.category === 'couple' && (
+                            <p className="text-xs text-blue-600 mt-1">Includes 2 shirts</p>
+                          )}
+                        </div>
 
-                            {/* Add to Cart Button */}
-                            <div className="p-5 pt-0">
-                              <Button
-                                onClick={() => handleAddToCartClick(pkg)}
-                                className={`w-full text-base font-semibold transition-all ${
-                                  currentQuantity > 0
-                                    ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                                    : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600'
-                                } text-white shadow-md hover:shadow-lg py-3`}
-                              >
-                                {currentQuantity > 0 ? (
-                                  <span className="flex items-center gap-2">
-                                    <ShoppingCart className="h-4 w-4" />
-                                    Update ({currentQuantity})
-                                  </span>
-                                ) : (
-                                  `Add to Cart - $${pkg.price}`
-                                )}
-                              </Button>
-                            </div>
-                          </Card>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )
-              ))}
+                        {/* Features */}
+                        <div className="mb-5">
+                          <div className="grid grid-cols-2 gap-3">
+                            {pkg.features.slice(0, 8).map((feature, idx) => (
+                              <div key={idx} className="flex items-start gap-2">
+                                <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+
+                      {/* Add to Cart Button */}
+                      <div className="p-5 pt-0">
+                        <Button
+                          onClick={() => handleAddToCartClick(pkg)}
+                          className={`w-full text-base font-semibold transition-all ${
+                            currentQuantity > 0
+                              ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                              : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
+                          } text-white shadow-md hover:shadow-lg py-3`}
+                        >
+                          {currentQuantity > 0 ? (
+                            <span className="flex items-center gap-2">
+                              <ShoppingCart className="h-4 w-4" />
+                              Update ({currentQuantity})
+                            </span>
+                          ) : (
+                            `Add to Cart - $${pkg.price}`
+                          )}
+                        </Button>
+                      </div>
+                    </Card>
+                  )
+                })}
+              </div>
 
               {/* No Results Message */}
-              {filteredAndSortedPackages.length === 0 && (
+              {filteredPackages.length === 0 && (
                 <div className="text-center py-12">
                   <div className="text-4xl mb-3">😔</div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">No packages found</h3>
-                  <p className="text-gray-600 text-lg mb-4">Try adjusting your filters to see more options.</p>
+                  <p className="text-gray-600 text-lg mb-4">Try adjusting your category filter.</p>
                   <Button
-                    onClick={() => {
-                      setSelectedCategory('all')
-                      setSelectedEventType('all')
-                      setSortBy('default')
-                    }}
-                    className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-base"
+                    onClick={() => setSelectedCategory('all')}
+                    className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white text-base"
                   >
-                    Clear All Filters
+                    Clear Filter
                   </Button>
-                </div>
-              )}
-
-              {/* Continue Shopping CTA */}
-              {filteredAndSortedPackages.length > 0 && (
-                <div className="text-center mt-12 pt-8 border-t border-gray-200">
-                  <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-6 max-w-2xl mx-auto">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Ready to complete your selection?</h3>
-                    <p className="text-gray-600 text-lg mb-4">Review your chosen packages and proceed to checkout.</p>
-                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                      {/* <Button
-                        size="lg"
-                        className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-md hover:shadow-lg transition-all text-base"
-                        onClick={() => window.location.href = '/cart'}
-                      >
-                        View Cart & Checkout
-                      </Button> */}
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedCategory('all')
-                          setSelectedEventType('all')
-                          setSortBy('default')
-                        }}
-                        className="border-orange-300 text-orange-600 hover:bg-orange-50 text-base"
-                      >
-                        Explore All Packages
-                      </Button>
-                    </div>
-                  </div>
                 </div>
               )}
             </div>

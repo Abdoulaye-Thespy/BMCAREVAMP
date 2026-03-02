@@ -1,27 +1,22 @@
 "use client"
 
-import { useState } from "react"
-import { Edit2, Trash2, Plus } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Edit2, Trash2, Plus, Calendar } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
-const packagesData = [
-  { id: 1, name: "Kids Package", price: 50, category: "Kids", items: "Convention Cost, T-Shirt, BBQ" },
-  { id: 2, name: "Adult Package", price: 100, category: "Adult", items: "Convention Cost, Gala, T-Shirt, Drinks, BBQ" },
-  {
-    id: 3,
-    name: "Couple Package",
-    price: 180,
-    category: "Couple",
-    items: "Convention Cost (x2), Gala Night (x2), Soccer",
-  },
-  { id: 4, name: "Elderly Package", price: 75, category: "Elderly", items: "Convention Cost, T-Shirt, Soft Drinks" },
-  { id: 5, name: "Non-Registered", price: 120, category: "General", items: "All events included" },
-]
+// Deadline dates from the image
+const DEADLINES = {
+  EARLY_BIRD: { start: "Feb 1, 2026", end: "May 31, 2026", label: "Early Bird" },
+  STANDARD: { start: "June 1, 2026", end: "June 30, 2026", label: "Standard" },
+  LATE: { start: "July 1, 2026", end: "July 13, 2026", label: "Late" }
+}
 
 export default function PackagesAdmin() {
-  const [packages, setPackages] = useState(packagesData)
+  const [packages, setPackages] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [activeDeadline, setActiveDeadline] = useState("EARLY_BIRD") // Default to Early Bird
   const [openDialog, setOpenDialog] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState({
@@ -31,25 +26,81 @@ export default function PackagesAdmin() {
     items: "",
   })
 
+  // Fetch packages from database
+  useEffect(() => {
+    fetchPackages()
+  }, [])
+
+  const fetchPackages = async () => {
+    try {
+      const res = await fetch('/api/packages')
+      const data = await res.json()
+      setPackages(data)
+    } catch (error) {
+      console.error('Failed to fetch packages:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Filter packages based on active deadline
+  const getFilteredPackages = () => {
+    return packages.filter(pkg => {
+      const name = pkg.name.toLowerCase()
+      switch(activeDeadline) {
+        case "EARLY_BIRD":
+          return name.includes("early bird")
+        case "STANDARD":
+          return name.includes("standard")
+        case "LATE":
+          return name.includes("late")
+        default:
+          return true
+      }
+    })
+  }
+
   const handleEdit = (pkg) => {
     setFormData(pkg)
     setEditingId(pkg.id)
     setOpenDialog(true)
   }
 
-  const handleDelete = (id) => {
-    setPackages(packages.filter((p) => p.id !== id))
+  const handleDelete = async (id) => {
+    try {
+      await fetch('/api/packages', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      })
+      fetchPackages()
+    } catch (error) {
+      console.error('Failed to delete package:', error)
+    }
   }
 
-  const handleSave = () => {
-    if (editingId) {
-      setPackages(packages.map((p) => (p.id === editingId ? { ...formData, id: editingId } : p)))
-    } else {
-      setPackages([...packages, { ...formData, id: Date.now() }])
+  const handleSave = async () => {
+    try {
+      if (editingId) {
+        await fetch('/api/packages', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...formData, id: editingId })
+        })
+      } else {
+        await fetch('/api/packages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        })
+      }
+      fetchPackages()
+      setOpenDialog(false)
+      setEditingId(null)
+      setFormData({ name: "", price: 0, category: "", items: "" })
+    } catch (error) {
+      console.error('Failed to save package:', error)
     }
-    setOpenDialog(false)
-    setEditingId(null)
-    setFormData({ name: "", price: 0, category: "", items: "" })
   }
 
   const handleAddNew = () => {
@@ -58,11 +109,21 @@ export default function PackagesAdmin() {
     setOpenDialog(true)
   }
 
+  const filteredPackages = getFilteredPackages()
+
+  if (loading) {
+    return (
+      <div className="p-8 flex justify-center">
+        <div className="text-gray-600">Loading packages...</div>
+      </div>
+    )
+  }
+
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Convention Packages</h1>
+          <h1 className="text-3xl font-bold text-gray-900">BMCA 2026 Convention Packages</h1>
           <p className="text-gray-600 mt-2">Manage and create convention packages</p>
         </div>
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
@@ -113,8 +174,63 @@ export default function PackagesAdmin() {
         </Dialog>
       </div>
 
+      {/* Deadline Toggle */}
+      <div className="mb-8">
+        <div className="flex items-center gap-2 mb-3">
+          <Calendar className="h-5 w-5 text-[#F5A623]" />
+          <h2 className="text-lg font-semibold">Select Pricing Period</h2>
+        </div>
+        <div className="flex flex-wrap gap-4">
+          <button
+            onClick={() => setActiveDeadline("EARLY_BIRD")}
+            className={`flex-1 min-w-[200px] p-4 rounded-lg border-2 transition-all ${
+              activeDeadline === "EARLY_BIRD" 
+                ? "border-[#F5A623] bg-orange-50" 
+                : "border-gray-200 hover:border-gray-300"
+            }`}
+          >
+            <div className="font-bold text-lg">Early Bird</div>
+            <div className="text-sm text-gray-600">Till {DEADLINES.EARLY_BIRD.end}</div>
+            <div className="text-xs text-gray-500 mt-1">Save up to $40</div>
+          </button>
+          
+          <button
+            onClick={() => setActiveDeadline("STANDARD")}
+            className={`flex-1 min-w-[200px] p-4 rounded-lg border-2 transition-all ${
+              activeDeadline === "STANDARD" 
+                ? "border-[#F5A623] bg-orange-50" 
+                : "border-gray-200 hover:border-gray-300"
+            }`}
+          >
+            <div className="font-bold text-lg">Standard</div>
+            <div className="text-sm text-gray-600">{DEADLINES.STANDARD.start} - {DEADLINES.STANDARD.end}</div>
+          </button>
+          
+          <button
+            onClick={() => setActiveDeadline("LATE")}
+            className={`flex-1 min-w-[200px] p-4 rounded-lg border-2 transition-all ${
+              activeDeadline === "LATE" 
+                ? "border-[#F5A623] bg-orange-50" 
+                : "border-gray-200 hover:border-gray-300"
+            }`}
+          >
+            <div className="font-bold text-lg">Late</div>
+            <div className="text-sm text-gray-600">{DEADLINES.LATE.start} - {DEADLINES.LATE.end}</div>
+          </button>
+        </div>
+        
+        {/* Active period indicator */}
+        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+          <p className="text-sm text-blue-800">
+            <span className="font-semibold">Currently showing:</span> {DEADLINES[activeDeadline].label} prices 
+            ({DEADLINES[activeDeadline].start} - {DEADLINES[activeDeadline].end})
+          </p>
+        </div>
+      </div>
+
+      {/* Packages Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {packages.map((pkg) => (
+        {filteredPackages.map((pkg) => (
           <Card key={pkg.id} className="p-6">
             <div className="flex items-start justify-between mb-4">
               <div>
@@ -142,6 +258,12 @@ export default function PackagesAdmin() {
           </Card>
         ))}
       </div>
+
+      {filteredPackages.length === 0 && (
+        <div className="text-center py-12 text-gray-500">
+          No packages found for this period.
+        </div>
+      )}
     </div>
   )
 }
