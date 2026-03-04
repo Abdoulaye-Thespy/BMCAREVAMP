@@ -4,30 +4,36 @@ import { stripe } from '@/lib/stripe'
 import { PRODUCTS } from '@/lib/products'
 import { prisma } from '@/lib/prisma'
 
-export async function startCheckoutSession(productId, email) {
-  const product = PRODUCTS.find((p) => p.id === productId)
-  if (!product) {
-    throw new Error(`Product with id "${productId}" not found`)
+export async function startCheckoutSession(cartItems, email) {
+  if (!cartItems || cartItems.length === 0) {
+    throw new Error('Cart is empty')
   }
+
+  // Build line items from cart
+  const lineItems = cartItems.map((item) => ({
+    price_data: {
+      currency: 'usd',
+      product_data: {
+        name: item.name,
+        description: item.category || 'Product',
+      },
+      unit_amount: Math.round(item.price * 100), // Convert to cents
+    },
+    quantity: item.quantity,
+  }))
+
+  // Calculate total amount
+  const totalAmount = cartItems.reduce(
+    (sum, item) => sum + Math.round(item.price * 100) * item.quantity,
+    0
+  )
 
   // Create Checkout Sessions from body params
   const session = await stripe.checkout.sessions.create({
     ui_mode: 'embedded',
     redirect_on_completion: 'never',
     customer_email: email,
-    line_items: [
-      {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: product.name,
-            description: product.description,
-          },
-          unit_amount: product.priceInCents,
-        },
-        quantity: 1,
-      },
-    ],
+    line_items: lineItems,
     mode: 'payment',
   })
 
@@ -36,16 +42,14 @@ export async function startCheckoutSession(productId, email) {
     data: {
       stripeSessionId: session.id,
       email,
-      amount: product.priceInCents,
+      amount: totalAmount,
       status: 'pending',
       items: {
-        create: [
-          {
-            productId,
-            quantity: 1,
-            price: product.priceInCents,
-          },
-        ],
+        create: cartItems.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity,
+          price: Math.round(item.price * 100),
+        })),
       },
     },
     include: {

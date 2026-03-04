@@ -14,7 +14,7 @@ const stripePromise = loadStripe(
 )
 
 export default function Checkout({
-  productId,
+  cartItems = [],
   email,
   onSuccess,
   onError,
@@ -28,8 +28,11 @@ export default function Checkout({
     try {
       setLoading(true)
       setError('')
+      
+      // Pass cart items instead of single productId
       const { clientSecret: secret, orderId: id } = 
-        await startCheckoutSession(productId, email)
+        await startCheckoutSession(cartItems, email)
+      
       setClientSecret(secret)
       setOrderId(id)
     } catch (err) {
@@ -39,7 +42,7 @@ export default function Checkout({
     } finally {
       setLoading(false)
     }
-  }, [productId, email, onError])
+  }, [cartItems, email, onError])
 
   useEffect(() => {
     startCheckout()

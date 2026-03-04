@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
@@ -8,9 +9,13 @@ import { Input } from '@/components/ui/input'
 import { useCart } from '@/context/cart-context'
 import { Trash2, Plus, Minus, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import Checkout from '@/components/checkout'
 
 export default function CartPage() {
-  const { cartItems, removeFromCart, updateQuantity, getTotalPrice } = useCart()
+  const { cartItems, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart()
+  const [showCheckout, setShowCheckout] = useState(false)
+  const [customerEmail, setCustomerEmail] = useState('')
+  const [emailSubmitted, setEmailSubmitted] = useState(false)
 
   const total = getTotalPrice()
   const tax = total * 0.1
@@ -125,47 +130,101 @@ export default function CartPage() {
               </Button>
             </div>
 
-            {/* Order Summary */}
+            {/* Order Summary / Checkout */}
             <div>
-              <Card className="sticky top-20">
-                <CardHeader className="bg-[#F5A623] text-white">
-                  <CardTitle>Order Summary</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <div className="space-y-4 mb-6">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Subtotal</span>
-                      <span className="font-semibold">${total.toFixed(2)}</span>
+              {emailSubmitted && customerEmail ? (
+                <Card className="sticky top-20">
+                  <CardHeader className="bg-[#F5A623] text-white">
+                    <CardTitle>Payment</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <Checkout
+                      cartItems={cartItems}
+                      email={customerEmail}
+                      onSuccess={(orderId) => {
+                        clearCart()
+                        setShowCheckout(false)
+                        setEmailSubmitted(false)
+                        // Optionally redirect or show success message
+                        console.log('Order completed:', orderId)
+                      }}
+                      onError={(error) => {
+                        console.error('Checkout error:', error)
+                        setEmailSubmitted(false)
+                      }}
+                    />
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="sticky top-20">
+                  <CardHeader className="bg-[#F5A623] text-white">
+                    <CardTitle>Order Summary</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="space-y-4 mb-6">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Subtotal</span>
+                        <span className="font-semibold">${total.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Tax (10%)</span>
+                        <span className="font-semibold">${tax.toFixed(2)}</span>
+                      </div>
+                      <div className="border-t pt-4 flex justify-between">
+                        <span className="font-bold text-gray-900">Grand Total</span>
+                        <span className="text-2xl font-bold text-[#F5A623]">${grandTotal.toFixed(2)}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Tax (10%)</span>
-                      <span className="font-semibold">${tax.toFixed(2)}</span>
+
+                    {!showCheckout ? (
+                      <Button 
+                        onClick={() => setShowCheckout(true)}
+                        className="w-full bg-[#F5A623] text-white hover:bg-[#F5A623]/90 mb-3"
+                      >
+                        Proceed to Checkout
+                      </Button>
+                    ) : (
+                      <div className="space-y-4 mb-3">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Email Address
+                          </label>
+                          <Input
+                            type="email"
+                            value={customerEmail}
+                            onChange={(e) => setCustomerEmail(e.target.value)}
+                            placeholder="you@example.com"
+                            className="mb-2"
+                          />
+                          <Button 
+                            onClick={() => {
+                              if (customerEmail) setEmailSubmitted(true)
+                            }}
+                            className="w-full bg-[#F5A623] text-white hover:bg-[#F5A623]/90"
+                            disabled={!customerEmail}
+                          >
+                            Continue to Payment
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+
+                    <Button variant="outline" className="w-full">
+                      Save for Later
+                    </Button>
+
+                    <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                      <p className="text-xs text-gray-600">
+                        ✓ Secure checkout
+                        <br />
+                        ✓ All payments non-refundable
+                        <br />
+                        ✓ Instant confirmation
+                      </p>
                     </div>
-                    <div className="border-t pt-4 flex justify-between">
-                      <span className="font-bold text-gray-900">Grand Total</span>
-                      <span className="text-2xl font-bold text-[#F5A623]">${grandTotal.toFixed(2)}</span>
-                    </div>
-                  </div>
-
-                  <Button className="w-full bg-[#F5A623] text-white hover:bg-[#F5A623]/90 mb-3">
-                    Proceed to Checkout
-                  </Button>
-
-                  <Button variant="outline" className="w-full">
-                    Save for Later
-                  </Button>
-
-                  <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                    <p className="text-xs text-gray-600">
-                      ✓ Secure checkout
-                      <br />
-                      ✓ All payments non-refundable
-                      <br />
-                      ✓ Instant confirmation
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         </div>
