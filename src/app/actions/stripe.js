@@ -4,10 +4,7 @@ import { stripe } from '@/lib/stripe'
 import { PRODUCTS } from '@/lib/products'
 import { prisma } from '@/lib/prisma'
 
-export async function startCheckoutSession(
-  productId: string,
-  email: string
-) {
+export async function startCheckoutSession(productId, email) {
   const product = PRODUCTS.find((p) => p.id === productId)
   if (!product) {
     throw new Error(`Product with id "${productId}" not found`)
@@ -62,9 +59,7 @@ export async function startCheckoutSession(
   }
 }
 
-export async function getCheckoutSessionStatus(
-  sessionId: string
-) {
+export async function getCheckoutSessionStatus(sessionId) {
   const session = await stripe.checkout.sessions.retrieve(sessionId)
   
   // Update order status based on payment status
@@ -78,7 +73,7 @@ export async function getCheckoutSessionStatus(
         where: { id: order.id },
         data: {
           status: 'completed',
-          stripePaymentId: session.payment_intent as string,
+          stripePaymentId: session.payment_intent,
         },
       })
     }
@@ -90,7 +85,7 @@ export async function getCheckoutSessionStatus(
   }
 }
 
-export async function getOrderDetails(orderId: string) {
+export async function getOrderDetails(orderId) {
   return prisma.order.findUnique({
     where: { id: orderId },
     include: {

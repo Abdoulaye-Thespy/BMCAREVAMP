@@ -10,7 +10,7 @@ import { loadStripe } from '@stripe/stripe-js'
 import { startCheckoutSession, getCheckoutSessionStatus } from '@/app/actions/stripe'
 
 const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 )
 
 export default function Checkout({
@@ -18,16 +18,11 @@ export default function Checkout({
   email,
   onSuccess,
   onError,
-}: {
-  productId: string
-  email: string
-  onSuccess?: (orderId: string) => void
-  onError?: (error: string) => void
 }) {
-  const [clientSecret, setClientSecret] = useState<string>('')
-  const [orderId, setOrderId] = useState<string>('')
+  const [clientSecret, setClientSecret] = useState('')
+  const [orderId, setOrderId] = useState('')
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string>('')
+  const [error, setError] = useState('')
 
   const startCheckout = useCallback(async () => {
     try {

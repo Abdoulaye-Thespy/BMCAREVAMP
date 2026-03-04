@@ -1,13 +1,5 @@
-export interface Product {
-  id: string
-  name: string
-  description: string
-  priceInCents: number
-  images?: string[]
-}
-
 // Update this array with your actual products
-export const PRODUCTS: Product[] = [
+export const PRODUCTS = [
   {
     id: 'basic-package',
     name: 'Basic Package',
