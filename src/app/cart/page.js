@@ -6,12 +6,39 @@ import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useCart } from '@/context/cart-context'
 import { Trash2, Plus, Minus, ArrowLeft, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
 import Checkout from '@/components/checkout'
+
+// Alert Component
+const Alert = ({ message, type, onClose }) => {
+  const bgColor = type === 'success' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+  const textColor = type === 'success' ? 'text-green-800' : 'text-red-800'
+  const iconColor = type === 'success' ? 'text-green-400' : 'text-red-400'
+  const icon = type === 'success' ? '✓' : '✗'
+  const title = type === 'success' ? 'Success!' : 'Error!'
+  
+  return (
+    <div className="fixed top-4 right-4 z-50 p-4 rounded-lg border ${bgColor} shadow-lg max-w-md animate-slide-in">
+      <div className="flex items-start">
+        <div className={`flex-shrink-0 ${iconColor}`}>
+          <span className="text-2xl">{icon}</span>
+        </div>
+        <div className="ml-3 flex-1">
+          <p className={`text-sm font-bold ${textColor}`}>{title}</p>
+          <p className={`text-sm mt-1 ${textColor}`}>{message}</p>
+        </div>
+        <button
+          onClick={onClose}
+          className={`ml-4 ${textColor} hover:opacity-75`}
+        >
+          <span className="text-xl">&times;</span>
+        </button>
+      </div>
+    </div>
+  )
+}
 
 // US States for dropdown
 const US_STATES = [
@@ -32,18 +59,17 @@ const initialCustomerInfo = {
   state: '',
   zipCode: '',
   country: 'US',
-  chapter: '', // This will be a string like "LAG-001" or "ABJ-123"
+  chapter: '',
 }
 
 export default function CartPage() {
   const { cartItems, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart()
-  const [currentStep, setCurrentStep] = useState('cart') // 'cart', 'information', 'payment'
+  const [currentStep, setCurrentStep] = useState('cart')
   const [customerInfo, setCustomerInfo] = useState(initialCustomerInfo)
   const [formErrors, setFormErrors] = useState({})
+  const [alert, setAlert] = useState(null)
 
-  const total = getTotalPrice()
-  const tax = total * 0.1
-  const grandTotal = total + tax
+  const total = getTotalPrice() // This is now the final price (no tax)
 
   const validateForm = () => {
     const errors = {}
@@ -68,7 +94,6 @@ export default function CartPage() {
 
   const handleInputChange = (field, value) => {
     setCustomerInfo(prev => ({ ...prev, [field]: value }))
-    // Clear error for this field when user starts typing
     if (formErrors[field]) {
       setFormErrors(prev => ({ ...prev, [field]: undefined }))
     }
@@ -85,19 +110,81 @@ export default function CartPage() {
   const handleContinueToPayment = () => {
     if (validateForm()) {
       setCurrentStep('payment')
+    } else {
+      setAlert({
+        type: 'error',
+        message: 'Please fill in all required fields correctly before proceeding to payment.'
+      })
+      setTimeout(() => setAlert(null), 5000)
     }
   }
 
   const handlePaymentSuccess = (orderId) => {
     clearCart()
+    
+    // Show success alert
+    setAlert({
+      type: 'success',
+      message: `Thank you for your purchase!\n\nOrder ID: ${orderId}\n\nA confirmation email will be sent to ${customerInfo.email} shortly.`
+    })
+    
+    // Auto-hide after 8 seconds
+    setTimeout(() => setAlert(null), 8000)
+    
     setCurrentStep('cart')
     setCustomerInfo(initialCustomerInfo)
-    console.log('Order completed:', orderId)
-    // You could redirect to a success page or show a success message
   }
 
   const handlePaymentError = (error) => {
     console.error('Checkout error:', error)
+    
+    let errorMessage = 'Payment failed. Please try again.'
+    let errorDetails = ''
+    console.log(customerInfo)
+    
+    // Parse different types of errors
+    if (typeof error === 'string') {
+      errorMessage = error
+    } else if (error?.message) {
+      errorMessage = error.message
+    }
+    
+    // Handle specific Stripe errors with user-friendly messages
+    if (errorMessage.includes('card') || errorMessage.includes('Card')) {
+      if (errorMessage.includes('declined')) {
+        errorDetails = 'Your card was declined. Please try a different card.'
+      } else if (errorMessage.includes('insufficient funds')) {
+        errorDetails = 'Your card has insufficient funds.'
+      } else if (errorMessage.includes('expired')) {
+        errorDetails = 'Your card has expired. Please use a different card.'
+      } else if (errorMessage.includes('number')) {
+        errorDetails = 'The card number is invalid. Please check and try again.'
+      } else if (errorMessage.includes('CVC') || errorMessage.includes('cvc')) {
+        errorDetails = 'The security code (CVC) is invalid.'
+      } else {
+        errorDetails = 'Please check your card details and try again.'
+      }
+    } else if (errorMessage.includes('authentication') || errorMessage.includes('3D Secure')) {
+      errorDetails = 'Additional authentication required. Please complete the bank verification process.'
+    } else if (errorMessage.includes('network') || errorMessage.includes('connection')) {
+      errorDetails = 'Network issue detected. Please check your internet connection and try again.'
+    } else if (errorMessage.includes('timeout')) {
+      errorDetails = 'The request timed out. Please try again.'
+    } else if (errorMessage.includes('email')) {
+      errorDetails = 'There was an issue with your email address. Please verify it.'
+    } else if (errorMessage.includes('amount') || errorMessage.includes('total')) {
+      errorDetails = 'There was an issue with the payment amount. Please contact support.'
+    }
+    
+    // Show error alert
+    setAlert({
+      type: 'error',
+      message: `Payment Failed\n\n${errorMessage}\n${errorDetails ? '\n' + errorDetails : ''}\n\nPlease check your information and try again.`
+    })
+    
+    // Auto-hide after 10 seconds
+    setTimeout(() => setAlert(null), 10000)
+    
     setCurrentStep('information')
   }
 
@@ -127,6 +214,15 @@ export default function CartPage() {
   return (
     <main className="min-h-screen flex flex-col">
       <Header />
+      
+      {/* Alert Popup */}
+      {alert && (
+        <Alert 
+          message={alert.message} 
+          type={alert.type} 
+          onClose={() => setAlert(null)} 
+        />
+      )}
       
       <section className="flex-grow bg-gradient-to-b from-orange-50 to-white py-12">
         <div className="container mx-auto px-4">
@@ -243,7 +339,9 @@ export default function CartPage() {
                       {/* Name Fields */}
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="firstName">First Name *</Label>
+                          <label htmlFor="firstName" className="text-sm font-medium leading-none">
+                            First Name *
+                          </label>
                           <Input
                             id="firstName"
                             value={customerInfo.firstName}
@@ -255,7 +353,9 @@ export default function CartPage() {
                           )}
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="lastName">Last Name *</Label>
+                          <label htmlFor="lastName" className="text-sm font-medium leading-none">
+                            Last Name *
+                          </label>
                           <Input
                             id="lastName"
                             value={customerInfo.lastName}
@@ -271,7 +371,9 @@ export default function CartPage() {
                       {/* Contact Info */}
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="email">Email Address *</Label>
+                          <label htmlFor="email" className="text-sm font-medium leading-none">
+                            Email Address *
+                          </label>
                           <Input
                             id="email"
                             type="email"
@@ -284,7 +386,9 @@ export default function CartPage() {
                           )}
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="phone">Phone Number *</Label>
+                          <label htmlFor="phone" className="text-sm font-medium leading-none">
+                            Phone Number *
+                          </label>
                           <Input
                             id="phone"
                             type="tel"
@@ -301,7 +405,9 @@ export default function CartPage() {
 
                       {/* Address */}
                       <div className="space-y-2">
-                        <Label htmlFor="address">Street Address *</Label>
+                        <label htmlFor="address" className="text-sm font-medium leading-none">
+                          Street Address *
+                        </label>
                         <Input
                           id="address"
                           value={customerInfo.address}
@@ -316,7 +422,9 @@ export default function CartPage() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="city">City *</Label>
+                          <label htmlFor="city" className="text-sm font-medium leading-none">
+                            City *
+                          </label>
                           <Input
                             id="city"
                             value={customerInfo.city}
@@ -328,22 +436,24 @@ export default function CartPage() {
                           )}
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="state">State *</Label>
-                          <Select
+                          <label htmlFor="state" className="text-sm font-medium leading-none">
+                            State *
+                          </label>
+                          <select
+                            id="state"
                             value={customerInfo.state}
-                            onValueChange={(value) => handleInputChange('state', value)}
+                            onChange={(e) => handleInputChange('state', e.target.value)}
+                            className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                              formErrors.state ? 'border-red-500' : ''
+                            }`}
                           >
-                            <SelectTrigger className={formErrors.state ? 'border-red-500' : ''}>
-                              <SelectValue placeholder="Select state" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {US_STATES.map((state) => (
-                                <SelectItem key={state} value={state}>
-                                  {state}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                            <option value="">Select state</option>
+                            {US_STATES.map((state) => (
+                              <option key={state} value={state}>
+                                {state}
+                              </option>
+                            ))}
+                          </select>
                           {formErrors.state && (
                             <p className="text-sm text-red-500">{formErrors.state}</p>
                           )}
@@ -352,7 +462,9 @@ export default function CartPage() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="zipCode">ZIP Code *</Label>
+                          <label htmlFor="zipCode" className="text-sm font-medium leading-none">
+                            ZIP Code *
+                          </label>
                           <Input
                             id="zipCode"
                             value={customerInfo.zipCode}
@@ -364,27 +476,28 @@ export default function CartPage() {
                           )}
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="country">Country</Label>
-                          <Select
+                          <label htmlFor="country" className="text-sm font-medium leading-none">
+                            Country
+                          </label>
+                          <select
+                            id="country"
                             value={customerInfo.country}
-                            onValueChange={(value) => handleInputChange('country', value)}
+                            onChange={(e) => handleInputChange('country', e.target.value)}
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                           >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select country" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="US">United States</SelectItem>
-                              <SelectItem value="CA">Canada</SelectItem>
-                              <SelectItem value="UK">United Kingdom</SelectItem>
-                              <SelectItem value="NG">Nigeria</SelectItem>
-                            </SelectContent>
-                          </Select>
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="NG">Nigeria</option>
+                          </select>
                         </div>
                       </div>
 
-                      {/* Chapter Field - Now an input field for custom chapter ID */}
+                      {/* Chapter Field */}
                       <div className="space-y-2">
-                        <Label htmlFor="chapter">Chapter ID *</Label>
+                        <label htmlFor="chapter" className="text-sm font-medium leading-none">
+                          Chapter ID *
+                        </label>
                         <Input
                           id="chapter"
                           value={customerInfo.chapter}
@@ -433,7 +546,7 @@ export default function CartPage() {
                     <Checkout
                       cartItems={cartItems}
                       customerInfo={customerInfo}
-                      total={grandTotal}
+                      total={total}
                       onSuccess={handlePaymentSuccess}
                       onError={handlePaymentError}
                     />
@@ -476,13 +589,9 @@ export default function CartPage() {
                       <span className="text-gray-600">Subtotal</span>
                       <span className="font-semibold">${total.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Tax (10%)</span>
-                      <span className="font-semibold">${tax.toFixed(2)}</span>
-                    </div>
                     <div className="border-t pt-4 flex justify-between">
-                      <span className="font-bold text-gray-900">Grand Total</span>
-                      <span className="text-2xl font-bold text-[#F5A623]">${grandTotal.toFixed(2)}</span>
+                      <span className="font-bold text-gray-900">Total</span>
+                      <span className="text-2xl font-bold text-[#F5A623]">${total.toFixed(2)}</span>
                     </div>
                   </div>
 

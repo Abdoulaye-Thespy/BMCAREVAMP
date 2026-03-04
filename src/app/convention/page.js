@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useCart } from '@/context/cart-context'
 import { useState, useMemo, useEffect } from 'react'
-import { Check, Filter, Star, Users, Calendar, MapPin, X, Plus, Minus, ShoppingCart, ChevronDown, Clock, Shirt } from 'lucide-react'
+import { Check, Filter, Star, Users, Calendar, MapPin, X, Plus, Minus, ShoppingCart, ChevronDown, Clock, Shirt, ArrowRight } from 'lucide-react'
 import { HotelBooking } from '@/components/sections/hotel-booking'
+import { useRouter } from 'next/navigation'
 
 // Deadline dates from the image (Central US/Canada time)
 const DEADLINES = {
@@ -42,9 +43,10 @@ const Badge = ({ children, className = '', ...props }) => {
 }
 
 // Confirmation Popup Component with T-shirt sizes - FIXED
-const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0, deadline }) => {
+const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, currentQuantity = 0, deadline }) => {
   const [quantity, setQuantity] = useState(1)
   const [tshirtSizes, setTshirtSizes] = useState([])
+  const [allSizesSelected, setAllSizesSelected] = useState(false)
   
   // Calculate number of t-shirts needed based on package type and quantity
   const getTshirtCount = () => {
@@ -58,7 +60,8 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0, 
 
   // Initialize t-shirt sizes array when quantity or package changes
   useEffect(() => {
-    setTshirtSizes(Array(tshirtCount).fill('M'))
+    // Initialize with empty strings (no default size)
+    setTshirtSizes(Array(tshirtCount).fill(''))
   }, [tshirtCount, isOpen])
 
   useEffect(() => {
@@ -69,12 +72,29 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0, 
     }
   }, [currentQuantity, isOpen])
 
+  // Check if all t-shirt sizes are selected
+  useEffect(() => {
+    // Check if every size has been selected (not empty string)
+    const allSelected = tshirtSizes.every(size => size !== '')
+    setAllSizesSelected(allSelected)
+  }, [tshirtSizes])
+
   if (!isOpen) return null
 
   const totalPrice = pkg.price * quantity
 
   const handleConfirm = () => {
-    onConfirm(pkg, quantity, tshirtSizes)
+    if (allSizesSelected) {
+      onConfirm(pkg, quantity, tshirtSizes)
+    }
+  }
+
+  const handleGoToCheckout = () => {
+    if (allSizesSelected) {
+      // First add to cart, then go to checkout
+      onConfirm(pkg, quantity, tshirtSizes)
+      onGoToCheckout()
+    }
   }
 
   const increment = () => setQuantity(prev => prev + 1)
@@ -181,7 +201,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0, 
               <div className="flex items-center gap-2 mb-4">
                 <Shirt className="h-5 w-5 text-blue-600" />
                 <h5 className="font-semibold text-gray-900 text-lg">
-                  T-shirt Sizes ({tshirtCount} {tshirtCount === 1 ? 'shirt' : 'shirts'})
+                  Select T-shirt Sizes ({tshirtCount} {tshirtCount === 1 ? 'shirt' : 'shirts'})
                 </h5>
                 {pkg.category === 'couple' && (
                   <p className="text-sm text-gray-500 ml-2">(2 shirts per couple package)</p>
@@ -195,10 +215,13 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0, 
                       {getPersonLabel(index)}
                     </span>
                     <select
-                      value={tshirtSizes[index] || 'M'}
+                      value={tshirtSizes[index] || ''}
                       onChange={(e) => updateTshirtSize(index, e.target.value)}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+                      className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
+                        tshirtSizes[index] ? 'border-gray-300' : 'border-red-300 bg-red-50'
+                      }`}
                     >
+                      <option value="" disabled>Select a size</option>
                       {TSHIRT_SIZES.map(size => (
                         <option key={size} value={size}>{size}</option>
                       ))}
@@ -206,6 +229,13 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0, 
                   </div>
                 ))}
               </div>
+              
+              {!allSizesSelected && (
+                <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
+                  <X className="h-4 w-4" />
+                  Please select all t-shirt sizes
+                </p>
+              )}
             </div>
           )}
 
@@ -224,7 +254,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0, 
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3 p-6 border-t">
+        <div className="flex flex-col sm:flex-row gap-3 p-6 border-t">
           <Button
             variant="outline"
             onClick={onClose}
@@ -234,9 +264,26 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, currentQuantity = 0, 
           </Button>
           <Button
             onClick={handleConfirm}
-            className="flex-1 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-lg hover:shadow-xl transition-all text-base"
+            disabled={!allSizesSelected}
+            className={`flex-1 text-base ${
+              allSizesSelected
+                ? 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-lg hover:shadow-xl'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
           >
             {currentQuantity > 0 ? 'Update Cart' : 'Add to Cart'}
+          </Button>
+          <Button
+            onClick={handleGoToCheckout}
+            disabled={!allSizesSelected}
+            className={`flex-1 text-base flex items-center justify-center gap-2 ${
+              allSizesSelected
+                ? 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            Go to Checkout
+            <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
@@ -442,6 +489,7 @@ const SidebarFilters = ({
 
 export default function ConventionPage() {
   const { addToCart, cartItems } = useCart()
+  const router = useRouter()
   const [packages, setPackages] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedPackage, setSelectedPackage] = useState(null)
@@ -501,6 +549,11 @@ export default function ConventionPage() {
     setSelectedPackage(null)
   }
 
+  const handleGoToCheckout = () => {
+    // Navigate to cart page with information step pre-selected
+    router.push('/cart?step=information')
+  }
+
   const handleClosePopup = () => {
     setIsPopupOpen(false)
     setSelectedPackage(null)
@@ -551,6 +604,7 @@ export default function ConventionPage() {
           isOpen={isPopupOpen}
           onClose={handleClosePopup}
           onConfirm={handleConfirmAddToCart}
+          onGoToCheckout={handleGoToCheckout}
           currentQuantity={getCurrentQuantity(selectedPackage.id)}
           deadline={currentDeadline}
         />
@@ -664,6 +718,14 @@ export default function ConventionPage() {
                     <ShoppingCart className="h-5 w-5" />
                     <span>{cartItems.reduce((sum, item) => sum + item.quantity, 0)} items in cart</span>
                   </div>
+                  <Button
+                    onClick={() => router.push('/cart?step=information')}
+                    className="bg-green-600 hover:bg-green-700 text-white text-sm flex items-center gap-2"
+                    size="sm"
+                  >
+                    Go to Checkout
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
 
