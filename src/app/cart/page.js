@@ -17,16 +17,17 @@ const Alert = ({ message, type, onClose }) => {
   const textColor = type === 'success' ? 'text-green-800' : 'text-red-800'
   const iconColor = type === 'success' ? 'text-green-400' : 'text-red-400'
   const icon = type === 'success' ? '✓' : '✗'
-  const title = type === 'success' ? 'Success!' : 'Error!'
-  
+
   return (
-    <div className="fixed top-4 right-4 z-50 p-4 rounded-lg border ${bgColor} shadow-lg max-w-md animate-slide-in">
+    <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg border ${bgColor} shadow-lg max-w-md animate-slide-in`}>
       <div className="flex items-start">
         <div className={`flex-shrink-0 ${iconColor}`}>
           <span className="text-2xl">{icon}</span>
         </div>
-        <div className="ml-3 flex-1">
-          <p className={`text-sm font-bold ${textColor}`}>{title}</p>
+        <div className="ml-3 flex-1 whitespace-pre-line">
+          <p className={`text-sm font-bold ${textColor}`}>
+            {type === 'success' ? 'Success!' : 'Error!'}
+          </p>
           <p className={`text-sm mt-1 ${textColor}`}>{message}</p>
         </div>
         <button
@@ -68,8 +69,9 @@ export default function CartPage() {
   const [customerInfo, setCustomerInfo] = useState(initialCustomerInfo)
   const [formErrors, setFormErrors] = useState({})
   const [alert, setAlert] = useState(null)
+  const [orderId, setOrderId] = useState(null)
 
-  const total = getTotalPrice() // This is now the final price (no tax)
+  const total = getTotalPrice()
 
   const validateForm = () => {
     const errors = {}
@@ -119,36 +121,40 @@ export default function CartPage() {
     }
   }
 
-  const handlePaymentSuccess = (orderId) => {
+  const handlePaymentSuccess = (receivedOrderId) => {
+    setOrderId(receivedOrderId)
     clearCart()
-    
+
     // Show success alert
     setAlert({
       type: 'success',
-      message: `Thank you for your purchase!\n\nOrder ID: ${orderId}\n\nA confirmation email will be sent to ${customerInfo.email} shortly.`
+      message: `Thank you for your purchase, ${customerInfo.firstName}!\n\nOrder ID: ${receivedOrderId}\n\nA confirmation email will be sent to ${customerInfo.email} shortly.`
     })
-    
+
     // Auto-hide after 8 seconds
     setTimeout(() => setAlert(null), 8000)
-    
-    setCurrentStep('cart')
-    setCustomerInfo(initialCustomerInfo)
+
+    // Reset to cart view after successful payment
+    setTimeout(() => {
+      setCurrentStep('cart')
+      setCustomerInfo(initialCustomerInfo)
+      setOrderId(null)
+    }, 3000)
   }
 
   const handlePaymentError = (error) => {
     console.error('Checkout error:', error)
-    
+
     let errorMessage = 'Payment failed. Please try again.'
     let errorDetails = ''
-    console.log(customerInfo)
-    
+
     // Parse different types of errors
     if (typeof error === 'string') {
       errorMessage = error
     } else if (error?.message) {
       errorMessage = error.message
     }
-    
+
     // Handle specific Stripe errors with user-friendly messages
     if (errorMessage.includes('card') || errorMessage.includes('Card')) {
       if (errorMessage.includes('declined')) {
@@ -175,20 +181,21 @@ export default function CartPage() {
     } else if (errorMessage.includes('amount') || errorMessage.includes('total')) {
       errorDetails = 'There was an issue with the payment amount. Please contact support.'
     }
-    
+
     // Show error alert
     setAlert({
       type: 'error',
       message: `Payment Failed\n\n${errorMessage}\n${errorDetails ? '\n' + errorDetails : ''}\n\nPlease check your information and try again.`
     })
-    
+
     // Auto-hide after 10 seconds
     setTimeout(() => setAlert(null), 10000)
-    
+
+    // Return to information step to correct any issues
     setCurrentStep('information')
   }
 
-  if (cartItems.length === 0) {
+  if (cartItems.length === 0 && currentStep === 'cart') {
     return (
       <main className="min-h-screen flex flex-col">
         <Header />
@@ -214,16 +221,16 @@ export default function CartPage() {
   return (
     <main className="min-h-screen flex flex-col">
       <Header />
-      
+
       {/* Alert Popup */}
       {alert && (
-        <Alert 
-          message={alert.message} 
-          type={alert.type} 
-          onClose={() => setAlert(null)} 
+        <Alert
+          message={alert.message}
+          type={alert.type}
+          onClose={() => setAlert(null)}
         />
       )}
-      
+
       <section className="flex-grow bg-gradient-to-b from-orange-50 to-white py-12">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
@@ -241,7 +248,7 @@ export default function CartPage() {
               <div className={`w-12 h-0.5 ${currentStep === 'information' || currentStep === 'payment' ? 'bg-[#F5A623]' : 'bg-gray-300'}`} />
               <div className={`flex items-center ${currentStep === 'information' ? 'text-[#F5A623]' : 'text-gray-400'}`}>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 
-                  ${currentStep === 'information' ? 'border-[#F5A623] bg-[#F5A623] text-white' : 
+                  ${currentStep === 'information' ? 'border-[#F5A623] bg-[#F5A623] text-white' :
                     currentStep === 'payment' ? 'border-green-500 bg-green-500 text-white' : 'border-gray-300'}`}>
                   {currentStep === 'payment' ? <CheckCircle className="w-4 h-4" /> : '2'}
                 </div>
@@ -284,6 +291,7 @@ export default function CartPage() {
                             variant="outline"
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             className="h-8 w-8"
+                            disabled={item.quantity <= 1}
                           >
                             <Minus className="h-4 w-4" />
                           </Button>
@@ -292,7 +300,7 @@ export default function CartPage() {
                             value={item.quantity}
                             onChange={(e) => {
                               const val = parseInt(e.target.value) || 1
-                              updateQuantity(item.id, val)
+                              updateQuantity(item.id, Math.max(1, val))
                             }}
                             className="w-16 text-center"
                             min="1"
@@ -443,9 +451,8 @@ export default function CartPage() {
                             id="state"
                             value={customerInfo.state}
                             onChange={(e) => handleInputChange('state', e.target.value)}
-                            className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-                              formErrors.state ? 'border-red-500' : ''
-                            }`}
+                            className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${formErrors.state ? 'border-red-500' : ''
+                              }`}
                           >
                             <option value="">Select state</option>
                             {US_STATES.map((state) => (
@@ -488,7 +495,6 @@ export default function CartPage() {
                             <option value="US">United States</option>
                             <option value="CA">Canada</option>
                             <option value="UK">United Kingdom</option>
-                            <option value="NG">Nigeria</option>
                           </select>
                         </div>
                       </div>
@@ -534,6 +540,8 @@ export default function CartPage() {
                 </Card>
               )}
 
+// In your CartPage component, when rendering Checkout:
+
               {currentStep === 'payment' && (
                 <Card>
                   <CardHeader>
@@ -544,13 +552,13 @@ export default function CartPage() {
                   </CardHeader>
                   <CardContent>
                     <Checkout
-                      cartItems={cartItems}
-                      customerInfo={customerInfo}
+                      cartItems={cartItems}  // These should be stable
+                      customerInfo={customerInfo}  // These should be stable
                       total={total}
                       onSuccess={handlePaymentSuccess}
                       onError={handlePaymentError}
                     />
-                    
+
                     <Button
                       variant="outline"
                       onClick={() => setCurrentStep('information')}
@@ -596,7 +604,7 @@ export default function CartPage() {
                   </div>
 
                   {currentStep === 'cart' && (
-                    <Button 
+                    <Button
                       onClick={handleContinueToInformation}
                       className="w-full bg-[#F5A623] text-white hover:bg-[#F5A623]/90 mb-3"
                     >
@@ -612,6 +620,8 @@ export default function CartPage() {
                       <p>{customerInfo.address}</p>
                       <p>{customerInfo.city}, {customerInfo.state} {customerInfo.zipCode}</p>
                       <p className="mt-2">Chapter: {customerInfo.chapter}</p>
+                      <p className="mt-1 text-xs text-gray-500">Email: {customerInfo.email}</p>
+                      <p className="text-xs text-gray-500">Phone: {customerInfo.phone}</p>
                     </div>
                   )}
 
@@ -620,12 +630,10 @@ export default function CartPage() {
                   </Button>
 
                   <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                    <p className="text-xs text-gray-600">
+                    <p className="text-xs text-gray-600 whitespace-pre-line">
                       ✓ Secure checkout
-                      <br />
-                      ✓ All payments non-refundable
-                      <br />
-                      ✓ Instant confirmation
+                      {'\n'}✓ All payments non-refundable
+                      {'\n'}✓ Instant confirmation
                     </p>
                   </div>
                 </CardContent>

@@ -1,3 +1,4 @@
+// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -17,22 +18,43 @@ model Package {
 
 model Order {
   id              String   @id @default(cuid())
-  stripeSessionId String   @unique
-  stripePaymentId String?
+  stripeSessionId String   @unique @map("stripe_session_id")
+  stripePaymentId String?  @map("stripe_payment_id")
   email           String
   amount          Int
   currency        String   @default("usd")
   status          String   @default("pending") // pending, completed, failed
+  
+  // Customer Information as JSON
+  customerInfo    Json     @map("customer_info")
+  
+  // Relations
   items           OrderItem[]
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("orders")
 }
 
 model OrderItem {
-  id        String @id @default(cuid())
-  orderId   String
-  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId String
+  id        String   @id @default(cuid())
+  orderId   String   @map("order_id")
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String   @map("product_id")
   quantity  Int
-  price     Int
+  price     Int      // Price in cents
+  
+  // Product snapshot at time of purchase
+  productName     String   @map("product_name")
+  productCategory String?  @map("product_category")
+  
+  // T-shirt sizes - stored as JSON array
+  tshirtSizes     Json?    @map("tshirt_sizes") // Stores array of sizes like ["XL", "L", "M"]
+  
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([orderId, productId])
+  @@map("order_items")
 }
