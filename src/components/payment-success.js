@@ -1,0 +1,190 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { CheckCircle, Package, Mail, Calendar, Download, MapPin, Phone } from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { getOrderDetails } from '@/app/actions/stripe'
+
+export default function PaymentSuccess({ orderId, customerInfo }) {
+  const [order, setOrder] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchOrderDetails() {
+      try {
+        if (orderId) {
+          const orderData = await getOrderDetails(orderId)
+          setOrder(orderData)
+          console.log('Order status:', orderData?.status) // Should be 'completed' if webhook ran
+        }
+      } catch (error) {
+        console.error('Error fetching order:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchOrderDetails()
+  }, [orderId])
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F5A623]"></div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Success Header */}
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
+          <CheckCircle className="w-10 h-10 text-green-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Payment Successful! 🎉
+        </h1>
+        <p className="text-gray-600">
+          Thank you for your purchase, {customerInfo?.firstName}!
+        </p>
+        {order && (
+          <p className="text-sm text-green-600 mt-2">
+            Order Status: <span className="font-semibold uppercase">{order.status}</span>
+          </p>
+        )}
+      </div>
+
+      {/* Order Summary Card */}
+      <Card className="border-green-200">
+        <CardHeader className="bg-gradient-to-r from-green-600 to-green-700 text-white rounded-t-lg">
+          <CardTitle>Order Confirmation</CardTitle>
+          <CardDescription className="text-green-100">
+            Your order has been confirmed and is being processed
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="space-y-4">
+            {/* Order ID */}
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <Package className="w-5 h-5 text-[#F5A623]" />
+              <div>
+                <p className="text-sm text-gray-500">Order ID</p>
+                <p className="font-mono font-medium break-all">{orderId}</p>
+              </div>
+            </div>
+
+            {/* Email Confirmation */}
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <Mail className="w-5 h-5 text-[#F5A623]" />
+              <div>
+                <p className="text-sm text-gray-500">Confirmation sent to</p>
+                <p className="font-medium">{customerInfo?.email}</p>
+              </div>
+            </div>
+
+            {/* Order Date */}
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <Calendar className="w-5 h-5 text-[#F5A623]" />
+              <div>
+                <p className="text-sm text-gray-500">Order Date</p>
+                <p className="font-medium">
+                  {new Date().toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </p>
+              </div>
+            </div>
+
+            {/* Order Items */}
+            {order?.items && order.items.length > 0 && (
+              <div className="mt-4">
+                <h3 className="font-semibold mb-3">Order Items</h3>
+                <div className="space-y-2">
+                  {order.items.map((item, index) => (
+                    <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                      <div className="flex justify-between">
+                        <span className="font-medium">{item.productName}</span>
+                        <span className="font-medium">
+                          ${(item.price * item.quantity / 100).toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm text-gray-600 mt-1">
+                        <span>Quantity: {item.quantity}</span>
+                        {item.tshirtSizes?.length > 0 && (
+                          <span>T-Shirt Sizes: {item.tshirtSizes.join(', ')}</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Total */}
+                  <div className="flex justify-between font-bold pt-3 border-t mt-3">
+                    <span>Total Amount</span>
+                    <span className="text-[#F5A623] text-xl">
+                      ${(order.amount / 100).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Shipping Information */}
+            {customerInfo && (
+              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-[#F5A623]" />
+                   Address
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {customerInfo.firstName} {customerInfo.lastName}<br />
+                  {customerInfo.address}<br />
+                  {customerInfo.city}, {customerInfo.state} {customerInfo.zipCode}<br />
+                  {customerInfo.country}
+                </p>
+                <p className="text-sm text-gray-500 mt-2 flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  {customerInfo.phone}
+                </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Chapter: {customerInfo.chapter}
+                </p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <Button 
+          asChild
+          className="bg-[#F5A623] text-white hover:bg-[#F5A623]/90"
+        >
+          <Link href="/">
+            Continue Shopping
+          </Link>
+        </Button>
+        
+        <Button 
+          variant="outline"
+          onClick={() => window.print()}
+          className="flex items-center gap-2"
+        >
+          <Download className="w-4 h-4" />
+          Download Receipt
+        </Button>
+      </div>
+
+      {/* Next Steps */}
+      <div className="text-center text-sm text-gray-500 mt-8 p-4 bg-blue-50 rounded-lg">
+        <p className="font-medium text-blue-800">📧 What's Next?</p>
+        <p className="mt-2">A confirmation email has been sent to {customerInfo?.email}</p>
+        {/* <p className="mt-1">You will receive shipping updates once your order is processed</p> */}
+      </div>
+    </div>
+  )
+}
