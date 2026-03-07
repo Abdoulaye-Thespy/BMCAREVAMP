@@ -186,7 +186,7 @@ export default function PaymentSuccess({ orderId, customerInfo }) {
           <CheckCircle className="w-10 h-10 text-green-600" />
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Payment Successful! 🎉
+          Payment Successful!
         </h1>
         <p className="text-gray-600">
           Thank you for your purchase, {customerInfo?.firstName}!
@@ -279,7 +279,7 @@ export default function PaymentSuccess({ orderId, customerInfo }) {
               <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                 <h3 className="font-semibold mb-2 flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-[#F5A623]" />
-                  Shipping Address
+                  Address
                 </h3>
                 <p className="text-sm text-gray-600">
                   {customerInfo.firstName} {customerInfo.lastName}<br />
