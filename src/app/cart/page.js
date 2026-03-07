@@ -11,6 +11,7 @@ import { Trash2, Plus, Minus, ArrowLeft, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
 import Checkout from '@/components/checkout'
 import PaymentSuccess from '@/components/payment-success'
+import { updateOrderStatus } from '../actions/stripe'
 
 // Alert Component
 const Alert = ({ message, type, onClose }) => {
@@ -113,8 +114,15 @@ export default function CartPage() {
   }
 
   // THIS IS THE KEY FUNCTION - Called when payment succeeds
-  const handlePaymentSuccess = (orderId) => {
-    console.log('🎉 Payment success handler called with order:', orderId)
+const handlePaymentSuccess = async (orderId) => {
+  console.log('🎉 Payment success handler called with order:', orderId)
+  
+  try {
+    // 👇 IMPORTANT: Call server action to update order status
+    console.log('🔄 Updating order status to completed...')
+    const updatedOrder = await updateOrderStatus (orderId, 'Paid')
+    console.log('✅ Order status updated:', updatedOrder.status)
+    
     setCompletedOrderId(orderId)
     setPaymentSuccess(true)
     clearCart() // Clear the cart
@@ -127,7 +135,22 @@ export default function CartPage() {
     
     // Auto-hide alert after 5 seconds
     setTimeout(() => setAlert(null), 5000)
+    
+  } catch (error) {
+    console.error('Error updating order status:', error)
+    
+    // Even if status update fails, still show success to user
+    setCompletedOrderId(orderId)
+    setPaymentSuccess(true)
+    clearCart()
+    
+    setAlert({
+      type: 'success',
+      message: `Payment successful! Your order #${orderId.slice(-8)} has been confirmed.`
+    })
+    setTimeout(() => setAlert(null), 5000)
   }
+}
 
   const handlePaymentError = (error) => {
     console.error('Checkout error:', error)

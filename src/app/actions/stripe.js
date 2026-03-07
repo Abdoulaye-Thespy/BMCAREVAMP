@@ -23,15 +23,13 @@ export async function startCheckoutSession(cartItems, customerInfo) {
           name: item.name,
           description: item.category || 'Product',
           metadata: {
-            // Add sizes to Stripe metadata for reference
             sizes: item.tshirtSizes ? item.tshirtSizes.join(', ') : 'No sizes selected',
             item_id: item.id,
           },
         },
-        unit_amount: Math.round(item.price * 100), // Convert to cents
+        unit_amount: Math.round(item.price * 100),
       },
       quantity: item.quantity,
-      // Add custom metadata to the line item itself
       metadata: {
         tshirt_sizes: item.tshirtSizes ? JSON.stringify(item.tshirtSizes) : '[]',
       },
@@ -55,7 +53,6 @@ export async function startCheckoutSession(cartItems, customerInfo) {
         customer_chapter: customerInfo.chapter,
         customer_phone: customerInfo.phone,
         customer_address: `${customerInfo.address}, ${customerInfo.city}, ${customerInfo.state} ${customerInfo.zipCode}`,
-        // Store all cart items summary in metadata as backup
         cart_summary: JSON.stringify(cartItems.map(item => ({
           id: item.id,
           name: item.name,
@@ -74,7 +71,7 @@ export async function startCheckoutSession(cartItems, customerInfo) {
         email: customerInfo.email,
         amount: totalAmount,
         status: 'pending',
-        customerInfo: customerInfo, // Store all customer data as JSON
+        customerInfo: customerInfo,
         items: {
           create: cartItems.map((item) => ({
             productId: item.id,
@@ -82,8 +79,7 @@ export async function startCheckoutSession(cartItems, customerInfo) {
             productCategory: item.category,
             quantity: item.quantity,
             price: Math.round(item.price * 100),
-            // Store t-shirt sizes as JSON array
-            tshirtSizes: item.tshirtSizes || [], // This will be stored as JSON in database
+            tshirtSizes: item.tshirtSizes || [],
           })),
         },
       },
@@ -92,7 +88,7 @@ export async function startCheckoutSession(cartItems, customerInfo) {
       },
     })
 
-    console.log('Order created:', order.id)
+    console.log('Order created with PENDING status:', order.id)
     console.log('Order items with sizes:', order.items)
 
     return {
@@ -108,35 +104,50 @@ export async function startCheckoutSession(cartItems, customerInfo) {
 export async function getCheckoutSessionStatus(sessionId) {
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId)
-
-    console.log("this is session ID", session)
     
-    // Update order status based on payment status
-    if (session.payment_status === 'paid') {
-      const order = await prisma.order.findUnique({
-        where: { stripeSessionId: sessionId },
-        include: { items: true },
-      })
+    console.log("Stripe session retrieved:", session.id)
+    console.log("Payment status:", session.payment_status)
+    
+    // Find the order
+    const order = await prisma.order.findUnique({
+      where: { stripeSessionId: sessionId },
+      include: { items: true },
+    })
 
-      if (order && order.status !== 'completed') {
-        await prisma.order.update({
-          where: { id: order.id },
-          data: {
-            status: 'completed',
-            stripePaymentId: session.payment_intent,
-          },
-        })
-        
-        console.log('Order completed:', order.id)
-        
-        // Here you could trigger confirmation emails, inventory updates, etc.
-        // await sendOrderConfirmation(order.id)
+    if (!order) {
+      console.log('No order found for session:', sessionId)
+      return {
+        status: session.payment_status,
+        session: session,
+        order: null,
       }
     }
 
+    // If payment is successful and order is still pending, update it
+    if (session.payment_status === 'paid' && order.status === 'pending') {
+      const updatedOrder = await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          status: 'completed',
+          stripePaymentId: session.payment_intent,
+        },
+        include: { items: true },
+      })
+      
+      console.log(`✅ Order ${order.id} updated to COMPLETED!`)
+      
+      return {
+        status: 'paid',
+        session: session,
+        order: updatedOrder,
+      }
+    }
+
+    // Return the order as is
     return {
-      status: session.payment_status,
+      status: order.status === 'completed' ? 'paid' : session.payment_status,
       session: session,
+      order: order,
     }
   } catch (error) {
     console.error('Error getting session status:', error)
@@ -153,50 +164,35 @@ export async function getOrderDetails(orderId) {
       },
     })
     
-    // Format the response to make t-shirt sizes easily accessible
     if (order) {
       return {
         ...order,
         items: order.items.map(item => ({
           ...item,
-          // Ensure tshirtSizes is always an array
           tshirtSizes: item.tshirtSizes || [],
         })),
       }
     }
     
-    return order
+    return null
   } catch (error) {
     console.error('Error getting order details:', error)
     throw error
   }
 }
 
-// Optional: Helper function to get all orders with specific size requirements
-export async function getOrdersBySize(size) {
+// Simple function to manually update order status (if needed)
+export async function updateOrderStatus(orderId, status) {
   try {
-    // Note: This query depends on your database's JSON capabilities
-    // For PostgreSQL, you might use something like:
-    const orders = await prisma.order.findMany({
-      where: {
-        items: {
-          some: {
-            // This is a simplified example - actual JSON query syntax may vary
-            tshirtSizes: {
-              path: '$',
-              array_contains: size,
-            },
-          },
-        },
-      },
-      include: {
-        items: true,
-      },
+    const updatedOrder = await prisma.order.update({
+      where: { id: orderId },
+      data: { status },
+      include: { items: true },
     })
-    
-    return orders
+    console.log(`✅ Order ${orderId} manually updated to ${status}`)
+    return updatedOrder
   } catch (error) {
-    console.error('Error getting orders by size:', error)
+    console.error('Error updating order:', error)
     throw error
   }
 }
