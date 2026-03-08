@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarInset,
 } from "@/components/ui/sidebar"
-import { LayoutDashboard, BookOpen, Package, Users, Settings, LogOut } from "lucide-react"
+import { LayoutDashboard, BookOpen, Package, Users, Settings, LogOut, ShoppingBag } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -34,6 +34,11 @@ export default function AdminLayout({ children }) {
       title: "Packages",
       icon: Package,
       href: "/admin/packages",
+    },
+    {
+      title: "Orders",  // New Orders menu item
+      icon: ShoppingBag,
+      href: "/admin/orders",
     },
     {
       title: "Settings",
