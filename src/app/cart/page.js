@@ -13,6 +13,178 @@ import Checkout from '@/components/checkout'
 import PaymentSuccess from '@/components/payment-success'
 import { updateOrderStatus } from '../actions/stripe'
 
+// Chapters data
+const chaptersData = [
+  {
+    id: 1,
+    name: "Houston Chapter",
+    description: "Serving the Houston community",
+    phone: "443 599 6815",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "Conelius Ngwasina",
+      photo: "/president-placeholder.jpg"
+    }
+  },
+  {
+    id: 2,
+    name: "Dallas Chapter",
+    description: "Serving the Dallas community",
+    phone: "469 213 9470",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "Ignatius Mfona",
+      photo: "/president-placeholder.jpg"
+    }
+  },
+  {
+    id: 3,
+    name: "Florida Chapter",
+    description: "Serving the Florida community",
+    phone: "813 802 5057",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "Francis Ntumngia",
+      photo: "/president-placeholder.jpg"
+    }
+  },
+  {
+    id: 4,
+    name: "Boston Chapter",
+    description: "Serving the Boston community",
+    phone: "508 933 8654",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "Oscar Nebangwa",
+      photo: "/president-placeholder.jpg"
+    }
+  },
+  {
+    id: 5,
+    name: "Great Lakes Chapter",
+    description: "Serving the Great Lakes community",
+    phone: "240 701 9330",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "Bonny Shuneh",
+      photo: "/president-placeholder.jpg"
+    }
+  },
+  {
+    id: 6,
+    name: "Los Angeles Chapter",
+    description: "Serving the Los Angeles community",
+    phone: "323 618 8093",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "Vivian Manna",
+      photo: "/president-placeholder.jpg"
+    }
+  },
+  {
+    id: 7,
+    name: "United West Coast Chapter",
+    description: "Serving the West Coast community",
+    phone: "424 391 2011",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "Rene Anita Sama",
+      photo: "/president-placeholder.jpg"
+    }
+  },
+  {
+    id: 8,
+    name: "United East Coast Chapter",
+    description: "Serving the East Coast community",
+    phone: "917 270 0494",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "Assumpta Tanifor",
+      photo: "/president-placeholder.jpg"
+    }
+  },
+  {
+    id: 9,
+    name: "Minnesota Chapter",
+    description: "Serving the Minnesota community",
+    phone: "651 808 0464",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "Divine Awah",
+      photo: "/president-placeholder.jpg"
+    }
+  },
+  {
+    id: 10,
+    name: "DC Metro Chapter",
+    description: "Serving the DC Metro community",
+    phone: "202 805 9426",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "Theo Fusi",
+      photo: "/president-placeholder.jpg"
+    }
+  },
+  {
+    id: 11,
+    name: "Delaware Chapter",
+    description: "Serving the Delaware community",
+    phone: "302 588 5841",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "Eric Neba",
+      photo: "/president-placeholder.jpg"
+    }
+  },
+  {
+    id: 12,
+    name: "Midwest Chapter",
+    description: "Serving the Midwest community",
+    phone: "208 220 0420",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "Robinson Neba",
+      photo: "/president-placeholder.jpg"
+    }
+  }
+]
+
 // Alert Component
 const Alert = ({ message, type, onClose }) => {
   const bgColor = type === 'success' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
@@ -56,6 +228,7 @@ const initialCustomerInfo = {
   zipCode: '',
   country: 'US',
   chapter: '',
+  chapterName: '', // Added to store the full chapter name
 }
 
 export default function CartPage() {
@@ -85,14 +258,25 @@ export default function CartPage() {
     if (!customerInfo.city?.trim()) errors.city = 'City is required'
     if (!customerInfo.state) errors.state = 'State is required'
     if (!customerInfo.zipCode?.trim()) errors.zipCode = 'ZIP code is required'
-    if (!customerInfo.chapter?.trim()) errors.chapter = 'Chapter ID is required'
+    if (!customerInfo.chapter) errors.chapter = 'Please select your chapter'
 
     setFormErrors(errors)
     return Object.keys(errors).length === 0
   }
 
   const handleInputChange = (field, value) => {
-    setCustomerInfo(prev => ({ ...prev, [field]: value }))
+    if (field === 'chapter') {
+      // When chapter is selected, find the full chapter object and store both ID and name
+      const selectedChapter = chaptersData.find(ch => ch.id === parseInt(value))
+      setCustomerInfo(prev => ({ 
+        ...prev, 
+        chapter: value,
+        chapterName: selectedChapter ? selectedChapter.name : ''
+      }))
+    } else {
+      setCustomerInfo(prev => ({ ...prev, [field]: value }))
+    }
+    
     if (formErrors[field]) {
       setFormErrors(prev => ({ ...prev, [field]: undefined }))
     }
@@ -114,43 +298,43 @@ export default function CartPage() {
   }
 
   // THIS IS THE KEY FUNCTION - Called when payment succeeds
-const handlePaymentSuccess = async (orderId) => {
-  console.log('🎉 Payment success handler called with order:', orderId)
-  
-  try {
-    // 👇 IMPORTANT: Call server action to update order status
-    console.log('🔄 Updating order status to completed...')
-    const updatedOrder = await updateOrderStatus (orderId, 'Paid')
-    console.log('✅ Order status updated:', updatedOrder.status)
+  const handlePaymentSuccess = async (orderId) => {
+    console.log('🎉 Payment success handler called with order:', orderId)
     
-    setCompletedOrderId(orderId)
-    setPaymentSuccess(true)
-    clearCart() // Clear the cart
-    
-    // Show success alert
-    setAlert({
-      type: 'success',
-      message: `Payment successful! Your order #${orderId.slice(-8)} has been confirmed.`
-    })
-    
-    // Auto-hide alert after 5 seconds
-    setTimeout(() => setAlert(null), 5000)
-    
-  } catch (error) {
-    console.error('Error updating order status:', error)
-    
-    // Even if status update fails, still show success to user
-    setCompletedOrderId(orderId)
-    setPaymentSuccess(true)
-    clearCart()
-    
-    setAlert({
-      type: 'success',
-      message: `Payment successful! Your order #${orderId.slice(-8)} has been confirmed.`
-    })
-    setTimeout(() => setAlert(null), 5000)
+    try {
+      // 👇 IMPORTANT: Call server action to update order status
+      console.log('🔄 Updating order status to completed...')
+      const updatedOrder = await updateOrderStatus(orderId, 'Paid')
+      console.log('✅ Order status updated:', updatedOrder.status)
+      
+      setCompletedOrderId(orderId)
+      setPaymentSuccess(true)
+      clearCart() // Clear the cart
+      
+      // Show success alert
+      setAlert({
+        type: 'success',
+        message: `Payment successful! Your order #${orderId.slice(-8)} has been confirmed.`
+      })
+      
+      // Auto-hide alert after 5 seconds
+      setTimeout(() => setAlert(null), 5000)
+      
+    } catch (error) {
+      console.error('Error updating order status:', error)
+      
+      // Even if status update fails, still show success to user
+      setCompletedOrderId(orderId)
+      setPaymentSuccess(true)
+      clearCart()
+      
+      setAlert({
+        type: 'success',
+        message: `Payment successful! Your order #${orderId.slice(-8)} has been confirmed.`
+      })
+      setTimeout(() => setAlert(null), 5000)
+    }
   }
-}
 
   const handlePaymentError = (error) => {
     console.error('Checkout error:', error)
@@ -392,14 +576,32 @@ const handlePaymentSuccess = async (orderId) => {
                         </div>
                       </div>
 
-                      {/* Chapter Field */}
+                      {/* Chapter Field - Now a Dropdown */}
                       <div className="space-y-2">
-                        <label htmlFor="chapter" className="text-sm font-medium">Chapter ID *</label>
-                        <Input id="chapter" value={customerInfo.chapter}
+                        <label htmlFor="chapter" className="text-sm font-medium">Select Your Chapter *</label>
+                        <select
+                          id="chapter"
+                          value={customerInfo.chapter}
                           onChange={(e) => handleInputChange('chapter', e.target.value)}
-                          placeholder="e.g., LAG-001, ABJ-123, PH-789"
-                          className={formErrors.chapter ? 'border-red-500' : ''} />
-                        {formErrors.chapter && <p className="text-sm text-red-500">{formErrors.chapter}</p>}
+                          className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${
+                            formErrors.chapter ? 'border-red-500' : ''
+                          }`}
+                        >
+                          <option value="">Choose your chapter</option>
+                          {chaptersData.map((chapter) => (
+                            <option key={chapter.id} value={chapter.id}>
+                              {chapter.name}
+                            </option>
+                          ))}
+                        </select>
+                        {formErrors.chapter && (
+                          <p className="text-sm text-red-500">{formErrors.chapter}</p>
+                        )}
+                        {customerInfo.chapter && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            Selected: {chaptersData.find(ch => ch.id === parseInt(customerInfo.chapter))?.name}
+                          </p>
+                        )}
                       </div>
 
                       <div className="flex gap-4 pt-4">
@@ -505,7 +707,9 @@ const handlePaymentSuccess = async (orderId) => {
                       <p>{customerInfo.firstName} {customerInfo.lastName}</p>
                       <p>{customerInfo.address}</p>
                       <p>{customerInfo.city}, {customerInfo.state} {customerInfo.zipCode}</p>
-                      <p className="mt-2">Chapter: {customerInfo.chapter}</p>
+                      <p className="mt-2">
+                        Chapter: {chaptersData.find(ch => ch.id === parseInt(customerInfo.chapter))?.name || customerInfo.chapter}
+                      </p>
                     </div>
                   )}
 
