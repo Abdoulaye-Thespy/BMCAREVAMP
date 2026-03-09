@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react"
+import Link from "next/link"
 
 export function Footer() {
   return (
@@ -9,14 +10,14 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-4">
           {/* About Column */}
           <div>
-            <div className="mb-4 flex items-center gap-2">
+            <Link href="/" className="mb-4 flex items-center gap-2">
               <img
                 src="/logo.png"
                 alt="BMCA Logo"
                 className="h-8 w-auto"
               />
               <span className="text-lg font-semibold">BMCA</span>
-            </div>
+            </Link>
             <p className="text-pretty text-sm text-white/80">
               The Bafut Manjong Cultural Association, BMCA – is a group of Bafut people and its affiliates based in the United States of America.
             </p>
@@ -27,24 +28,24 @@ export function Footer() {
             <h3 className="mb-4 text-lg font-semibold text-[#E67D00]">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#about" className="text-white/80 transition-colors hover:text-primary">
+                <Link href="/about" className="text-white/80 transition-colors hover:text-[#E67D00]">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#programs" className="text-white/80 transition-colors hover:text-primary">
+                <Link href="/convention" className="text-white/80 transition-colors hover:text-[#E67D00]">
                   Convention
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/programs" className="text-white/80 transition-colors hover:text-primary">
+                <Link href="/programs" className="text-white/80 transition-colors hover:text-[#E67D00]">
                   Our Programs
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#donate" className="text-white/80 transition-colors hover:text-primary">
+                <Link href="/contact" className="text-white/80 transition-colors hover:text-[#E67D00]">
                   Contact Us
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -54,14 +55,19 @@ export function Footer() {
             <h3 className="mb-4 text-lg font-semibold text-[#E67D00]">Resources</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#news" className="text-white/80 transition-colors hover:text-primary">
+                <Link href="/news" className="text-white/80 transition-colors hover:text-[#E67D00]">
                   News & Updates
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#reports" className="text-white/80 transition-colors hover:text-primary">
+                <Link href="/reports" className="text-white/80 transition-colors hover:text-[#E67D00]">
                   Annual Reports
-                </a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/donate" className="text-white/80 transition-colors hover:text-[#E67D00]">
+                  Donate
+                </Link>
               </li>
             </ul>
           </div>
@@ -76,20 +82,28 @@ export function Footer() {
                 placeholder="Your email"
                 className="bg-white/10 text-white placeholder:text-white/60"
               />
-              <Button className="bg-[#E67D00] hover:bg-primary/90">Subscribe</Button>
+              <Button className="bg-[#E67D00] hover:bg-[#E67D00]/90">Subscribe</Button>
             </div>
             <div className="flex gap-3">
-              <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-white/10 hover:text-primary">
-                <Facebook className="h-4 w-4" />
+              <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-white/10 hover:text-[#E67D00]" asChild>
+                <Link href="https://facebook.com/bmca" target="_blank" rel="noopener noreferrer">
+                  <Facebook className="h-4 w-4" />
+                </Link>
               </Button>
-              <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-white/10 hover:text-primary">
-                <Twitter className="h-4 w-4" />
+              <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-white/10 hover:text-[#E67D00]" asChild>
+                <Link href="https://twitter.com/bmca" target="_blank" rel="noopener noreferrer">
+                  <Twitter className="h-4 w-4" />
+                </Link>
               </Button>
-              <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-white/10 hover:text-primary">
-                <Instagram className="h-4 w-4" />
+              <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-white/10 hover:text-[#E67D00]" asChild>
+                <Link href="https://instagram.com/bmca" target="_blank" rel="noopener noreferrer">
+                  <Instagram className="h-4 w-4" />
+                </Link>
               </Button>
-              <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-white/10 hover:text-primary">
-                <Linkedin className="h-4 w-4" />
+              <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-white/10 hover:text-[#E67D00]" asChild>
+                <Link href="https://linkedin.com/company/bmca" target="_blank" rel="noopener noreferrer">
+                  <Linkedin className="h-4 w-4" />
+                </Link>
               </Button>
             </div>
           </div>
