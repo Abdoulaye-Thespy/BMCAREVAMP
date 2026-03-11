@@ -6,10 +6,14 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { getOrderDetails } from '@/app/actions/stripe'
+import { sendReceiptEmailAction } from '@/app/actions/send-receipt'
 
 export default function PaymentSuccess({ orderId, customerInfo }) {
   const [order, setOrder] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [emailSent, setEmailSent] = useState(false)
+  const [emailError, setEmailError] = useState(false)
+  const [isSending, setIsSending] = useState(false)
 
   useEffect(() => {
     async function fetchOrderDetails() {
@@ -30,9 +34,85 @@ export default function PaymentSuccess({ orderId, customerInfo }) {
     fetchOrderDetails()
   }, [orderId])
 
+  // Send receipt email when order data is loaded
+  useEffect(() => {
+    async function sendEmail() {
+      // Only send email if we have all the data and haven't sent it yet
+      if (order && customerInfo && !emailSent && !emailError && !isSending) {
+        setIsSending(true)
+        try {
+          console.log('Sending receipt email to:', customerInfo.email)
+          
+          const result = await sendReceiptEmailAction({
+            to: customerInfo.email,
+            subject: `Your BMCA Order Confirmation - #${orderId?.slice(-8)}`,
+            orderId,
+            customerInfo,
+            order
+          })
+
+          if (result.success) {
+            setEmailSent(true)
+            console.log('Receipt email sent successfully, Message ID:', result.messageId)
+          } else {
+            setEmailError(true)
+            console.error('Failed to send receipt email:', result.error)
+          }
+        } catch (error) {
+          setEmailError(true)
+          console.error('Error sending receipt email:', error)
+        } finally {
+          setIsSending(false)
+        }
+      }
+    }
+
+    sendEmail()
+  }, [order, customerInfo, orderId, emailSent, emailError, isSending])
+
   const handleDownloadReceipt = () => {
     // Create receipt HTML content
-    const receiptContent = `
+    const receiptContent = generateReceiptHtml({ orderId, customerInfo, order })
+    
+    // Open print window
+    const printWindow = window.open('', '_blank')
+    if (printWindow) {
+      printWindow.document.write(receiptContent)
+      printWindow.document.close()
+      printWindow.print()
+    }
+  }
+
+  const handleResendEmail = async () => {
+    setEmailError(false)
+    setIsSending(true)
+    try {
+      const result = await sendReceiptEmailAction({
+        to: customerInfo.email,
+        subject: `Your BMCA Order Confirmation - #${orderId?.slice(-8)}`,
+        orderId,
+        customerInfo,
+        order
+      })
+
+      if (result.success) {
+        setEmailSent(true)
+        alert('Receipt email resent successfully!')
+      } else {
+        setEmailError(true)
+        alert('Failed to resend email. Please try downloading the receipt instead.')
+      }
+    } catch (error) {
+      setEmailError(true)
+      alert('Failed to resend email. Please try downloading the receipt instead.')
+    } finally {
+      setIsSending(false)
+    }
+  }
+
+  // Helper function to generate receipt HTML (reuse the same function from resend.js)
+  const generateReceiptHtml = ({ orderId, customerInfo, order }) => {
+    return `
       <!DOCTYPE html>
       <html>
         <head>
@@ -160,14 +240,6 @@ export default function PaymentSuccess({ orderId, customerInfo }) {
         </body>
       </html>
     `
-
-    // Open print window
-    const printWindow = window.open('', '_blank')
-    if (printWindow) {
-      printWindow.document.write(receiptContent)
-      printWindow.document.close()
-      printWindow.print()
-    }
   }
 
   if (loading) {
@@ -300,6 +372,33 @@ export default function PaymentSuccess({ orderId, customerInfo }) {
         </CardContent>
       </Card>
 
+      {/* Email Status Indicator */}
+      {isSending && (
+        <div className="text-center text-sm text-blue-600 bg-blue-50 p-3 rounded-lg">
+          <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+          Sending receipt email...
+        </div>
+      )}
+      
+      {emailSent && (
+        <div className="text-center text-sm text-green-600 bg-green-50 p-3 rounded-lg">
+          ✓ Receipt email sent to {customerInfo?.email}. Please check your spam folder if not received.
+        </div>
+      )}
+      
+      {emailError && !isSending && (
+        <div className="text-center text-sm text-amber-600 bg-amber-50 p-3 rounded-lg">
+          ⚠ Could not send receipt email. You can still download your receipt below.
+          <button 
+            onClick={handleResendEmail}
+            className="ml-2 underline hover:no-underline font-medium"
+            disabled={isSending}
+          >
+            Try again
+          </button>
+        </div>
+      )}
+
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Button 
@@ -315,6 +414,7 @@ export default function PaymentSuccess({ orderId, customerInfo }) {
           variant="outline"
           onClick={handleDownloadReceipt}
           className="flex items-center gap-2"
+          disabled={isSending}
         >
           <Download className="w-4 h-4" />
           Download Receipt
@@ -324,7 +424,14 @@ export default function PaymentSuccess({ orderId, customerInfo }) {
       {/* Next Steps */}
       <div className="text-center text-sm text-gray-500 mt-8 p-4 bg-blue-50 rounded-lg">
         <p className="font-medium text-blue-800">📧 What's Next?</p>
-        <p className="mt-2">A confirmation email has been sent to {customerInfo?.email}</p>
+        <p className="mt-2">
+          {emailSent 
+            ? `A confirmation email has been sent to ${customerInfo?.email}`
+            : emailError
+            ? `You can download your receipt above`
+            : `Sending confirmation email to ${customerInfo?.email}...`
+          }
+        </p>
       </div>
     </div>
   )
