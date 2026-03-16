@@ -74,7 +74,7 @@ export default function CategoryPage() {
                 location: "Njimbee, Cameroon",
                 date: "Completed",
                 organizer: "BMCA",
-                image: "/bcmcawater3.jpg",
+                image: "/water2.png",
                 status: "completed",
             },
             {
@@ -86,7 +86,7 @@ export default function CategoryPage() {
                 location: "Njibujang, Cameroon",
                 date: "Completed",
                 organizer: "BMCA",
-                image: "/clean-water-access.jpg",
+                image: "/water5.png",
                 status: "completed",
             },
             {
@@ -98,7 +98,7 @@ export default function CategoryPage() {
                 location: "Nsem, Cameroon",
                 date: "Completed",
                 organizer: "BMCA",
-                image: "/clean-water-access.jpg",
+                image: "/water4.png",
                 status: "completed",
             },
             {
@@ -110,7 +110,7 @@ export default function CategoryPage() {
                 location: "Mbebali, Cameroon",
                 date: "In Discussion",
                 organizer: "BMCA",
-                image: "/clean-water-access.jpg",
+                image: "/water3.png",
                 status: "pending",
             },
             {
@@ -121,7 +121,7 @@ export default function CategoryPage() {
                 location: "Bawum, Cameroon",
                 date: "In Discussion",
                 organizer: "BMCA",
-                image: "/clean-water-access.jpg",
+                image: "/water1.png",
                 status: "pending",
             },
         ],
