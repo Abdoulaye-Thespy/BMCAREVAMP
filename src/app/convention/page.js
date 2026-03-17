@@ -12,19 +12,19 @@ import { useRouter } from 'next/navigation'
 
 // Deadline dates from the image (Central US/Canada time)
 const DEADLINES = {
-  EARLY_BIRD: { 
-    end: "May 31, 2026 23:59:59", 
+  EARLY_BIRD: {
+    end: "May 31, 2026 23:59:59",
     label: "Early Bird",
     description: "Save up to $40"
   },
-  STANDARD: { 
+  STANDARD: {
     start: "June 1, 2026 00:00:00",
-    end: "June 30, 2026 23:59:59", 
+    end: "June 30, 2026 23:59:59",
     label: "Standard"
   },
-  LATE: { 
+  LATE: {
     start: "July 1, 2026 00:00:00",
-    end: "July 13, 2026 23:59:59", 
+    end: "July 13, 2026 23:59:59",
     label: "Late",
     description: "Limited availability"
   }
@@ -47,7 +47,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
   const [quantity, setQuantity] = useState(1)
   const [tshirtSizes, setTshirtSizes] = useState([])
   const [allSizesSelected, setAllSizesSelected] = useState(false)
-  
+
   // Calculate number of t-shirts needed based on package type and quantity
   const getTshirtCount = () => {
     if (pkg.category === 'couple') {
@@ -109,7 +109,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
   // Generate person labels for couple packages
   const getPersonLabel = (index) => {
     if (pkg.category !== 'couple') return `Person ${index + 1}`
-    
+
     const packageNumber = Math.floor(index / 2) + 1
     const personInPackage = index % 2 === 0 ? 'Person 1' : 'Person 2'
     return `Package ${packageNumber} - ${personInPackage}`
@@ -207,7 +207,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
                   <p className="text-sm text-gray-500 ml-2">(2 shirts per couple package)</p>
                 )}
               </div>
-              
+
               <div className="space-y-3">
                 {Array.from({ length: tshirtCount }).map((_, index) => (
                   <div key={index} className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
@@ -217,9 +217,8 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
                     <select
                       value={tshirtSizes[index] || ''}
                       onChange={(e) => updateTshirtSize(index, e.target.value)}
-                      className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${
-                        tshirtSizes[index] ? 'border-gray-300' : 'border-red-300 bg-red-50'
-                      }`}
+                      className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${tshirtSizes[index] ? 'border-gray-300' : 'border-red-300 bg-red-50'
+                        }`}
                     >
                       <option value="" disabled>Select a size</option>
                       {TSHIRT_SIZES.map(size => (
@@ -229,7 +228,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
                   </div>
                 ))}
               </div>
-              
+
               {!allSizesSelected && (
                 <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
                   <X className="h-4 w-4" />
@@ -265,22 +264,20 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
           <Button
             onClick={handleConfirm}
             disabled={!allSizesSelected}
-            className={`flex-1 text-base ${
-              allSizesSelected
+            className={`flex-1 text-base ${allSizesSelected
                 ? 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-lg hover:shadow-xl'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
+              }`}
           >
             {currentQuantity > 0 ? 'Update Cart' : 'Add to Cart'}
           </Button>
           <Button
             onClick={handleGoToCheckout}
             disabled={!allSizesSelected}
-            className={`flex-1 text-base flex items-center justify-center gap-2 ${
-              allSizesSelected
+            className={`flex-1 text-base flex items-center justify-center gap-2 ${allSizesSelected
                 ? 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
+              }`}
           >
             Go to Checkout
             <ArrowRight className="h-4 w-4" />
@@ -294,10 +291,10 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
 // Helper function to determine current pricing period based on date (Central US/Canada time)
 const getCurrentDeadline = () => {
   const now = new Date()
-  
+
   // Convert to Central US/Canada time
   const centralTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Chicago' }))
-  
+
   const earlyBirdEnd = new Date(DEADLINES.EARLY_BIRD.end)
   const standardStart = new Date(DEADLINES.STANDARD.start)
   const standardEnd = new Date(DEADLINES.STANDARD.end)
@@ -338,7 +335,7 @@ const getEarlyBirdPackages = (packages) => {
       const fullName = pkg.name
       let simpleName = pkg.category
       let categoryKey = ''
-      
+
       // Clean up the name and set proper category key for filtering
       if (fullName.includes('Kids')) {
         simpleName = 'Kids'
@@ -356,7 +353,7 @@ const getEarlyBirdPackages = (packages) => {
         simpleName = 'Non-Registered'
         categoryKey = 'non-registered'
       }
-      
+
       return {
         id: pkg.id.toString(),
         name: simpleName,
@@ -380,9 +377,9 @@ const categoryLabels = {
 }
 
 // Mobile Filters Component - Only Categories
-const MobileFilters = ({ 
-  selectedCategory, 
-  setSelectedCategory, 
+const MobileFilters = ({
+  selectedCategory,
+  setSelectedCategory,
   filteredCount,
   totalCount
 }) => {
@@ -410,7 +407,7 @@ const MobileFilters = ({
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 mt-2">
           <div>
             <label className="block text-base font-medium text-gray-700 mb-2">Category</label>
-            <select 
+            <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
@@ -442,9 +439,9 @@ const MobileFilters = ({
 }
 
 // Sidebar Filters Component - Only Categories (Desktop)
-const SidebarFilters = ({ 
-  selectedCategory, 
-  setSelectedCategory, 
+const SidebarFilters = ({
+  selectedCategory,
+  setSelectedCategory,
   filteredCount,
   totalCount
 }) => {
@@ -461,11 +458,10 @@ const SidebarFilters = ({
       <div className="space-y-2">
         <button
           onClick={() => setSelectedCategory('all')}
-          className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${
-            selectedCategory === 'all' 
-              ? 'bg-blue-100 text-blue-800 border border-blue-300' 
+          className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${selectedCategory === 'all'
+              ? 'bg-blue-100 text-blue-800 border border-blue-300'
               : 'text-gray-700 hover:bg-gray-100 border border-transparent'
-          }`}
+            }`}
         >
           All Categories
         </button>
@@ -473,11 +469,10 @@ const SidebarFilters = ({
           <button
             key={key}
             onClick={() => setSelectedCategory(key)}
-            className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${
-              selectedCategory === key 
-                ? 'bg-blue-100 text-blue-800 border border-blue-300' 
+            className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${selectedCategory === key
+                ? 'bg-blue-100 text-blue-800 border border-blue-300'
                 : 'text-gray-700 hover:bg-gray-100 border border-transparent'
-            }`}
+              }`}
           >
             {label}
           </button>
@@ -596,7 +591,7 @@ export default function ConventionPage() {
   return (
     <main className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <Header />
-      
+
       {/* Add to Cart Popup */}
       {selectedPackage && (
         <AddToCartPopup
@@ -609,49 +604,114 @@ export default function ConventionPage() {
           deadline={currentDeadline}
         />
       )}
-      
+
       <section className="flex-grow py-8">
         <div className="container mx-auto px-4">
+          {/* Hero Section */}
           {/* Hero Section */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-base font-medium mb-4">
               <Calendar className="h-4 w-4" />
-              August 15-17, 2026
+              July 30th to August 2nd, 2026
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
               BMCA 2026 Convention
             </h1>
             <p className="text-xl text-gray-600 mb-4 max-w-3xl mx-auto">
-              Join us for an unforgettable experience filled with culture, celebration, and community. 
+              Join us for an unforgettable experience filled with culture, celebration, and community.
               Choose the perfect package that suits your needs.
             </p>
-            
+
+            {/* Two Column Layout for Info and Flyer */}
+            <div className="max-w-5xl mx-auto mb-8 grid md:grid-cols-2 gap-6 items-center">
+              {/* Left Column - Information */}
+              <div className="text-left space-y-4">
+                <div className="bg-white rounded-2xl shadow-lg p-6 border border-blue-100">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Event Details</h2>
+
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-blue-100 p-2 rounded-lg">
+                        <Calendar className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">Dates</p>
+                        <p className="text-gray-600">July 30th to August 2nd, 2026</p>
+                        <p className="text-sm text-gray-500">4 days of cultural celebration</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <div className="bg-blue-100 p-2 rounded-lg">
+                        <MapPin className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">Location</p>
+                        <p className="text-gray-600">Great Lakes Region, USA</p>
+                        <p className="text-sm text-blue-600 mt-1 flex items-center gap-1">
+                          <span className="font-medium">Nearest Airport:</span> Detroit Metropolitan Airport (DTW)
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">Approximately 30-45 minutes drive</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <div className="bg-blue-100 p-2 rounded-lg">
+                        <Users className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">Organizer</p>
+                        <p className="text-gray-600">Bafut Manjong Cultural Association USA</p>
+                        <p className="text-sm text-gray-500">26th Annual Convention</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-gray-100">
+                    <p className="text-sm text-gray-500 italic">
+                      Join us for our 26th Annual Convention
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column - Flyer Image */}
+              <div className="relative">
+                <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-4 border-blue-100 hover:border-blue-300 transition-all duration-300">
+                  <img
+                    src="/conventionflyer.png"
+                    alt="BMCA 26th Convention Flyer - Strength in Unity - Great Lakes 2021 (2026)"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+                <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-xs px-3 py-1 rounded-full shadow-lg">
+                  26th Anniversary
+                </div>
+              </div>
+            </div>
+
             {/* Deadline Banner */}
             <div className="max-w-3xl mx-auto mb-6">
-              <div className={`p-4 rounded-xl ${
-                currentDeadline.type === 'EARLY_BIRD' ? 'bg-green-50 border border-green-200' :
-                currentDeadline.type === 'STANDARD' ? 'bg-orange-50 border border-orange-200' :
-                'bg-red-50 border border-red-200'
-              }`}>
+              <div className={`p-4 rounded-xl ${currentDeadline.type === 'EARLY_BIRD' ? 'bg-green-50 border border-green-200' :
+                  currentDeadline.type === 'STANDARD' ? 'bg-orange-50 border border-orange-200' :
+                    'bg-red-50 border border-red-200'
+                }`}>
                 <div className="flex items-center gap-3">
-                  <Clock className={`h-6 w-6 ${
-                    currentDeadline.type === 'EARLY_BIRD' ? 'text-green-600' :
-                    currentDeadline.type === 'STANDARD' ? 'text-orange-600' :
-                    'text-red-600'
-                  }`} />
+                  <Clock className={`h-6 w-6 ${currentDeadline.type === 'EARLY_BIRD' ? 'text-green-600' :
+                      currentDeadline.type === 'STANDARD' ? 'text-orange-600' :
+                        'text-red-600'
+                    }`} />
                   <div className="text-left">
-                    <p className={`font-semibold ${
-                      currentDeadline.type === 'EARLY_BIRD' ? 'text-green-800' :
-                      currentDeadline.type === 'STANDARD' ? 'text-orange-800' :
-                      'text-red-800'
-                    }`}>
+                    <p className={`font-semibold ${currentDeadline.type === 'EARLY_BIRD' ? 'text-green-800' :
+                        currentDeadline.type === 'STANDARD' ? 'text-orange-800' :
+                          'text-red-800'
+                      }`}>
                       {currentDeadline.label} Pricing Active
                     </p>
-                    <p className={`text-sm ${
-                      currentDeadline.type === 'EARLY_BIRD' ? 'text-green-600' :
-                      currentDeadline.type === 'STANDARD' ? 'text-orange-600' :
-                      'text-red-600'
-                    }`}>
+                    <p className={`text-sm ${currentDeadline.type === 'EARLY_BIRD' ? 'text-green-600' :
+                        currentDeadline.type === 'STANDARD' ? 'text-orange-600' :
+                          'text-red-600'
+                      }`}>
                       {getDeadlineMessage()} (Central US/Canada Time)
                     </p>
                     {currentDeadline.description && (
@@ -664,16 +724,17 @@ export default function ConventionPage() {
               </div>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-4 text-base text-gray-500">
+            {/* Location Badge with Airport Info */}
+            {/* <div className="flex flex-wrap justify-center gap-4 text-base text-gray-500">
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
-                <span>Convention Center, Los Angeles</span>
+                <span>Location: Great Lakes Region, USA</span>
               </div>
               <div className="flex items-center gap-1">
-                <Users className="h-4 w-4" />
-                <span>500+ Expected Attendees</span>
+                <span className="text-gray-300">|</span>
+                <span className="text-blue-600 font-medium">Nearest Airport: Detroit Metropolitan Airport (DTW)</span>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Hotel Booking Section */}
@@ -736,11 +797,10 @@ export default function ConventionPage() {
                   return (
                     <Card
                       key={pkg.id}
-                      className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${
-                        pkg.popular 
-                          ? 'border-blue-300 shadow-md' 
+                      className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
+                          ? 'border-blue-300 shadow-md'
                           : 'border-gray-200 hover:border-blue-200'
-                      } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
+                        } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
                     >
                       {/* Popular Badge */}
                       {pkg.popular && (
@@ -754,11 +814,10 @@ export default function ConventionPage() {
 
                       {/* Deadline Badge */}
                       <div className="absolute top-3 left-3 z-10">
-                        <Badge className={`${
-                          currentDeadline.type === 'EARLY_BIRD' ? 'bg-green-500' :
-                          currentDeadline.type === 'STANDARD' ? 'bg-orange-500' :
-                          'bg-red-500'
-                        } text-white flex items-center gap-1 text-sm`}>
+                        <Badge className={`${currentDeadline.type === 'EARLY_BIRD' ? 'bg-green-500' :
+                            currentDeadline.type === 'STANDARD' ? 'bg-orange-500' :
+                              'bg-red-500'
+                          } text-white flex items-center gap-1 text-sm`}>
                           <Clock className="h-3 w-3" />
                           Early Bird
                         </Badge>
@@ -773,12 +832,12 @@ export default function ConventionPage() {
                           </Badge>
                         </div>
                       )}
-                      
+
                       <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
                         <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
                         <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
                       </CardHeader>
-                      
+
                       <CardContent className="flex-grow p-5">
                         {/* Price with Early Bird indicator */}
                         <div className="text-center mb-5">
@@ -811,11 +870,10 @@ export default function ConventionPage() {
                       <div className="p-5 pt-0">
                         <Button
                           onClick={() => handleAddToCartClick(pkg)}
-                          className={`w-full text-base font-semibold transition-all ${
-                            currentQuantity > 0
+                          className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
                               ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
                               : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
-                          } text-white shadow-md hover:shadow-lg py-3`}
+                            } text-white shadow-md hover:shadow-lg py-3`}
                         >
                           {currentQuantity > 0 ? (
                             <span className="flex items-center gap-2">
