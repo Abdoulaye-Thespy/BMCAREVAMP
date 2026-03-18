@@ -32,7 +32,7 @@ export function PresidentsGallerySection() {
       name: "Ntoonfor E. NIBA",
       year: "2025 till Present",
       role: "President",
-      image: "/VP-BMCA.png",
+      image: "/presiBMCA.png",
       accomplishments: [
         "Revamp the BMCA Website"
       ]

@@ -62,7 +62,7 @@ export default function PresidentSection() {
 
             {/* Main image container */}
             <div className="relative z-10 rounded-lg overflow-hidden shadow-2xl">
-              <img src="/VP-BMCA.png" alt="BMCA President" className="w-full h-auto object-cover" />
+              <img src="/presiBMCA.png" alt="BMCA President" className="w-full h-auto object-cover" />
 
               {/* Orange accent bar */}
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 to-orange-400" />
@@ -125,7 +125,7 @@ export default function PresidentSection() {
 
             {/* Signature */}
             <div className="mt-8 pt-6 border-t border-orange-200">
-              <p className="text-xl font-bold text-gray-900">Emmanuel Neba</p>
+              <p className="text-xl font-bold text-gray-900">Ntoo Nfor Emmanuel Neba</p>
               <p className="text-lg text-gray-600">President, BMCA USA</p>
             </div>
 
