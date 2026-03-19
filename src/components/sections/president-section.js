@@ -125,7 +125,7 @@ export default function PresidentSection() {
 
             {/* Signature */}
             <div className="mt-8 pt-6 border-t border-orange-200">
-              <p className="text-xl font-bold text-gray-900">Ntoo Nfor Emmanuel Neba</p>
+              <p className="text-xl font-bold text-gray-900">Ntoo Nfor Emmanuel Niba</p>
               <p className="text-lg text-gray-600">President, BMCA USA</p>
             </div>
 
