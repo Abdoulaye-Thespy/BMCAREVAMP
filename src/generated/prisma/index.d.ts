@@ -28,6 +28,37 @@ export type Order = $Result.DefaultSelection<Prisma.$OrderPayload>
  * 
  */
 export type OrderItem = $Result.DefaultSelection<Prisma.$OrderItemPayload>
+/**
+ * Model KiteuhApplication
+ * 
+ */
+export type KiteuhApplication = $Result.DefaultSelection<Prisma.$KiteuhApplicationPayload>
+/**
+ * Model KiteuhMember
+ * 
+ */
+export type KiteuhMember = $Result.DefaultSelection<Prisma.$KiteuhMemberPayload>
+
+/**
+ * Enums
+ */
+export namespace $Enums {
+  export const KiteuhStatus: {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  SUSPENDED: 'SUSPENDED'
+};
+
+export type KiteuhStatus = (typeof KiteuhStatus)[keyof typeof KiteuhStatus]
+
+}
+
+export type KiteuhStatus = $Enums.KiteuhStatus
+
+export const KiteuhStatus: typeof $Enums.KiteuhStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -179,6 +210,26 @@ export class PrismaClient<
     * ```
     */
   get orderItem(): Prisma.OrderItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.kiteuhApplication`: Exposes CRUD operations for the **KiteuhApplication** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more KiteuhApplications
+    * const kiteuhApplications = await prisma.kiteuhApplication.findMany()
+    * ```
+    */
+  get kiteuhApplication(): Prisma.KiteuhApplicationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.kiteuhMember`: Exposes CRUD operations for the **KiteuhMember** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more KiteuhMembers
+    * const kiteuhMembers = await prisma.kiteuhMember.findMany()
+    * ```
+    */
+  get kiteuhMember(): Prisma.KiteuhMemberDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -229,8 +280,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.4.2
-   * Query Engine version: 94a226be1cf2967af2541cca5529f0f7ba866919
+   * Prisma Client JS version: 7.5.0
+   * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
    */
   export type PrismaVersion = {
     client: string
@@ -615,7 +666,9 @@ export namespace Prisma {
   export const ModelName: {
     Package: 'Package',
     Order: 'Order',
-    OrderItem: 'OrderItem'
+    OrderItem: 'OrderItem',
+    KiteuhApplication: 'KiteuhApplication',
+    KiteuhMember: 'KiteuhMember'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -631,7 +684,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "package" | "order" | "orderItem"
+      modelProps: "package" | "order" | "orderItem" | "kiteuhApplication" | "kiteuhMember"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -857,6 +910,154 @@ export namespace Prisma {
           }
         }
       }
+      KiteuhApplication: {
+        payload: Prisma.$KiteuhApplicationPayload<ExtArgs>
+        fields: Prisma.KiteuhApplicationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.KiteuhApplicationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhApplicationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.KiteuhApplicationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhApplicationPayload>
+          }
+          findFirst: {
+            args: Prisma.KiteuhApplicationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhApplicationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.KiteuhApplicationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhApplicationPayload>
+          }
+          findMany: {
+            args: Prisma.KiteuhApplicationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhApplicationPayload>[]
+          }
+          create: {
+            args: Prisma.KiteuhApplicationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhApplicationPayload>
+          }
+          createMany: {
+            args: Prisma.KiteuhApplicationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.KiteuhApplicationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhApplicationPayload>[]
+          }
+          delete: {
+            args: Prisma.KiteuhApplicationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhApplicationPayload>
+          }
+          update: {
+            args: Prisma.KiteuhApplicationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhApplicationPayload>
+          }
+          deleteMany: {
+            args: Prisma.KiteuhApplicationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.KiteuhApplicationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.KiteuhApplicationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhApplicationPayload>[]
+          }
+          upsert: {
+            args: Prisma.KiteuhApplicationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhApplicationPayload>
+          }
+          aggregate: {
+            args: Prisma.KiteuhApplicationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateKiteuhApplication>
+          }
+          groupBy: {
+            args: Prisma.KiteuhApplicationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<KiteuhApplicationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.KiteuhApplicationCountArgs<ExtArgs>
+            result: $Utils.Optional<KiteuhApplicationCountAggregateOutputType> | number
+          }
+        }
+      }
+      KiteuhMember: {
+        payload: Prisma.$KiteuhMemberPayload<ExtArgs>
+        fields: Prisma.KiteuhMemberFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.KiteuhMemberFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhMemberPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.KiteuhMemberFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhMemberPayload>
+          }
+          findFirst: {
+            args: Prisma.KiteuhMemberFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhMemberPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.KiteuhMemberFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhMemberPayload>
+          }
+          findMany: {
+            args: Prisma.KiteuhMemberFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhMemberPayload>[]
+          }
+          create: {
+            args: Prisma.KiteuhMemberCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhMemberPayload>
+          }
+          createMany: {
+            args: Prisma.KiteuhMemberCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.KiteuhMemberCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhMemberPayload>[]
+          }
+          delete: {
+            args: Prisma.KiteuhMemberDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhMemberPayload>
+          }
+          update: {
+            args: Prisma.KiteuhMemberUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhMemberPayload>
+          }
+          deleteMany: {
+            args: Prisma.KiteuhMemberDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.KiteuhMemberUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.KiteuhMemberUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhMemberPayload>[]
+          }
+          upsert: {
+            args: Prisma.KiteuhMemberUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KiteuhMemberPayload>
+          }
+          aggregate: {
+            args: Prisma.KiteuhMemberAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateKiteuhMember>
+          }
+          groupBy: {
+            args: Prisma.KiteuhMemberGroupByArgs<ExtArgs>
+            result: $Utils.Optional<KiteuhMemberGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.KiteuhMemberCountArgs<ExtArgs>
+            result: $Utils.Optional<KiteuhMemberCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -968,6 +1169,8 @@ export namespace Prisma {
     package?: PackageOmit
     order?: OrderOmit
     orderItem?: OrderItemOmit
+    kiteuhApplication?: KiteuhApplicationOmit
+    kiteuhMember?: KiteuhMemberOmit
   }
 
   /* Types for Logging */
@@ -1921,6 +2124,11 @@ export namespace Prisma {
      * Skip the first `n` Packages.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Packages.
+     */
     distinct?: PackageScalarFieldEnum | PackageScalarFieldEnum[]
   }
 
@@ -3042,6 +3250,11 @@ export namespace Prisma {
      * Skip the first `n` Orders.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Orders.
+     */
     distinct?: OrderScalarFieldEnum | OrderScalarFieldEnum[]
   }
 
@@ -4202,6 +4415,11 @@ export namespace Prisma {
      * Skip the first `n` OrderItems.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrderItems.
+     */
     distinct?: OrderItemScalarFieldEnum | OrderItemScalarFieldEnum[]
   }
 
@@ -4421,6 +4639,2598 @@ export namespace Prisma {
 
 
   /**
+   * Model KiteuhApplication
+   */
+
+  export type AggregateKiteuhApplication = {
+    _count: KiteuhApplicationCountAggregateOutputType | null
+    _min: KiteuhApplicationMinAggregateOutputType | null
+    _max: KiteuhApplicationMaxAggregateOutputType | null
+  }
+
+  export type KiteuhApplicationMinAggregateOutputType = {
+    id: string | null
+    applicationNumber: string | null
+    status: $Enums.KiteuhStatus | null
+    chapter: string | null
+    memberFirstName: string | null
+    memberMiddleName: string | null
+    memberLastName: string | null
+    memberDateOfBirth: Date | null
+    memberAddress: string | null
+    memberCity: string | null
+    memberState: string | null
+    memberZipCode: string | null
+    memberEmail: string | null
+    memberPhone: string | null
+    beneficiaryFirstName: string | null
+    beneficiaryMiddleName: string | null
+    beneficiaryLastName: string | null
+    beneficiaryEmail: string | null
+    beneficiaryPhone: string | null
+    beneficiaryAddress: string | null
+    beneficiaryCity: string | null
+    beneficiaryState: string | null
+    beneficiaryZipCode: string | null
+    assignedMemberId: string | null
+    assignedBy: string | null
+    assignedAt: Date | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type KiteuhApplicationMaxAggregateOutputType = {
+    id: string | null
+    applicationNumber: string | null
+    status: $Enums.KiteuhStatus | null
+    chapter: string | null
+    memberFirstName: string | null
+    memberMiddleName: string | null
+    memberLastName: string | null
+    memberDateOfBirth: Date | null
+    memberAddress: string | null
+    memberCity: string | null
+    memberState: string | null
+    memberZipCode: string | null
+    memberEmail: string | null
+    memberPhone: string | null
+    beneficiaryFirstName: string | null
+    beneficiaryMiddleName: string | null
+    beneficiaryLastName: string | null
+    beneficiaryEmail: string | null
+    beneficiaryPhone: string | null
+    beneficiaryAddress: string | null
+    beneficiaryCity: string | null
+    beneficiaryState: string | null
+    beneficiaryZipCode: string | null
+    assignedMemberId: string | null
+    assignedBy: string | null
+    assignedAt: Date | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type KiteuhApplicationCountAggregateOutputType = {
+    id: number
+    applicationNumber: number
+    status: number
+    chapter: number
+    memberFirstName: number
+    memberMiddleName: number
+    memberLastName: number
+    memberDateOfBirth: number
+    memberAddress: number
+    memberCity: number
+    memberState: number
+    memberZipCode: number
+    memberEmail: number
+    memberPhone: number
+    beneficiaryFirstName: number
+    beneficiaryMiddleName: number
+    beneficiaryLastName: number
+    beneficiaryEmail: number
+    beneficiaryPhone: number
+    beneficiaryAddress: number
+    beneficiaryCity: number
+    beneficiaryState: number
+    beneficiaryZipCode: number
+    assignedMemberId: number
+    assignedBy: number
+    assignedAt: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type KiteuhApplicationMinAggregateInputType = {
+    id?: true
+    applicationNumber?: true
+    status?: true
+    chapter?: true
+    memberFirstName?: true
+    memberMiddleName?: true
+    memberLastName?: true
+    memberDateOfBirth?: true
+    memberAddress?: true
+    memberCity?: true
+    memberState?: true
+    memberZipCode?: true
+    memberEmail?: true
+    memberPhone?: true
+    beneficiaryFirstName?: true
+    beneficiaryMiddleName?: true
+    beneficiaryLastName?: true
+    beneficiaryEmail?: true
+    beneficiaryPhone?: true
+    beneficiaryAddress?: true
+    beneficiaryCity?: true
+    beneficiaryState?: true
+    beneficiaryZipCode?: true
+    assignedMemberId?: true
+    assignedBy?: true
+    assignedAt?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type KiteuhApplicationMaxAggregateInputType = {
+    id?: true
+    applicationNumber?: true
+    status?: true
+    chapter?: true
+    memberFirstName?: true
+    memberMiddleName?: true
+    memberLastName?: true
+    memberDateOfBirth?: true
+    memberAddress?: true
+    memberCity?: true
+    memberState?: true
+    memberZipCode?: true
+    memberEmail?: true
+    memberPhone?: true
+    beneficiaryFirstName?: true
+    beneficiaryMiddleName?: true
+    beneficiaryLastName?: true
+    beneficiaryEmail?: true
+    beneficiaryPhone?: true
+    beneficiaryAddress?: true
+    beneficiaryCity?: true
+    beneficiaryState?: true
+    beneficiaryZipCode?: true
+    assignedMemberId?: true
+    assignedBy?: true
+    assignedAt?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type KiteuhApplicationCountAggregateInputType = {
+    id?: true
+    applicationNumber?: true
+    status?: true
+    chapter?: true
+    memberFirstName?: true
+    memberMiddleName?: true
+    memberLastName?: true
+    memberDateOfBirth?: true
+    memberAddress?: true
+    memberCity?: true
+    memberState?: true
+    memberZipCode?: true
+    memberEmail?: true
+    memberPhone?: true
+    beneficiaryFirstName?: true
+    beneficiaryMiddleName?: true
+    beneficiaryLastName?: true
+    beneficiaryEmail?: true
+    beneficiaryPhone?: true
+    beneficiaryAddress?: true
+    beneficiaryCity?: true
+    beneficiaryState?: true
+    beneficiaryZipCode?: true
+    assignedMemberId?: true
+    assignedBy?: true
+    assignedAt?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type KiteuhApplicationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KiteuhApplication to aggregate.
+     */
+    where?: KiteuhApplicationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KiteuhApplications to fetch.
+     */
+    orderBy?: KiteuhApplicationOrderByWithRelationInput | KiteuhApplicationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: KiteuhApplicationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KiteuhApplications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KiteuhApplications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned KiteuhApplications
+    **/
+    _count?: true | KiteuhApplicationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: KiteuhApplicationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: KiteuhApplicationMaxAggregateInputType
+  }
+
+  export type GetKiteuhApplicationAggregateType<T extends KiteuhApplicationAggregateArgs> = {
+        [P in keyof T & keyof AggregateKiteuhApplication]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateKiteuhApplication[P]>
+      : GetScalarType<T[P], AggregateKiteuhApplication[P]>
+  }
+
+
+
+
+  export type KiteuhApplicationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: KiteuhApplicationWhereInput
+    orderBy?: KiteuhApplicationOrderByWithAggregationInput | KiteuhApplicationOrderByWithAggregationInput[]
+    by: KiteuhApplicationScalarFieldEnum[] | KiteuhApplicationScalarFieldEnum
+    having?: KiteuhApplicationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: KiteuhApplicationCountAggregateInputType | true
+    _min?: KiteuhApplicationMinAggregateInputType
+    _max?: KiteuhApplicationMaxAggregateInputType
+  }
+
+  export type KiteuhApplicationGroupByOutputType = {
+    id: string
+    applicationNumber: string
+    status: $Enums.KiteuhStatus
+    chapter: string
+    memberFirstName: string
+    memberMiddleName: string | null
+    memberLastName: string
+    memberDateOfBirth: Date
+    memberAddress: string | null
+    memberCity: string | null
+    memberState: string | null
+    memberZipCode: string | null
+    memberEmail: string
+    memberPhone: string
+    beneficiaryFirstName: string | null
+    beneficiaryMiddleName: string | null
+    beneficiaryLastName: string | null
+    beneficiaryEmail: string | null
+    beneficiaryPhone: string | null
+    beneficiaryAddress: string | null
+    beneficiaryCity: string | null
+    beneficiaryState: string | null
+    beneficiaryZipCode: string | null
+    assignedMemberId: string | null
+    assignedBy: string | null
+    assignedAt: Date | null
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: KiteuhApplicationCountAggregateOutputType | null
+    _min: KiteuhApplicationMinAggregateOutputType | null
+    _max: KiteuhApplicationMaxAggregateOutputType | null
+  }
+
+  type GetKiteuhApplicationGroupByPayload<T extends KiteuhApplicationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<KiteuhApplicationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof KiteuhApplicationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], KiteuhApplicationGroupByOutputType[P]>
+            : GetScalarType<T[P], KiteuhApplicationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type KiteuhApplicationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    applicationNumber?: boolean
+    status?: boolean
+    chapter?: boolean
+    memberFirstName?: boolean
+    memberMiddleName?: boolean
+    memberLastName?: boolean
+    memberDateOfBirth?: boolean
+    memberAddress?: boolean
+    memberCity?: boolean
+    memberState?: boolean
+    memberZipCode?: boolean
+    memberEmail?: boolean
+    memberPhone?: boolean
+    beneficiaryFirstName?: boolean
+    beneficiaryMiddleName?: boolean
+    beneficiaryLastName?: boolean
+    beneficiaryEmail?: boolean
+    beneficiaryPhone?: boolean
+    beneficiaryAddress?: boolean
+    beneficiaryCity?: boolean
+    beneficiaryState?: boolean
+    beneficiaryZipCode?: boolean
+    assignedMemberId?: boolean
+    assignedBy?: boolean
+    assignedAt?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    member?: boolean | KiteuhApplication$memberArgs<ExtArgs>
+  }, ExtArgs["result"]["kiteuhApplication"]>
+
+  export type KiteuhApplicationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    applicationNumber?: boolean
+    status?: boolean
+    chapter?: boolean
+    memberFirstName?: boolean
+    memberMiddleName?: boolean
+    memberLastName?: boolean
+    memberDateOfBirth?: boolean
+    memberAddress?: boolean
+    memberCity?: boolean
+    memberState?: boolean
+    memberZipCode?: boolean
+    memberEmail?: boolean
+    memberPhone?: boolean
+    beneficiaryFirstName?: boolean
+    beneficiaryMiddleName?: boolean
+    beneficiaryLastName?: boolean
+    beneficiaryEmail?: boolean
+    beneficiaryPhone?: boolean
+    beneficiaryAddress?: boolean
+    beneficiaryCity?: boolean
+    beneficiaryState?: boolean
+    beneficiaryZipCode?: boolean
+    assignedMemberId?: boolean
+    assignedBy?: boolean
+    assignedAt?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["kiteuhApplication"]>
+
+  export type KiteuhApplicationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    applicationNumber?: boolean
+    status?: boolean
+    chapter?: boolean
+    memberFirstName?: boolean
+    memberMiddleName?: boolean
+    memberLastName?: boolean
+    memberDateOfBirth?: boolean
+    memberAddress?: boolean
+    memberCity?: boolean
+    memberState?: boolean
+    memberZipCode?: boolean
+    memberEmail?: boolean
+    memberPhone?: boolean
+    beneficiaryFirstName?: boolean
+    beneficiaryMiddleName?: boolean
+    beneficiaryLastName?: boolean
+    beneficiaryEmail?: boolean
+    beneficiaryPhone?: boolean
+    beneficiaryAddress?: boolean
+    beneficiaryCity?: boolean
+    beneficiaryState?: boolean
+    beneficiaryZipCode?: boolean
+    assignedMemberId?: boolean
+    assignedBy?: boolean
+    assignedAt?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["kiteuhApplication"]>
+
+  export type KiteuhApplicationSelectScalar = {
+    id?: boolean
+    applicationNumber?: boolean
+    status?: boolean
+    chapter?: boolean
+    memberFirstName?: boolean
+    memberMiddleName?: boolean
+    memberLastName?: boolean
+    memberDateOfBirth?: boolean
+    memberAddress?: boolean
+    memberCity?: boolean
+    memberState?: boolean
+    memberZipCode?: boolean
+    memberEmail?: boolean
+    memberPhone?: boolean
+    beneficiaryFirstName?: boolean
+    beneficiaryMiddleName?: boolean
+    beneficiaryLastName?: boolean
+    beneficiaryEmail?: boolean
+    beneficiaryPhone?: boolean
+    beneficiaryAddress?: boolean
+    beneficiaryCity?: boolean
+    beneficiaryState?: boolean
+    beneficiaryZipCode?: boolean
+    assignedMemberId?: boolean
+    assignedBy?: boolean
+    assignedAt?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type KiteuhApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "applicationNumber" | "status" | "chapter" | "memberFirstName" | "memberMiddleName" | "memberLastName" | "memberDateOfBirth" | "memberAddress" | "memberCity" | "memberState" | "memberZipCode" | "memberEmail" | "memberPhone" | "beneficiaryFirstName" | "beneficiaryMiddleName" | "beneficiaryLastName" | "beneficiaryEmail" | "beneficiaryPhone" | "beneficiaryAddress" | "beneficiaryCity" | "beneficiaryState" | "beneficiaryZipCode" | "assignedMemberId" | "assignedBy" | "assignedAt" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["kiteuhApplication"]>
+  export type KiteuhApplicationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    member?: boolean | KiteuhApplication$memberArgs<ExtArgs>
+  }
+  export type KiteuhApplicationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type KiteuhApplicationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $KiteuhApplicationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "KiteuhApplication"
+    objects: {
+      member: Prisma.$KiteuhMemberPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      applicationNumber: string
+      status: $Enums.KiteuhStatus
+      chapter: string
+      memberFirstName: string
+      memberMiddleName: string | null
+      memberLastName: string
+      memberDateOfBirth: Date
+      memberAddress: string | null
+      memberCity: string | null
+      memberState: string | null
+      memberZipCode: string | null
+      memberEmail: string
+      memberPhone: string
+      beneficiaryFirstName: string | null
+      beneficiaryMiddleName: string | null
+      beneficiaryLastName: string | null
+      beneficiaryEmail: string | null
+      beneficiaryPhone: string | null
+      beneficiaryAddress: string | null
+      beneficiaryCity: string | null
+      beneficiaryState: string | null
+      beneficiaryZipCode: string | null
+      assignedMemberId: string | null
+      assignedBy: string | null
+      assignedAt: Date | null
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["kiteuhApplication"]>
+    composites: {}
+  }
+
+  type KiteuhApplicationGetPayload<S extends boolean | null | undefined | KiteuhApplicationDefaultArgs> = $Result.GetResult<Prisma.$KiteuhApplicationPayload, S>
+
+  type KiteuhApplicationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<KiteuhApplicationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: KiteuhApplicationCountAggregateInputType | true
+    }
+
+  export interface KiteuhApplicationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['KiteuhApplication'], meta: { name: 'KiteuhApplication' } }
+    /**
+     * Find zero or one KiteuhApplication that matches the filter.
+     * @param {KiteuhApplicationFindUniqueArgs} args - Arguments to find a KiteuhApplication
+     * @example
+     * // Get one KiteuhApplication
+     * const kiteuhApplication = await prisma.kiteuhApplication.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends KiteuhApplicationFindUniqueArgs>(args: SelectSubset<T, KiteuhApplicationFindUniqueArgs<ExtArgs>>): Prisma__KiteuhApplicationClient<$Result.GetResult<Prisma.$KiteuhApplicationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one KiteuhApplication that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {KiteuhApplicationFindUniqueOrThrowArgs} args - Arguments to find a KiteuhApplication
+     * @example
+     * // Get one KiteuhApplication
+     * const kiteuhApplication = await prisma.kiteuhApplication.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends KiteuhApplicationFindUniqueOrThrowArgs>(args: SelectSubset<T, KiteuhApplicationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__KiteuhApplicationClient<$Result.GetResult<Prisma.$KiteuhApplicationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KiteuhApplication that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhApplicationFindFirstArgs} args - Arguments to find a KiteuhApplication
+     * @example
+     * // Get one KiteuhApplication
+     * const kiteuhApplication = await prisma.kiteuhApplication.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends KiteuhApplicationFindFirstArgs>(args?: SelectSubset<T, KiteuhApplicationFindFirstArgs<ExtArgs>>): Prisma__KiteuhApplicationClient<$Result.GetResult<Prisma.$KiteuhApplicationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KiteuhApplication that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhApplicationFindFirstOrThrowArgs} args - Arguments to find a KiteuhApplication
+     * @example
+     * // Get one KiteuhApplication
+     * const kiteuhApplication = await prisma.kiteuhApplication.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends KiteuhApplicationFindFirstOrThrowArgs>(args?: SelectSubset<T, KiteuhApplicationFindFirstOrThrowArgs<ExtArgs>>): Prisma__KiteuhApplicationClient<$Result.GetResult<Prisma.$KiteuhApplicationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more KiteuhApplications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhApplicationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all KiteuhApplications
+     * const kiteuhApplications = await prisma.kiteuhApplication.findMany()
+     * 
+     * // Get first 10 KiteuhApplications
+     * const kiteuhApplications = await prisma.kiteuhApplication.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const kiteuhApplicationWithIdOnly = await prisma.kiteuhApplication.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends KiteuhApplicationFindManyArgs>(args?: SelectSubset<T, KiteuhApplicationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KiteuhApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a KiteuhApplication.
+     * @param {KiteuhApplicationCreateArgs} args - Arguments to create a KiteuhApplication.
+     * @example
+     * // Create one KiteuhApplication
+     * const KiteuhApplication = await prisma.kiteuhApplication.create({
+     *   data: {
+     *     // ... data to create a KiteuhApplication
+     *   }
+     * })
+     * 
+     */
+    create<T extends KiteuhApplicationCreateArgs>(args: SelectSubset<T, KiteuhApplicationCreateArgs<ExtArgs>>): Prisma__KiteuhApplicationClient<$Result.GetResult<Prisma.$KiteuhApplicationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many KiteuhApplications.
+     * @param {KiteuhApplicationCreateManyArgs} args - Arguments to create many KiteuhApplications.
+     * @example
+     * // Create many KiteuhApplications
+     * const kiteuhApplication = await prisma.kiteuhApplication.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends KiteuhApplicationCreateManyArgs>(args?: SelectSubset<T, KiteuhApplicationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many KiteuhApplications and returns the data saved in the database.
+     * @param {KiteuhApplicationCreateManyAndReturnArgs} args - Arguments to create many KiteuhApplications.
+     * @example
+     * // Create many KiteuhApplications
+     * const kiteuhApplication = await prisma.kiteuhApplication.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many KiteuhApplications and only return the `id`
+     * const kiteuhApplicationWithIdOnly = await prisma.kiteuhApplication.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends KiteuhApplicationCreateManyAndReturnArgs>(args?: SelectSubset<T, KiteuhApplicationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KiteuhApplicationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a KiteuhApplication.
+     * @param {KiteuhApplicationDeleteArgs} args - Arguments to delete one KiteuhApplication.
+     * @example
+     * // Delete one KiteuhApplication
+     * const KiteuhApplication = await prisma.kiteuhApplication.delete({
+     *   where: {
+     *     // ... filter to delete one KiteuhApplication
+     *   }
+     * })
+     * 
+     */
+    delete<T extends KiteuhApplicationDeleteArgs>(args: SelectSubset<T, KiteuhApplicationDeleteArgs<ExtArgs>>): Prisma__KiteuhApplicationClient<$Result.GetResult<Prisma.$KiteuhApplicationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one KiteuhApplication.
+     * @param {KiteuhApplicationUpdateArgs} args - Arguments to update one KiteuhApplication.
+     * @example
+     * // Update one KiteuhApplication
+     * const kiteuhApplication = await prisma.kiteuhApplication.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends KiteuhApplicationUpdateArgs>(args: SelectSubset<T, KiteuhApplicationUpdateArgs<ExtArgs>>): Prisma__KiteuhApplicationClient<$Result.GetResult<Prisma.$KiteuhApplicationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more KiteuhApplications.
+     * @param {KiteuhApplicationDeleteManyArgs} args - Arguments to filter KiteuhApplications to delete.
+     * @example
+     * // Delete a few KiteuhApplications
+     * const { count } = await prisma.kiteuhApplication.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends KiteuhApplicationDeleteManyArgs>(args?: SelectSubset<T, KiteuhApplicationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KiteuhApplications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhApplicationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many KiteuhApplications
+     * const kiteuhApplication = await prisma.kiteuhApplication.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends KiteuhApplicationUpdateManyArgs>(args: SelectSubset<T, KiteuhApplicationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KiteuhApplications and returns the data updated in the database.
+     * @param {KiteuhApplicationUpdateManyAndReturnArgs} args - Arguments to update many KiteuhApplications.
+     * @example
+     * // Update many KiteuhApplications
+     * const kiteuhApplication = await prisma.kiteuhApplication.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more KiteuhApplications and only return the `id`
+     * const kiteuhApplicationWithIdOnly = await prisma.kiteuhApplication.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends KiteuhApplicationUpdateManyAndReturnArgs>(args: SelectSubset<T, KiteuhApplicationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KiteuhApplicationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one KiteuhApplication.
+     * @param {KiteuhApplicationUpsertArgs} args - Arguments to update or create a KiteuhApplication.
+     * @example
+     * // Update or create a KiteuhApplication
+     * const kiteuhApplication = await prisma.kiteuhApplication.upsert({
+     *   create: {
+     *     // ... data to create a KiteuhApplication
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the KiteuhApplication we want to update
+     *   }
+     * })
+     */
+    upsert<T extends KiteuhApplicationUpsertArgs>(args: SelectSubset<T, KiteuhApplicationUpsertArgs<ExtArgs>>): Prisma__KiteuhApplicationClient<$Result.GetResult<Prisma.$KiteuhApplicationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of KiteuhApplications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhApplicationCountArgs} args - Arguments to filter KiteuhApplications to count.
+     * @example
+     * // Count the number of KiteuhApplications
+     * const count = await prisma.kiteuhApplication.count({
+     *   where: {
+     *     // ... the filter for the KiteuhApplications we want to count
+     *   }
+     * })
+    **/
+    count<T extends KiteuhApplicationCountArgs>(
+      args?: Subset<T, KiteuhApplicationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], KiteuhApplicationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a KiteuhApplication.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhApplicationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends KiteuhApplicationAggregateArgs>(args: Subset<T, KiteuhApplicationAggregateArgs>): Prisma.PrismaPromise<GetKiteuhApplicationAggregateType<T>>
+
+    /**
+     * Group by KiteuhApplication.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhApplicationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends KiteuhApplicationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: KiteuhApplicationGroupByArgs['orderBy'] }
+        : { orderBy?: KiteuhApplicationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, KiteuhApplicationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetKiteuhApplicationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the KiteuhApplication model
+   */
+  readonly fields: KiteuhApplicationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for KiteuhApplication.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__KiteuhApplicationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    member<T extends KiteuhApplication$memberArgs<ExtArgs> = {}>(args?: Subset<T, KiteuhApplication$memberArgs<ExtArgs>>): Prisma__KiteuhMemberClient<$Result.GetResult<Prisma.$KiteuhMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the KiteuhApplication model
+   */
+  interface KiteuhApplicationFieldRefs {
+    readonly id: FieldRef<"KiteuhApplication", 'String'>
+    readonly applicationNumber: FieldRef<"KiteuhApplication", 'String'>
+    readonly status: FieldRef<"KiteuhApplication", 'KiteuhStatus'>
+    readonly chapter: FieldRef<"KiteuhApplication", 'String'>
+    readonly memberFirstName: FieldRef<"KiteuhApplication", 'String'>
+    readonly memberMiddleName: FieldRef<"KiteuhApplication", 'String'>
+    readonly memberLastName: FieldRef<"KiteuhApplication", 'String'>
+    readonly memberDateOfBirth: FieldRef<"KiteuhApplication", 'DateTime'>
+    readonly memberAddress: FieldRef<"KiteuhApplication", 'String'>
+    readonly memberCity: FieldRef<"KiteuhApplication", 'String'>
+    readonly memberState: FieldRef<"KiteuhApplication", 'String'>
+    readonly memberZipCode: FieldRef<"KiteuhApplication", 'String'>
+    readonly memberEmail: FieldRef<"KiteuhApplication", 'String'>
+    readonly memberPhone: FieldRef<"KiteuhApplication", 'String'>
+    readonly beneficiaryFirstName: FieldRef<"KiteuhApplication", 'String'>
+    readonly beneficiaryMiddleName: FieldRef<"KiteuhApplication", 'String'>
+    readonly beneficiaryLastName: FieldRef<"KiteuhApplication", 'String'>
+    readonly beneficiaryEmail: FieldRef<"KiteuhApplication", 'String'>
+    readonly beneficiaryPhone: FieldRef<"KiteuhApplication", 'String'>
+    readonly beneficiaryAddress: FieldRef<"KiteuhApplication", 'String'>
+    readonly beneficiaryCity: FieldRef<"KiteuhApplication", 'String'>
+    readonly beneficiaryState: FieldRef<"KiteuhApplication", 'String'>
+    readonly beneficiaryZipCode: FieldRef<"KiteuhApplication", 'String'>
+    readonly assignedMemberId: FieldRef<"KiteuhApplication", 'String'>
+    readonly assignedBy: FieldRef<"KiteuhApplication", 'String'>
+    readonly assignedAt: FieldRef<"KiteuhApplication", 'DateTime'>
+    readonly notes: FieldRef<"KiteuhApplication", 'String'>
+    readonly createdAt: FieldRef<"KiteuhApplication", 'DateTime'>
+    readonly updatedAt: FieldRef<"KiteuhApplication", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * KiteuhApplication findUnique
+   */
+  export type KiteuhApplicationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhApplicationInclude<ExtArgs> | null
+    /**
+     * Filter, which KiteuhApplication to fetch.
+     */
+    where: KiteuhApplicationWhereUniqueInput
+  }
+
+  /**
+   * KiteuhApplication findUniqueOrThrow
+   */
+  export type KiteuhApplicationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhApplicationInclude<ExtArgs> | null
+    /**
+     * Filter, which KiteuhApplication to fetch.
+     */
+    where: KiteuhApplicationWhereUniqueInput
+  }
+
+  /**
+   * KiteuhApplication findFirst
+   */
+  export type KiteuhApplicationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhApplicationInclude<ExtArgs> | null
+    /**
+     * Filter, which KiteuhApplication to fetch.
+     */
+    where?: KiteuhApplicationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KiteuhApplications to fetch.
+     */
+    orderBy?: KiteuhApplicationOrderByWithRelationInput | KiteuhApplicationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KiteuhApplications.
+     */
+    cursor?: KiteuhApplicationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KiteuhApplications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KiteuhApplications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KiteuhApplications.
+     */
+    distinct?: KiteuhApplicationScalarFieldEnum | KiteuhApplicationScalarFieldEnum[]
+  }
+
+  /**
+   * KiteuhApplication findFirstOrThrow
+   */
+  export type KiteuhApplicationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhApplicationInclude<ExtArgs> | null
+    /**
+     * Filter, which KiteuhApplication to fetch.
+     */
+    where?: KiteuhApplicationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KiteuhApplications to fetch.
+     */
+    orderBy?: KiteuhApplicationOrderByWithRelationInput | KiteuhApplicationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KiteuhApplications.
+     */
+    cursor?: KiteuhApplicationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KiteuhApplications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KiteuhApplications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KiteuhApplications.
+     */
+    distinct?: KiteuhApplicationScalarFieldEnum | KiteuhApplicationScalarFieldEnum[]
+  }
+
+  /**
+   * KiteuhApplication findMany
+   */
+  export type KiteuhApplicationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhApplicationInclude<ExtArgs> | null
+    /**
+     * Filter, which KiteuhApplications to fetch.
+     */
+    where?: KiteuhApplicationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KiteuhApplications to fetch.
+     */
+    orderBy?: KiteuhApplicationOrderByWithRelationInput | KiteuhApplicationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing KiteuhApplications.
+     */
+    cursor?: KiteuhApplicationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KiteuhApplications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KiteuhApplications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KiteuhApplications.
+     */
+    distinct?: KiteuhApplicationScalarFieldEnum | KiteuhApplicationScalarFieldEnum[]
+  }
+
+  /**
+   * KiteuhApplication create
+   */
+  export type KiteuhApplicationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhApplicationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a KiteuhApplication.
+     */
+    data: XOR<KiteuhApplicationCreateInput, KiteuhApplicationUncheckedCreateInput>
+  }
+
+  /**
+   * KiteuhApplication createMany
+   */
+  export type KiteuhApplicationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many KiteuhApplications.
+     */
+    data: KiteuhApplicationCreateManyInput | KiteuhApplicationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * KiteuhApplication createManyAndReturn
+   */
+  export type KiteuhApplicationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * The data used to create many KiteuhApplications.
+     */
+    data: KiteuhApplicationCreateManyInput | KiteuhApplicationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * KiteuhApplication update
+   */
+  export type KiteuhApplicationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhApplicationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a KiteuhApplication.
+     */
+    data: XOR<KiteuhApplicationUpdateInput, KiteuhApplicationUncheckedUpdateInput>
+    /**
+     * Choose, which KiteuhApplication to update.
+     */
+    where: KiteuhApplicationWhereUniqueInput
+  }
+
+  /**
+   * KiteuhApplication updateMany
+   */
+  export type KiteuhApplicationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update KiteuhApplications.
+     */
+    data: XOR<KiteuhApplicationUpdateManyMutationInput, KiteuhApplicationUncheckedUpdateManyInput>
+    /**
+     * Filter which KiteuhApplications to update
+     */
+    where?: KiteuhApplicationWhereInput
+    /**
+     * Limit how many KiteuhApplications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * KiteuhApplication updateManyAndReturn
+   */
+  export type KiteuhApplicationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * The data used to update KiteuhApplications.
+     */
+    data: XOR<KiteuhApplicationUpdateManyMutationInput, KiteuhApplicationUncheckedUpdateManyInput>
+    /**
+     * Filter which KiteuhApplications to update
+     */
+    where?: KiteuhApplicationWhereInput
+    /**
+     * Limit how many KiteuhApplications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * KiteuhApplication upsert
+   */
+  export type KiteuhApplicationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhApplicationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the KiteuhApplication to update in case it exists.
+     */
+    where: KiteuhApplicationWhereUniqueInput
+    /**
+     * In case the KiteuhApplication found by the `where` argument doesn't exist, create a new KiteuhApplication with this data.
+     */
+    create: XOR<KiteuhApplicationCreateInput, KiteuhApplicationUncheckedCreateInput>
+    /**
+     * In case the KiteuhApplication was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<KiteuhApplicationUpdateInput, KiteuhApplicationUncheckedUpdateInput>
+  }
+
+  /**
+   * KiteuhApplication delete
+   */
+  export type KiteuhApplicationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhApplicationInclude<ExtArgs> | null
+    /**
+     * Filter which KiteuhApplication to delete.
+     */
+    where: KiteuhApplicationWhereUniqueInput
+  }
+
+  /**
+   * KiteuhApplication deleteMany
+   */
+  export type KiteuhApplicationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KiteuhApplications to delete
+     */
+    where?: KiteuhApplicationWhereInput
+    /**
+     * Limit how many KiteuhApplications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * KiteuhApplication.member
+   */
+  export type KiteuhApplication$memberArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberInclude<ExtArgs> | null
+    where?: KiteuhMemberWhereInput
+  }
+
+  /**
+   * KiteuhApplication without action
+   */
+  export type KiteuhApplicationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhApplicationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model KiteuhMember
+   */
+
+  export type AggregateKiteuhMember = {
+    _count: KiteuhMemberCountAggregateOutputType | null
+    _min: KiteuhMemberMinAggregateOutputType | null
+    _max: KiteuhMemberMaxAggregateOutputType | null
+  }
+
+  export type KiteuhMemberMinAggregateOutputType = {
+    id: string | null
+    memberId: string | null
+    fullName: string | null
+    email: string | null
+    phone: string | null
+    chapter: string | null
+    dateOfBirth: Date | null
+    address: string | null
+    city: string | null
+    state: string | null
+    zipCode: string | null
+    status: $Enums.KiteuhStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    applicationId: string | null
+  }
+
+  export type KiteuhMemberMaxAggregateOutputType = {
+    id: string | null
+    memberId: string | null
+    fullName: string | null
+    email: string | null
+    phone: string | null
+    chapter: string | null
+    dateOfBirth: Date | null
+    address: string | null
+    city: string | null
+    state: string | null
+    zipCode: string | null
+    status: $Enums.KiteuhStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    applicationId: string | null
+  }
+
+  export type KiteuhMemberCountAggregateOutputType = {
+    id: number
+    memberId: number
+    fullName: number
+    email: number
+    phone: number
+    chapter: number
+    dateOfBirth: number
+    address: number
+    city: number
+    state: number
+    zipCode: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    applicationId: number
+    _all: number
+  }
+
+
+  export type KiteuhMemberMinAggregateInputType = {
+    id?: true
+    memberId?: true
+    fullName?: true
+    email?: true
+    phone?: true
+    chapter?: true
+    dateOfBirth?: true
+    address?: true
+    city?: true
+    state?: true
+    zipCode?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    applicationId?: true
+  }
+
+  export type KiteuhMemberMaxAggregateInputType = {
+    id?: true
+    memberId?: true
+    fullName?: true
+    email?: true
+    phone?: true
+    chapter?: true
+    dateOfBirth?: true
+    address?: true
+    city?: true
+    state?: true
+    zipCode?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    applicationId?: true
+  }
+
+  export type KiteuhMemberCountAggregateInputType = {
+    id?: true
+    memberId?: true
+    fullName?: true
+    email?: true
+    phone?: true
+    chapter?: true
+    dateOfBirth?: true
+    address?: true
+    city?: true
+    state?: true
+    zipCode?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    applicationId?: true
+    _all?: true
+  }
+
+  export type KiteuhMemberAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KiteuhMember to aggregate.
+     */
+    where?: KiteuhMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KiteuhMembers to fetch.
+     */
+    orderBy?: KiteuhMemberOrderByWithRelationInput | KiteuhMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: KiteuhMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KiteuhMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KiteuhMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned KiteuhMembers
+    **/
+    _count?: true | KiteuhMemberCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: KiteuhMemberMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: KiteuhMemberMaxAggregateInputType
+  }
+
+  export type GetKiteuhMemberAggregateType<T extends KiteuhMemberAggregateArgs> = {
+        [P in keyof T & keyof AggregateKiteuhMember]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateKiteuhMember[P]>
+      : GetScalarType<T[P], AggregateKiteuhMember[P]>
+  }
+
+
+
+
+  export type KiteuhMemberGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: KiteuhMemberWhereInput
+    orderBy?: KiteuhMemberOrderByWithAggregationInput | KiteuhMemberOrderByWithAggregationInput[]
+    by: KiteuhMemberScalarFieldEnum[] | KiteuhMemberScalarFieldEnum
+    having?: KiteuhMemberScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: KiteuhMemberCountAggregateInputType | true
+    _min?: KiteuhMemberMinAggregateInputType
+    _max?: KiteuhMemberMaxAggregateInputType
+  }
+
+  export type KiteuhMemberGroupByOutputType = {
+    id: string
+    memberId: string
+    fullName: string
+    email: string
+    phone: string
+    chapter: string
+    dateOfBirth: Date
+    address: string | null
+    city: string | null
+    state: string | null
+    zipCode: string | null
+    status: $Enums.KiteuhStatus
+    createdAt: Date
+    updatedAt: Date
+    applicationId: string | null
+    _count: KiteuhMemberCountAggregateOutputType | null
+    _min: KiteuhMemberMinAggregateOutputType | null
+    _max: KiteuhMemberMaxAggregateOutputType | null
+  }
+
+  type GetKiteuhMemberGroupByPayload<T extends KiteuhMemberGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<KiteuhMemberGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof KiteuhMemberGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], KiteuhMemberGroupByOutputType[P]>
+            : GetScalarType<T[P], KiteuhMemberGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type KiteuhMemberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    memberId?: boolean
+    fullName?: boolean
+    email?: boolean
+    phone?: boolean
+    chapter?: boolean
+    dateOfBirth?: boolean
+    address?: boolean
+    city?: boolean
+    state?: boolean
+    zipCode?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    applicationId?: boolean
+    application?: boolean | KiteuhMember$applicationArgs<ExtArgs>
+  }, ExtArgs["result"]["kiteuhMember"]>
+
+  export type KiteuhMemberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    memberId?: boolean
+    fullName?: boolean
+    email?: boolean
+    phone?: boolean
+    chapter?: boolean
+    dateOfBirth?: boolean
+    address?: boolean
+    city?: boolean
+    state?: boolean
+    zipCode?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    applicationId?: boolean
+    application?: boolean | KiteuhMember$applicationArgs<ExtArgs>
+  }, ExtArgs["result"]["kiteuhMember"]>
+
+  export type KiteuhMemberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    memberId?: boolean
+    fullName?: boolean
+    email?: boolean
+    phone?: boolean
+    chapter?: boolean
+    dateOfBirth?: boolean
+    address?: boolean
+    city?: boolean
+    state?: boolean
+    zipCode?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    applicationId?: boolean
+    application?: boolean | KiteuhMember$applicationArgs<ExtArgs>
+  }, ExtArgs["result"]["kiteuhMember"]>
+
+  export type KiteuhMemberSelectScalar = {
+    id?: boolean
+    memberId?: boolean
+    fullName?: boolean
+    email?: boolean
+    phone?: boolean
+    chapter?: boolean
+    dateOfBirth?: boolean
+    address?: boolean
+    city?: boolean
+    state?: boolean
+    zipCode?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    applicationId?: boolean
+  }
+
+  export type KiteuhMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "memberId" | "fullName" | "email" | "phone" | "chapter" | "dateOfBirth" | "address" | "city" | "state" | "zipCode" | "status" | "createdAt" | "updatedAt" | "applicationId", ExtArgs["result"]["kiteuhMember"]>
+  export type KiteuhMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    application?: boolean | KiteuhMember$applicationArgs<ExtArgs>
+  }
+  export type KiteuhMemberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    application?: boolean | KiteuhMember$applicationArgs<ExtArgs>
+  }
+  export type KiteuhMemberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    application?: boolean | KiteuhMember$applicationArgs<ExtArgs>
+  }
+
+  export type $KiteuhMemberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "KiteuhMember"
+    objects: {
+      application: Prisma.$KiteuhApplicationPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      memberId: string
+      fullName: string
+      email: string
+      phone: string
+      chapter: string
+      dateOfBirth: Date
+      address: string | null
+      city: string | null
+      state: string | null
+      zipCode: string | null
+      status: $Enums.KiteuhStatus
+      createdAt: Date
+      updatedAt: Date
+      applicationId: string | null
+    }, ExtArgs["result"]["kiteuhMember"]>
+    composites: {}
+  }
+
+  type KiteuhMemberGetPayload<S extends boolean | null | undefined | KiteuhMemberDefaultArgs> = $Result.GetResult<Prisma.$KiteuhMemberPayload, S>
+
+  type KiteuhMemberCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<KiteuhMemberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: KiteuhMemberCountAggregateInputType | true
+    }
+
+  export interface KiteuhMemberDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['KiteuhMember'], meta: { name: 'KiteuhMember' } }
+    /**
+     * Find zero or one KiteuhMember that matches the filter.
+     * @param {KiteuhMemberFindUniqueArgs} args - Arguments to find a KiteuhMember
+     * @example
+     * // Get one KiteuhMember
+     * const kiteuhMember = await prisma.kiteuhMember.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends KiteuhMemberFindUniqueArgs>(args: SelectSubset<T, KiteuhMemberFindUniqueArgs<ExtArgs>>): Prisma__KiteuhMemberClient<$Result.GetResult<Prisma.$KiteuhMemberPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one KiteuhMember that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {KiteuhMemberFindUniqueOrThrowArgs} args - Arguments to find a KiteuhMember
+     * @example
+     * // Get one KiteuhMember
+     * const kiteuhMember = await prisma.kiteuhMember.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends KiteuhMemberFindUniqueOrThrowArgs>(args: SelectSubset<T, KiteuhMemberFindUniqueOrThrowArgs<ExtArgs>>): Prisma__KiteuhMemberClient<$Result.GetResult<Prisma.$KiteuhMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KiteuhMember that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhMemberFindFirstArgs} args - Arguments to find a KiteuhMember
+     * @example
+     * // Get one KiteuhMember
+     * const kiteuhMember = await prisma.kiteuhMember.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends KiteuhMemberFindFirstArgs>(args?: SelectSubset<T, KiteuhMemberFindFirstArgs<ExtArgs>>): Prisma__KiteuhMemberClient<$Result.GetResult<Prisma.$KiteuhMemberPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KiteuhMember that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhMemberFindFirstOrThrowArgs} args - Arguments to find a KiteuhMember
+     * @example
+     * // Get one KiteuhMember
+     * const kiteuhMember = await prisma.kiteuhMember.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends KiteuhMemberFindFirstOrThrowArgs>(args?: SelectSubset<T, KiteuhMemberFindFirstOrThrowArgs<ExtArgs>>): Prisma__KiteuhMemberClient<$Result.GetResult<Prisma.$KiteuhMemberPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more KiteuhMembers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhMemberFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all KiteuhMembers
+     * const kiteuhMembers = await prisma.kiteuhMember.findMany()
+     * 
+     * // Get first 10 KiteuhMembers
+     * const kiteuhMembers = await prisma.kiteuhMember.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const kiteuhMemberWithIdOnly = await prisma.kiteuhMember.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends KiteuhMemberFindManyArgs>(args?: SelectSubset<T, KiteuhMemberFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KiteuhMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a KiteuhMember.
+     * @param {KiteuhMemberCreateArgs} args - Arguments to create a KiteuhMember.
+     * @example
+     * // Create one KiteuhMember
+     * const KiteuhMember = await prisma.kiteuhMember.create({
+     *   data: {
+     *     // ... data to create a KiteuhMember
+     *   }
+     * })
+     * 
+     */
+    create<T extends KiteuhMemberCreateArgs>(args: SelectSubset<T, KiteuhMemberCreateArgs<ExtArgs>>): Prisma__KiteuhMemberClient<$Result.GetResult<Prisma.$KiteuhMemberPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many KiteuhMembers.
+     * @param {KiteuhMemberCreateManyArgs} args - Arguments to create many KiteuhMembers.
+     * @example
+     * // Create many KiteuhMembers
+     * const kiteuhMember = await prisma.kiteuhMember.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends KiteuhMemberCreateManyArgs>(args?: SelectSubset<T, KiteuhMemberCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many KiteuhMembers and returns the data saved in the database.
+     * @param {KiteuhMemberCreateManyAndReturnArgs} args - Arguments to create many KiteuhMembers.
+     * @example
+     * // Create many KiteuhMembers
+     * const kiteuhMember = await prisma.kiteuhMember.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many KiteuhMembers and only return the `id`
+     * const kiteuhMemberWithIdOnly = await prisma.kiteuhMember.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends KiteuhMemberCreateManyAndReturnArgs>(args?: SelectSubset<T, KiteuhMemberCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KiteuhMemberPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a KiteuhMember.
+     * @param {KiteuhMemberDeleteArgs} args - Arguments to delete one KiteuhMember.
+     * @example
+     * // Delete one KiteuhMember
+     * const KiteuhMember = await prisma.kiteuhMember.delete({
+     *   where: {
+     *     // ... filter to delete one KiteuhMember
+     *   }
+     * })
+     * 
+     */
+    delete<T extends KiteuhMemberDeleteArgs>(args: SelectSubset<T, KiteuhMemberDeleteArgs<ExtArgs>>): Prisma__KiteuhMemberClient<$Result.GetResult<Prisma.$KiteuhMemberPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one KiteuhMember.
+     * @param {KiteuhMemberUpdateArgs} args - Arguments to update one KiteuhMember.
+     * @example
+     * // Update one KiteuhMember
+     * const kiteuhMember = await prisma.kiteuhMember.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends KiteuhMemberUpdateArgs>(args: SelectSubset<T, KiteuhMemberUpdateArgs<ExtArgs>>): Prisma__KiteuhMemberClient<$Result.GetResult<Prisma.$KiteuhMemberPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more KiteuhMembers.
+     * @param {KiteuhMemberDeleteManyArgs} args - Arguments to filter KiteuhMembers to delete.
+     * @example
+     * // Delete a few KiteuhMembers
+     * const { count } = await prisma.kiteuhMember.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends KiteuhMemberDeleteManyArgs>(args?: SelectSubset<T, KiteuhMemberDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KiteuhMembers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhMemberUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many KiteuhMembers
+     * const kiteuhMember = await prisma.kiteuhMember.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends KiteuhMemberUpdateManyArgs>(args: SelectSubset<T, KiteuhMemberUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KiteuhMembers and returns the data updated in the database.
+     * @param {KiteuhMemberUpdateManyAndReturnArgs} args - Arguments to update many KiteuhMembers.
+     * @example
+     * // Update many KiteuhMembers
+     * const kiteuhMember = await prisma.kiteuhMember.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more KiteuhMembers and only return the `id`
+     * const kiteuhMemberWithIdOnly = await prisma.kiteuhMember.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends KiteuhMemberUpdateManyAndReturnArgs>(args: SelectSubset<T, KiteuhMemberUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KiteuhMemberPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one KiteuhMember.
+     * @param {KiteuhMemberUpsertArgs} args - Arguments to update or create a KiteuhMember.
+     * @example
+     * // Update or create a KiteuhMember
+     * const kiteuhMember = await prisma.kiteuhMember.upsert({
+     *   create: {
+     *     // ... data to create a KiteuhMember
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the KiteuhMember we want to update
+     *   }
+     * })
+     */
+    upsert<T extends KiteuhMemberUpsertArgs>(args: SelectSubset<T, KiteuhMemberUpsertArgs<ExtArgs>>): Prisma__KiteuhMemberClient<$Result.GetResult<Prisma.$KiteuhMemberPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of KiteuhMembers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhMemberCountArgs} args - Arguments to filter KiteuhMembers to count.
+     * @example
+     * // Count the number of KiteuhMembers
+     * const count = await prisma.kiteuhMember.count({
+     *   where: {
+     *     // ... the filter for the KiteuhMembers we want to count
+     *   }
+     * })
+    **/
+    count<T extends KiteuhMemberCountArgs>(
+      args?: Subset<T, KiteuhMemberCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], KiteuhMemberCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a KiteuhMember.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhMemberAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends KiteuhMemberAggregateArgs>(args: Subset<T, KiteuhMemberAggregateArgs>): Prisma.PrismaPromise<GetKiteuhMemberAggregateType<T>>
+
+    /**
+     * Group by KiteuhMember.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KiteuhMemberGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends KiteuhMemberGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: KiteuhMemberGroupByArgs['orderBy'] }
+        : { orderBy?: KiteuhMemberGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, KiteuhMemberGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetKiteuhMemberGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the KiteuhMember model
+   */
+  readonly fields: KiteuhMemberFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for KiteuhMember.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__KiteuhMemberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    application<T extends KiteuhMember$applicationArgs<ExtArgs> = {}>(args?: Subset<T, KiteuhMember$applicationArgs<ExtArgs>>): Prisma__KiteuhApplicationClient<$Result.GetResult<Prisma.$KiteuhApplicationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the KiteuhMember model
+   */
+  interface KiteuhMemberFieldRefs {
+    readonly id: FieldRef<"KiteuhMember", 'String'>
+    readonly memberId: FieldRef<"KiteuhMember", 'String'>
+    readonly fullName: FieldRef<"KiteuhMember", 'String'>
+    readonly email: FieldRef<"KiteuhMember", 'String'>
+    readonly phone: FieldRef<"KiteuhMember", 'String'>
+    readonly chapter: FieldRef<"KiteuhMember", 'String'>
+    readonly dateOfBirth: FieldRef<"KiteuhMember", 'DateTime'>
+    readonly address: FieldRef<"KiteuhMember", 'String'>
+    readonly city: FieldRef<"KiteuhMember", 'String'>
+    readonly state: FieldRef<"KiteuhMember", 'String'>
+    readonly zipCode: FieldRef<"KiteuhMember", 'String'>
+    readonly status: FieldRef<"KiteuhMember", 'KiteuhStatus'>
+    readonly createdAt: FieldRef<"KiteuhMember", 'DateTime'>
+    readonly updatedAt: FieldRef<"KiteuhMember", 'DateTime'>
+    readonly applicationId: FieldRef<"KiteuhMember", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * KiteuhMember findUnique
+   */
+  export type KiteuhMemberFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which KiteuhMember to fetch.
+     */
+    where: KiteuhMemberWhereUniqueInput
+  }
+
+  /**
+   * KiteuhMember findUniqueOrThrow
+   */
+  export type KiteuhMemberFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which KiteuhMember to fetch.
+     */
+    where: KiteuhMemberWhereUniqueInput
+  }
+
+  /**
+   * KiteuhMember findFirst
+   */
+  export type KiteuhMemberFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which KiteuhMember to fetch.
+     */
+    where?: KiteuhMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KiteuhMembers to fetch.
+     */
+    orderBy?: KiteuhMemberOrderByWithRelationInput | KiteuhMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KiteuhMembers.
+     */
+    cursor?: KiteuhMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KiteuhMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KiteuhMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KiteuhMembers.
+     */
+    distinct?: KiteuhMemberScalarFieldEnum | KiteuhMemberScalarFieldEnum[]
+  }
+
+  /**
+   * KiteuhMember findFirstOrThrow
+   */
+  export type KiteuhMemberFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which KiteuhMember to fetch.
+     */
+    where?: KiteuhMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KiteuhMembers to fetch.
+     */
+    orderBy?: KiteuhMemberOrderByWithRelationInput | KiteuhMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KiteuhMembers.
+     */
+    cursor?: KiteuhMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KiteuhMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KiteuhMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KiteuhMembers.
+     */
+    distinct?: KiteuhMemberScalarFieldEnum | KiteuhMemberScalarFieldEnum[]
+  }
+
+  /**
+   * KiteuhMember findMany
+   */
+  export type KiteuhMemberFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which KiteuhMembers to fetch.
+     */
+    where?: KiteuhMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KiteuhMembers to fetch.
+     */
+    orderBy?: KiteuhMemberOrderByWithRelationInput | KiteuhMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing KiteuhMembers.
+     */
+    cursor?: KiteuhMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KiteuhMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KiteuhMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KiteuhMembers.
+     */
+    distinct?: KiteuhMemberScalarFieldEnum | KiteuhMemberScalarFieldEnum[]
+  }
+
+  /**
+   * KiteuhMember create
+   */
+  export type KiteuhMemberCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberInclude<ExtArgs> | null
+    /**
+     * The data needed to create a KiteuhMember.
+     */
+    data: XOR<KiteuhMemberCreateInput, KiteuhMemberUncheckedCreateInput>
+  }
+
+  /**
+   * KiteuhMember createMany
+   */
+  export type KiteuhMemberCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many KiteuhMembers.
+     */
+    data: KiteuhMemberCreateManyInput | KiteuhMemberCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * KiteuhMember createManyAndReturn
+   */
+  export type KiteuhMemberCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * The data used to create many KiteuhMembers.
+     */
+    data: KiteuhMemberCreateManyInput | KiteuhMemberCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * KiteuhMember update
+   */
+  export type KiteuhMemberUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberInclude<ExtArgs> | null
+    /**
+     * The data needed to update a KiteuhMember.
+     */
+    data: XOR<KiteuhMemberUpdateInput, KiteuhMemberUncheckedUpdateInput>
+    /**
+     * Choose, which KiteuhMember to update.
+     */
+    where: KiteuhMemberWhereUniqueInput
+  }
+
+  /**
+   * KiteuhMember updateMany
+   */
+  export type KiteuhMemberUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update KiteuhMembers.
+     */
+    data: XOR<KiteuhMemberUpdateManyMutationInput, KiteuhMemberUncheckedUpdateManyInput>
+    /**
+     * Filter which KiteuhMembers to update
+     */
+    where?: KiteuhMemberWhereInput
+    /**
+     * Limit how many KiteuhMembers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * KiteuhMember updateManyAndReturn
+   */
+  export type KiteuhMemberUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * The data used to update KiteuhMembers.
+     */
+    data: XOR<KiteuhMemberUpdateManyMutationInput, KiteuhMemberUncheckedUpdateManyInput>
+    /**
+     * Filter which KiteuhMembers to update
+     */
+    where?: KiteuhMemberWhereInput
+    /**
+     * Limit how many KiteuhMembers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * KiteuhMember upsert
+   */
+  export type KiteuhMemberUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberInclude<ExtArgs> | null
+    /**
+     * The filter to search for the KiteuhMember to update in case it exists.
+     */
+    where: KiteuhMemberWhereUniqueInput
+    /**
+     * In case the KiteuhMember found by the `where` argument doesn't exist, create a new KiteuhMember with this data.
+     */
+    create: XOR<KiteuhMemberCreateInput, KiteuhMemberUncheckedCreateInput>
+    /**
+     * In case the KiteuhMember was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<KiteuhMemberUpdateInput, KiteuhMemberUncheckedUpdateInput>
+  }
+
+  /**
+   * KiteuhMember delete
+   */
+  export type KiteuhMemberDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberInclude<ExtArgs> | null
+    /**
+     * Filter which KiteuhMember to delete.
+     */
+    where: KiteuhMemberWhereUniqueInput
+  }
+
+  /**
+   * KiteuhMember deleteMany
+   */
+  export type KiteuhMemberDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KiteuhMembers to delete
+     */
+    where?: KiteuhMemberWhereInput
+    /**
+     * Limit how many KiteuhMembers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * KiteuhMember.application
+   */
+  export type KiteuhMember$applicationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhApplication
+     */
+    select?: KiteuhApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhApplication
+     */
+    omit?: KiteuhApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhApplicationInclude<ExtArgs> | null
+    where?: KiteuhApplicationWhereInput
+  }
+
+  /**
+   * KiteuhMember without action
+   */
+  export type KiteuhMemberDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KiteuhMember
+     */
+    select?: KiteuhMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KiteuhMember
+     */
+    omit?: KiteuhMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KiteuhMemberInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -4474,6 +7284,62 @@ export namespace Prisma {
   };
 
   export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
+
+
+  export const KiteuhApplicationScalarFieldEnum: {
+    id: 'id',
+    applicationNumber: 'applicationNumber',
+    status: 'status',
+    chapter: 'chapter',
+    memberFirstName: 'memberFirstName',
+    memberMiddleName: 'memberMiddleName',
+    memberLastName: 'memberLastName',
+    memberDateOfBirth: 'memberDateOfBirth',
+    memberAddress: 'memberAddress',
+    memberCity: 'memberCity',
+    memberState: 'memberState',
+    memberZipCode: 'memberZipCode',
+    memberEmail: 'memberEmail',
+    memberPhone: 'memberPhone',
+    beneficiaryFirstName: 'beneficiaryFirstName',
+    beneficiaryMiddleName: 'beneficiaryMiddleName',
+    beneficiaryLastName: 'beneficiaryLastName',
+    beneficiaryEmail: 'beneficiaryEmail',
+    beneficiaryPhone: 'beneficiaryPhone',
+    beneficiaryAddress: 'beneficiaryAddress',
+    beneficiaryCity: 'beneficiaryCity',
+    beneficiaryState: 'beneficiaryState',
+    beneficiaryZipCode: 'beneficiaryZipCode',
+    assignedMemberId: 'assignedMemberId',
+    assignedBy: 'assignedBy',
+    assignedAt: 'assignedAt',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type KiteuhApplicationScalarFieldEnum = (typeof KiteuhApplicationScalarFieldEnum)[keyof typeof KiteuhApplicationScalarFieldEnum]
+
+
+  export const KiteuhMemberScalarFieldEnum: {
+    id: 'id',
+    memberId: 'memberId',
+    fullName: 'fullName',
+    email: 'email',
+    phone: 'phone',
+    chapter: 'chapter',
+    dateOfBirth: 'dateOfBirth',
+    address: 'address',
+    city: 'city',
+    state: 'state',
+    zipCode: 'zipCode',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    applicationId: 'applicationId'
+  };
+
+  export type KiteuhMemberScalarFieldEnum = (typeof KiteuhMemberScalarFieldEnum)[keyof typeof KiteuhMemberScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -4596,6 +7462,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'KiteuhStatus'
+   */
+  export type EnumKiteuhStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KiteuhStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'KiteuhStatus[]'
+   */
+  export type ListEnumKiteuhStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KiteuhStatus[]'>
     
   /**
    * Deep Input Types
@@ -4814,6 +7694,286 @@ export namespace Prisma {
     productCategory?: StringNullableWithAggregatesFilter<"OrderItem"> | string | null
     tshirtSizes?: JsonNullableWithAggregatesFilter<"OrderItem">
     createdAt?: DateTimeWithAggregatesFilter<"OrderItem"> | Date | string
+  }
+
+  export type KiteuhApplicationWhereInput = {
+    AND?: KiteuhApplicationWhereInput | KiteuhApplicationWhereInput[]
+    OR?: KiteuhApplicationWhereInput[]
+    NOT?: KiteuhApplicationWhereInput | KiteuhApplicationWhereInput[]
+    id?: StringFilter<"KiteuhApplication"> | string
+    applicationNumber?: StringFilter<"KiteuhApplication"> | string
+    status?: EnumKiteuhStatusFilter<"KiteuhApplication"> | $Enums.KiteuhStatus
+    chapter?: StringFilter<"KiteuhApplication"> | string
+    memberFirstName?: StringFilter<"KiteuhApplication"> | string
+    memberMiddleName?: StringNullableFilter<"KiteuhApplication"> | string | null
+    memberLastName?: StringFilter<"KiteuhApplication"> | string
+    memberDateOfBirth?: DateTimeFilter<"KiteuhApplication"> | Date | string
+    memberAddress?: StringNullableFilter<"KiteuhApplication"> | string | null
+    memberCity?: StringNullableFilter<"KiteuhApplication"> | string | null
+    memberState?: StringNullableFilter<"KiteuhApplication"> | string | null
+    memberZipCode?: StringNullableFilter<"KiteuhApplication"> | string | null
+    memberEmail?: StringFilter<"KiteuhApplication"> | string
+    memberPhone?: StringFilter<"KiteuhApplication"> | string
+    beneficiaryFirstName?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryMiddleName?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryLastName?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryEmail?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryPhone?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryAddress?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryCity?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryState?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryZipCode?: StringNullableFilter<"KiteuhApplication"> | string | null
+    assignedMemberId?: StringNullableFilter<"KiteuhApplication"> | string | null
+    assignedBy?: StringNullableFilter<"KiteuhApplication"> | string | null
+    assignedAt?: DateTimeNullableFilter<"KiteuhApplication"> | Date | string | null
+    notes?: StringNullableFilter<"KiteuhApplication"> | string | null
+    createdAt?: DateTimeFilter<"KiteuhApplication"> | Date | string
+    updatedAt?: DateTimeFilter<"KiteuhApplication"> | Date | string
+    member?: XOR<KiteuhMemberNullableScalarRelationFilter, KiteuhMemberWhereInput> | null
+  }
+
+  export type KiteuhApplicationOrderByWithRelationInput = {
+    id?: SortOrder
+    applicationNumber?: SortOrder
+    status?: SortOrder
+    chapter?: SortOrder
+    memberFirstName?: SortOrder
+    memberMiddleName?: SortOrderInput | SortOrder
+    memberLastName?: SortOrder
+    memberDateOfBirth?: SortOrder
+    memberAddress?: SortOrderInput | SortOrder
+    memberCity?: SortOrderInput | SortOrder
+    memberState?: SortOrderInput | SortOrder
+    memberZipCode?: SortOrderInput | SortOrder
+    memberEmail?: SortOrder
+    memberPhone?: SortOrder
+    beneficiaryFirstName?: SortOrderInput | SortOrder
+    beneficiaryMiddleName?: SortOrderInput | SortOrder
+    beneficiaryLastName?: SortOrderInput | SortOrder
+    beneficiaryEmail?: SortOrderInput | SortOrder
+    beneficiaryPhone?: SortOrderInput | SortOrder
+    beneficiaryAddress?: SortOrderInput | SortOrder
+    beneficiaryCity?: SortOrderInput | SortOrder
+    beneficiaryState?: SortOrderInput | SortOrder
+    beneficiaryZipCode?: SortOrderInput | SortOrder
+    assignedMemberId?: SortOrderInput | SortOrder
+    assignedBy?: SortOrderInput | SortOrder
+    assignedAt?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    member?: KiteuhMemberOrderByWithRelationInput
+  }
+
+  export type KiteuhApplicationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    applicationNumber?: string
+    AND?: KiteuhApplicationWhereInput | KiteuhApplicationWhereInput[]
+    OR?: KiteuhApplicationWhereInput[]
+    NOT?: KiteuhApplicationWhereInput | KiteuhApplicationWhereInput[]
+    status?: EnumKiteuhStatusFilter<"KiteuhApplication"> | $Enums.KiteuhStatus
+    chapter?: StringFilter<"KiteuhApplication"> | string
+    memberFirstName?: StringFilter<"KiteuhApplication"> | string
+    memberMiddleName?: StringNullableFilter<"KiteuhApplication"> | string | null
+    memberLastName?: StringFilter<"KiteuhApplication"> | string
+    memberDateOfBirth?: DateTimeFilter<"KiteuhApplication"> | Date | string
+    memberAddress?: StringNullableFilter<"KiteuhApplication"> | string | null
+    memberCity?: StringNullableFilter<"KiteuhApplication"> | string | null
+    memberState?: StringNullableFilter<"KiteuhApplication"> | string | null
+    memberZipCode?: StringNullableFilter<"KiteuhApplication"> | string | null
+    memberEmail?: StringFilter<"KiteuhApplication"> | string
+    memberPhone?: StringFilter<"KiteuhApplication"> | string
+    beneficiaryFirstName?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryMiddleName?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryLastName?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryEmail?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryPhone?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryAddress?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryCity?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryState?: StringNullableFilter<"KiteuhApplication"> | string | null
+    beneficiaryZipCode?: StringNullableFilter<"KiteuhApplication"> | string | null
+    assignedMemberId?: StringNullableFilter<"KiteuhApplication"> | string | null
+    assignedBy?: StringNullableFilter<"KiteuhApplication"> | string | null
+    assignedAt?: DateTimeNullableFilter<"KiteuhApplication"> | Date | string | null
+    notes?: StringNullableFilter<"KiteuhApplication"> | string | null
+    createdAt?: DateTimeFilter<"KiteuhApplication"> | Date | string
+    updatedAt?: DateTimeFilter<"KiteuhApplication"> | Date | string
+    member?: XOR<KiteuhMemberNullableScalarRelationFilter, KiteuhMemberWhereInput> | null
+  }, "id" | "applicationNumber">
+
+  export type KiteuhApplicationOrderByWithAggregationInput = {
+    id?: SortOrder
+    applicationNumber?: SortOrder
+    status?: SortOrder
+    chapter?: SortOrder
+    memberFirstName?: SortOrder
+    memberMiddleName?: SortOrderInput | SortOrder
+    memberLastName?: SortOrder
+    memberDateOfBirth?: SortOrder
+    memberAddress?: SortOrderInput | SortOrder
+    memberCity?: SortOrderInput | SortOrder
+    memberState?: SortOrderInput | SortOrder
+    memberZipCode?: SortOrderInput | SortOrder
+    memberEmail?: SortOrder
+    memberPhone?: SortOrder
+    beneficiaryFirstName?: SortOrderInput | SortOrder
+    beneficiaryMiddleName?: SortOrderInput | SortOrder
+    beneficiaryLastName?: SortOrderInput | SortOrder
+    beneficiaryEmail?: SortOrderInput | SortOrder
+    beneficiaryPhone?: SortOrderInput | SortOrder
+    beneficiaryAddress?: SortOrderInput | SortOrder
+    beneficiaryCity?: SortOrderInput | SortOrder
+    beneficiaryState?: SortOrderInput | SortOrder
+    beneficiaryZipCode?: SortOrderInput | SortOrder
+    assignedMemberId?: SortOrderInput | SortOrder
+    assignedBy?: SortOrderInput | SortOrder
+    assignedAt?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: KiteuhApplicationCountOrderByAggregateInput
+    _max?: KiteuhApplicationMaxOrderByAggregateInput
+    _min?: KiteuhApplicationMinOrderByAggregateInput
+  }
+
+  export type KiteuhApplicationScalarWhereWithAggregatesInput = {
+    AND?: KiteuhApplicationScalarWhereWithAggregatesInput | KiteuhApplicationScalarWhereWithAggregatesInput[]
+    OR?: KiteuhApplicationScalarWhereWithAggregatesInput[]
+    NOT?: KiteuhApplicationScalarWhereWithAggregatesInput | KiteuhApplicationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"KiteuhApplication"> | string
+    applicationNumber?: StringWithAggregatesFilter<"KiteuhApplication"> | string
+    status?: EnumKiteuhStatusWithAggregatesFilter<"KiteuhApplication"> | $Enums.KiteuhStatus
+    chapter?: StringWithAggregatesFilter<"KiteuhApplication"> | string
+    memberFirstName?: StringWithAggregatesFilter<"KiteuhApplication"> | string
+    memberMiddleName?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    memberLastName?: StringWithAggregatesFilter<"KiteuhApplication"> | string
+    memberDateOfBirth?: DateTimeWithAggregatesFilter<"KiteuhApplication"> | Date | string
+    memberAddress?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    memberCity?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    memberState?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    memberZipCode?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    memberEmail?: StringWithAggregatesFilter<"KiteuhApplication"> | string
+    memberPhone?: StringWithAggregatesFilter<"KiteuhApplication"> | string
+    beneficiaryFirstName?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    beneficiaryMiddleName?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    beneficiaryLastName?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    beneficiaryEmail?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    beneficiaryPhone?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    beneficiaryAddress?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    beneficiaryCity?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    beneficiaryState?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    beneficiaryZipCode?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    assignedMemberId?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    assignedBy?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    assignedAt?: DateTimeNullableWithAggregatesFilter<"KiteuhApplication"> | Date | string | null
+    notes?: StringNullableWithAggregatesFilter<"KiteuhApplication"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"KiteuhApplication"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"KiteuhApplication"> | Date | string
+  }
+
+  export type KiteuhMemberWhereInput = {
+    AND?: KiteuhMemberWhereInput | KiteuhMemberWhereInput[]
+    OR?: KiteuhMemberWhereInput[]
+    NOT?: KiteuhMemberWhereInput | KiteuhMemberWhereInput[]
+    id?: StringFilter<"KiteuhMember"> | string
+    memberId?: StringFilter<"KiteuhMember"> | string
+    fullName?: StringFilter<"KiteuhMember"> | string
+    email?: StringFilter<"KiteuhMember"> | string
+    phone?: StringFilter<"KiteuhMember"> | string
+    chapter?: StringFilter<"KiteuhMember"> | string
+    dateOfBirth?: DateTimeFilter<"KiteuhMember"> | Date | string
+    address?: StringNullableFilter<"KiteuhMember"> | string | null
+    city?: StringNullableFilter<"KiteuhMember"> | string | null
+    state?: StringNullableFilter<"KiteuhMember"> | string | null
+    zipCode?: StringNullableFilter<"KiteuhMember"> | string | null
+    status?: EnumKiteuhStatusFilter<"KiteuhMember"> | $Enums.KiteuhStatus
+    createdAt?: DateTimeFilter<"KiteuhMember"> | Date | string
+    updatedAt?: DateTimeFilter<"KiteuhMember"> | Date | string
+    applicationId?: StringNullableFilter<"KiteuhMember"> | string | null
+    application?: XOR<KiteuhApplicationNullableScalarRelationFilter, KiteuhApplicationWhereInput> | null
+  }
+
+  export type KiteuhMemberOrderByWithRelationInput = {
+    id?: SortOrder
+    memberId?: SortOrder
+    fullName?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    chapter?: SortOrder
+    dateOfBirth?: SortOrder
+    address?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    state?: SortOrderInput | SortOrder
+    zipCode?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    applicationId?: SortOrderInput | SortOrder
+    application?: KiteuhApplicationOrderByWithRelationInput
+  }
+
+  export type KiteuhMemberWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    memberId?: string
+    applicationId?: string
+    AND?: KiteuhMemberWhereInput | KiteuhMemberWhereInput[]
+    OR?: KiteuhMemberWhereInput[]
+    NOT?: KiteuhMemberWhereInput | KiteuhMemberWhereInput[]
+    fullName?: StringFilter<"KiteuhMember"> | string
+    email?: StringFilter<"KiteuhMember"> | string
+    phone?: StringFilter<"KiteuhMember"> | string
+    chapter?: StringFilter<"KiteuhMember"> | string
+    dateOfBirth?: DateTimeFilter<"KiteuhMember"> | Date | string
+    address?: StringNullableFilter<"KiteuhMember"> | string | null
+    city?: StringNullableFilter<"KiteuhMember"> | string | null
+    state?: StringNullableFilter<"KiteuhMember"> | string | null
+    zipCode?: StringNullableFilter<"KiteuhMember"> | string | null
+    status?: EnumKiteuhStatusFilter<"KiteuhMember"> | $Enums.KiteuhStatus
+    createdAt?: DateTimeFilter<"KiteuhMember"> | Date | string
+    updatedAt?: DateTimeFilter<"KiteuhMember"> | Date | string
+    application?: XOR<KiteuhApplicationNullableScalarRelationFilter, KiteuhApplicationWhereInput> | null
+  }, "id" | "memberId" | "applicationId">
+
+  export type KiteuhMemberOrderByWithAggregationInput = {
+    id?: SortOrder
+    memberId?: SortOrder
+    fullName?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    chapter?: SortOrder
+    dateOfBirth?: SortOrder
+    address?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    state?: SortOrderInput | SortOrder
+    zipCode?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    applicationId?: SortOrderInput | SortOrder
+    _count?: KiteuhMemberCountOrderByAggregateInput
+    _max?: KiteuhMemberMaxOrderByAggregateInput
+    _min?: KiteuhMemberMinOrderByAggregateInput
+  }
+
+  export type KiteuhMemberScalarWhereWithAggregatesInput = {
+    AND?: KiteuhMemberScalarWhereWithAggregatesInput | KiteuhMemberScalarWhereWithAggregatesInput[]
+    OR?: KiteuhMemberScalarWhereWithAggregatesInput[]
+    NOT?: KiteuhMemberScalarWhereWithAggregatesInput | KiteuhMemberScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"KiteuhMember"> | string
+    memberId?: StringWithAggregatesFilter<"KiteuhMember"> | string
+    fullName?: StringWithAggregatesFilter<"KiteuhMember"> | string
+    email?: StringWithAggregatesFilter<"KiteuhMember"> | string
+    phone?: StringWithAggregatesFilter<"KiteuhMember"> | string
+    chapter?: StringWithAggregatesFilter<"KiteuhMember"> | string
+    dateOfBirth?: DateTimeWithAggregatesFilter<"KiteuhMember"> | Date | string
+    address?: StringNullableWithAggregatesFilter<"KiteuhMember"> | string | null
+    city?: StringNullableWithAggregatesFilter<"KiteuhMember"> | string | null
+    state?: StringNullableWithAggregatesFilter<"KiteuhMember"> | string | null
+    zipCode?: StringNullableWithAggregatesFilter<"KiteuhMember"> | string | null
+    status?: EnumKiteuhStatusWithAggregatesFilter<"KiteuhMember"> | $Enums.KiteuhStatus
+    createdAt?: DateTimeWithAggregatesFilter<"KiteuhMember"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"KiteuhMember"> | Date | string
+    applicationId?: StringNullableWithAggregatesFilter<"KiteuhMember"> | string | null
   }
 
   export type PackageCreateInput = {
@@ -5045,6 +8205,359 @@ export namespace Prisma {
     productCategory?: NullableStringFieldUpdateOperationsInput | string | null
     tshirtSizes?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KiteuhApplicationCreateInput = {
+    id?: string
+    applicationNumber: string
+    status?: $Enums.KiteuhStatus
+    chapter: string
+    memberFirstName: string
+    memberMiddleName?: string | null
+    memberLastName: string
+    memberDateOfBirth: Date | string
+    memberAddress?: string | null
+    memberCity?: string | null
+    memberState?: string | null
+    memberZipCode?: string | null
+    memberEmail: string
+    memberPhone: string
+    beneficiaryFirstName?: string | null
+    beneficiaryMiddleName?: string | null
+    beneficiaryLastName?: string | null
+    beneficiaryEmail?: string | null
+    beneficiaryPhone?: string | null
+    beneficiaryAddress?: string | null
+    beneficiaryCity?: string | null
+    beneficiaryState?: string | null
+    beneficiaryZipCode?: string | null
+    assignedMemberId?: string | null
+    assignedBy?: string | null
+    assignedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    member?: KiteuhMemberCreateNestedOneWithoutApplicationInput
+  }
+
+  export type KiteuhApplicationUncheckedCreateInput = {
+    id?: string
+    applicationNumber: string
+    status?: $Enums.KiteuhStatus
+    chapter: string
+    memberFirstName: string
+    memberMiddleName?: string | null
+    memberLastName: string
+    memberDateOfBirth: Date | string
+    memberAddress?: string | null
+    memberCity?: string | null
+    memberState?: string | null
+    memberZipCode?: string | null
+    memberEmail: string
+    memberPhone: string
+    beneficiaryFirstName?: string | null
+    beneficiaryMiddleName?: string | null
+    beneficiaryLastName?: string | null
+    beneficiaryEmail?: string | null
+    beneficiaryPhone?: string | null
+    beneficiaryAddress?: string | null
+    beneficiaryCity?: string | null
+    beneficiaryState?: string | null
+    beneficiaryZipCode?: string | null
+    assignedMemberId?: string | null
+    assignedBy?: string | null
+    assignedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    member?: KiteuhMemberUncheckedCreateNestedOneWithoutApplicationInput
+  }
+
+  export type KiteuhApplicationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumKiteuhStatusFieldUpdateOperationsInput | $Enums.KiteuhStatus
+    chapter?: StringFieldUpdateOperationsInput | string
+    memberFirstName?: StringFieldUpdateOperationsInput | string
+    memberMiddleName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberLastName?: StringFieldUpdateOperationsInput | string
+    memberDateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCity?: NullableStringFieldUpdateOperationsInput | string | null
+    memberState?: NullableStringFieldUpdateOperationsInput | string | null
+    memberZipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: StringFieldUpdateOperationsInput | string
+    memberPhone?: StringFieldUpdateOperationsInput | string
+    beneficiaryFirstName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryMiddleName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryLastName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryCity?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryState?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryZipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedMemberId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    member?: KiteuhMemberUpdateOneWithoutApplicationNestedInput
+  }
+
+  export type KiteuhApplicationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumKiteuhStatusFieldUpdateOperationsInput | $Enums.KiteuhStatus
+    chapter?: StringFieldUpdateOperationsInput | string
+    memberFirstName?: StringFieldUpdateOperationsInput | string
+    memberMiddleName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberLastName?: StringFieldUpdateOperationsInput | string
+    memberDateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCity?: NullableStringFieldUpdateOperationsInput | string | null
+    memberState?: NullableStringFieldUpdateOperationsInput | string | null
+    memberZipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: StringFieldUpdateOperationsInput | string
+    memberPhone?: StringFieldUpdateOperationsInput | string
+    beneficiaryFirstName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryMiddleName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryLastName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryCity?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryState?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryZipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedMemberId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    member?: KiteuhMemberUncheckedUpdateOneWithoutApplicationNestedInput
+  }
+
+  export type KiteuhApplicationCreateManyInput = {
+    id?: string
+    applicationNumber: string
+    status?: $Enums.KiteuhStatus
+    chapter: string
+    memberFirstName: string
+    memberMiddleName?: string | null
+    memberLastName: string
+    memberDateOfBirth: Date | string
+    memberAddress?: string | null
+    memberCity?: string | null
+    memberState?: string | null
+    memberZipCode?: string | null
+    memberEmail: string
+    memberPhone: string
+    beneficiaryFirstName?: string | null
+    beneficiaryMiddleName?: string | null
+    beneficiaryLastName?: string | null
+    beneficiaryEmail?: string | null
+    beneficiaryPhone?: string | null
+    beneficiaryAddress?: string | null
+    beneficiaryCity?: string | null
+    beneficiaryState?: string | null
+    beneficiaryZipCode?: string | null
+    assignedMemberId?: string | null
+    assignedBy?: string | null
+    assignedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KiteuhApplicationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumKiteuhStatusFieldUpdateOperationsInput | $Enums.KiteuhStatus
+    chapter?: StringFieldUpdateOperationsInput | string
+    memberFirstName?: StringFieldUpdateOperationsInput | string
+    memberMiddleName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberLastName?: StringFieldUpdateOperationsInput | string
+    memberDateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCity?: NullableStringFieldUpdateOperationsInput | string | null
+    memberState?: NullableStringFieldUpdateOperationsInput | string | null
+    memberZipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: StringFieldUpdateOperationsInput | string
+    memberPhone?: StringFieldUpdateOperationsInput | string
+    beneficiaryFirstName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryMiddleName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryLastName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryCity?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryState?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryZipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedMemberId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KiteuhApplicationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumKiteuhStatusFieldUpdateOperationsInput | $Enums.KiteuhStatus
+    chapter?: StringFieldUpdateOperationsInput | string
+    memberFirstName?: StringFieldUpdateOperationsInput | string
+    memberMiddleName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberLastName?: StringFieldUpdateOperationsInput | string
+    memberDateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCity?: NullableStringFieldUpdateOperationsInput | string | null
+    memberState?: NullableStringFieldUpdateOperationsInput | string | null
+    memberZipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: StringFieldUpdateOperationsInput | string
+    memberPhone?: StringFieldUpdateOperationsInput | string
+    beneficiaryFirstName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryMiddleName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryLastName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryCity?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryState?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryZipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedMemberId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KiteuhMemberCreateInput = {
+    id?: string
+    memberId: string
+    fullName: string
+    email: string
+    phone: string
+    chapter: string
+    dateOfBirth: Date | string
+    address?: string | null
+    city?: string | null
+    state?: string | null
+    zipCode?: string | null
+    status?: $Enums.KiteuhStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    application?: KiteuhApplicationCreateNestedOneWithoutMemberInput
+  }
+
+  export type KiteuhMemberUncheckedCreateInput = {
+    id?: string
+    memberId: string
+    fullName: string
+    email: string
+    phone: string
+    chapter: string
+    dateOfBirth: Date | string
+    address?: string | null
+    city?: string | null
+    state?: string | null
+    zipCode?: string | null
+    status?: $Enums.KiteuhStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    applicationId?: string | null
+  }
+
+  export type KiteuhMemberUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    memberId?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    chapter?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumKiteuhStatusFieldUpdateOperationsInput | $Enums.KiteuhStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    application?: KiteuhApplicationUpdateOneWithoutMemberNestedInput
+  }
+
+  export type KiteuhMemberUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    memberId?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    chapter?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumKiteuhStatusFieldUpdateOperationsInput | $Enums.KiteuhStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    applicationId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type KiteuhMemberCreateManyInput = {
+    id?: string
+    memberId: string
+    fullName: string
+    email: string
+    phone: string
+    chapter: string
+    dateOfBirth: Date | string
+    address?: string | null
+    city?: string | null
+    state?: string | null
+    zipCode?: string | null
+    status?: $Enums.KiteuhStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    applicationId?: string | null
+  }
+
+  export type KiteuhMemberUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    memberId?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    chapter?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumKiteuhStatusFieldUpdateOperationsInput | $Enums.KiteuhStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KiteuhMemberUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    memberId?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    chapter?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumKiteuhStatusFieldUpdateOperationsInput | $Enums.KiteuhStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    applicationId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -5438,6 +8951,208 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
+  export type EnumKiteuhStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.KiteuhStatus | EnumKiteuhStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.KiteuhStatus[] | ListEnumKiteuhStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KiteuhStatus[] | ListEnumKiteuhStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumKiteuhStatusFilter<$PrismaModel> | $Enums.KiteuhStatus
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type KiteuhMemberNullableScalarRelationFilter = {
+    is?: KiteuhMemberWhereInput | null
+    isNot?: KiteuhMemberWhereInput | null
+  }
+
+  export type KiteuhApplicationCountOrderByAggregateInput = {
+    id?: SortOrder
+    applicationNumber?: SortOrder
+    status?: SortOrder
+    chapter?: SortOrder
+    memberFirstName?: SortOrder
+    memberMiddleName?: SortOrder
+    memberLastName?: SortOrder
+    memberDateOfBirth?: SortOrder
+    memberAddress?: SortOrder
+    memberCity?: SortOrder
+    memberState?: SortOrder
+    memberZipCode?: SortOrder
+    memberEmail?: SortOrder
+    memberPhone?: SortOrder
+    beneficiaryFirstName?: SortOrder
+    beneficiaryMiddleName?: SortOrder
+    beneficiaryLastName?: SortOrder
+    beneficiaryEmail?: SortOrder
+    beneficiaryPhone?: SortOrder
+    beneficiaryAddress?: SortOrder
+    beneficiaryCity?: SortOrder
+    beneficiaryState?: SortOrder
+    beneficiaryZipCode?: SortOrder
+    assignedMemberId?: SortOrder
+    assignedBy?: SortOrder
+    assignedAt?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type KiteuhApplicationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    applicationNumber?: SortOrder
+    status?: SortOrder
+    chapter?: SortOrder
+    memberFirstName?: SortOrder
+    memberMiddleName?: SortOrder
+    memberLastName?: SortOrder
+    memberDateOfBirth?: SortOrder
+    memberAddress?: SortOrder
+    memberCity?: SortOrder
+    memberState?: SortOrder
+    memberZipCode?: SortOrder
+    memberEmail?: SortOrder
+    memberPhone?: SortOrder
+    beneficiaryFirstName?: SortOrder
+    beneficiaryMiddleName?: SortOrder
+    beneficiaryLastName?: SortOrder
+    beneficiaryEmail?: SortOrder
+    beneficiaryPhone?: SortOrder
+    beneficiaryAddress?: SortOrder
+    beneficiaryCity?: SortOrder
+    beneficiaryState?: SortOrder
+    beneficiaryZipCode?: SortOrder
+    assignedMemberId?: SortOrder
+    assignedBy?: SortOrder
+    assignedAt?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type KiteuhApplicationMinOrderByAggregateInput = {
+    id?: SortOrder
+    applicationNumber?: SortOrder
+    status?: SortOrder
+    chapter?: SortOrder
+    memberFirstName?: SortOrder
+    memberMiddleName?: SortOrder
+    memberLastName?: SortOrder
+    memberDateOfBirth?: SortOrder
+    memberAddress?: SortOrder
+    memberCity?: SortOrder
+    memberState?: SortOrder
+    memberZipCode?: SortOrder
+    memberEmail?: SortOrder
+    memberPhone?: SortOrder
+    beneficiaryFirstName?: SortOrder
+    beneficiaryMiddleName?: SortOrder
+    beneficiaryLastName?: SortOrder
+    beneficiaryEmail?: SortOrder
+    beneficiaryPhone?: SortOrder
+    beneficiaryAddress?: SortOrder
+    beneficiaryCity?: SortOrder
+    beneficiaryState?: SortOrder
+    beneficiaryZipCode?: SortOrder
+    assignedMemberId?: SortOrder
+    assignedBy?: SortOrder
+    assignedAt?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumKiteuhStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KiteuhStatus | EnumKiteuhStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.KiteuhStatus[] | ListEnumKiteuhStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KiteuhStatus[] | ListEnumKiteuhStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumKiteuhStatusWithAggregatesFilter<$PrismaModel> | $Enums.KiteuhStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumKiteuhStatusFilter<$PrismaModel>
+    _max?: NestedEnumKiteuhStatusFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type KiteuhApplicationNullableScalarRelationFilter = {
+    is?: KiteuhApplicationWhereInput | null
+    isNot?: KiteuhApplicationWhereInput | null
+  }
+
+  export type KiteuhMemberCountOrderByAggregateInput = {
+    id?: SortOrder
+    memberId?: SortOrder
+    fullName?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    chapter?: SortOrder
+    dateOfBirth?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
+    zipCode?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    applicationId?: SortOrder
+  }
+
+  export type KiteuhMemberMaxOrderByAggregateInput = {
+    id?: SortOrder
+    memberId?: SortOrder
+    fullName?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    chapter?: SortOrder
+    dateOfBirth?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
+    zipCode?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    applicationId?: SortOrder
+  }
+
+  export type KiteuhMemberMinOrderByAggregateInput = {
+    id?: SortOrder
+    memberId?: SortOrder
+    fullName?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    chapter?: SortOrder
+    dateOfBirth?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
+    zipCode?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    applicationId?: SortOrder
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -5520,6 +9235,62 @@ export namespace Prisma {
     upsert?: OrderUpsertWithoutItemsInput
     connect?: OrderWhereUniqueInput
     update?: XOR<XOR<OrderUpdateToOneWithWhereWithoutItemsInput, OrderUpdateWithoutItemsInput>, OrderUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type KiteuhMemberCreateNestedOneWithoutApplicationInput = {
+    create?: XOR<KiteuhMemberCreateWithoutApplicationInput, KiteuhMemberUncheckedCreateWithoutApplicationInput>
+    connectOrCreate?: KiteuhMemberCreateOrConnectWithoutApplicationInput
+    connect?: KiteuhMemberWhereUniqueInput
+  }
+
+  export type KiteuhMemberUncheckedCreateNestedOneWithoutApplicationInput = {
+    create?: XOR<KiteuhMemberCreateWithoutApplicationInput, KiteuhMemberUncheckedCreateWithoutApplicationInput>
+    connectOrCreate?: KiteuhMemberCreateOrConnectWithoutApplicationInput
+    connect?: KiteuhMemberWhereUniqueInput
+  }
+
+  export type EnumKiteuhStatusFieldUpdateOperationsInput = {
+    set?: $Enums.KiteuhStatus
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type KiteuhMemberUpdateOneWithoutApplicationNestedInput = {
+    create?: XOR<KiteuhMemberCreateWithoutApplicationInput, KiteuhMemberUncheckedCreateWithoutApplicationInput>
+    connectOrCreate?: KiteuhMemberCreateOrConnectWithoutApplicationInput
+    upsert?: KiteuhMemberUpsertWithoutApplicationInput
+    disconnect?: KiteuhMemberWhereInput | boolean
+    delete?: KiteuhMemberWhereInput | boolean
+    connect?: KiteuhMemberWhereUniqueInput
+    update?: XOR<XOR<KiteuhMemberUpdateToOneWithWhereWithoutApplicationInput, KiteuhMemberUpdateWithoutApplicationInput>, KiteuhMemberUncheckedUpdateWithoutApplicationInput>
+  }
+
+  export type KiteuhMemberUncheckedUpdateOneWithoutApplicationNestedInput = {
+    create?: XOR<KiteuhMemberCreateWithoutApplicationInput, KiteuhMemberUncheckedCreateWithoutApplicationInput>
+    connectOrCreate?: KiteuhMemberCreateOrConnectWithoutApplicationInput
+    upsert?: KiteuhMemberUpsertWithoutApplicationInput
+    disconnect?: KiteuhMemberWhereInput | boolean
+    delete?: KiteuhMemberWhereInput | boolean
+    connect?: KiteuhMemberWhereUniqueInput
+    update?: XOR<XOR<KiteuhMemberUpdateToOneWithWhereWithoutApplicationInput, KiteuhMemberUpdateWithoutApplicationInput>, KiteuhMemberUncheckedUpdateWithoutApplicationInput>
+  }
+
+  export type KiteuhApplicationCreateNestedOneWithoutMemberInput = {
+    create?: XOR<KiteuhApplicationCreateWithoutMemberInput, KiteuhApplicationUncheckedCreateWithoutMemberInput>
+    connectOrCreate?: KiteuhApplicationCreateOrConnectWithoutMemberInput
+    connect?: KiteuhApplicationWhereUniqueInput
+  }
+
+  export type KiteuhApplicationUpdateOneWithoutMemberNestedInput = {
+    create?: XOR<KiteuhApplicationCreateWithoutMemberInput, KiteuhApplicationUncheckedCreateWithoutMemberInput>
+    connectOrCreate?: KiteuhApplicationCreateOrConnectWithoutMemberInput
+    upsert?: KiteuhApplicationUpsertWithoutMemberInput
+    disconnect?: KiteuhApplicationWhereInput | boolean
+    delete?: KiteuhApplicationWhereInput | boolean
+    connect?: KiteuhApplicationWhereUniqueInput
+    update?: XOR<XOR<KiteuhApplicationUpdateToOneWithWhereWithoutMemberInput, KiteuhApplicationUpdateWithoutMemberInput>, KiteuhApplicationUncheckedUpdateWithoutMemberInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -5720,6 +9491,48 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumKiteuhStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.KiteuhStatus | EnumKiteuhStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.KiteuhStatus[] | ListEnumKiteuhStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KiteuhStatus[] | ListEnumKiteuhStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumKiteuhStatusFilter<$PrismaModel> | $Enums.KiteuhStatus
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumKiteuhStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KiteuhStatus | EnumKiteuhStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.KiteuhStatus[] | ListEnumKiteuhStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KiteuhStatus[] | ListEnumKiteuhStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumKiteuhStatusWithAggregatesFilter<$PrismaModel> | $Enums.KiteuhStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumKiteuhStatusFilter<$PrismaModel>
+    _max?: NestedEnumKiteuhStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type OrderItemCreateWithoutOrderInput = {
     id?: string
     productId: string
@@ -5847,6 +9660,234 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     customerInfo?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KiteuhMemberCreateWithoutApplicationInput = {
+    id?: string
+    memberId: string
+    fullName: string
+    email: string
+    phone: string
+    chapter: string
+    dateOfBirth: Date | string
+    address?: string | null
+    city?: string | null
+    state?: string | null
+    zipCode?: string | null
+    status?: $Enums.KiteuhStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KiteuhMemberUncheckedCreateWithoutApplicationInput = {
+    id?: string
+    memberId: string
+    fullName: string
+    email: string
+    phone: string
+    chapter: string
+    dateOfBirth: Date | string
+    address?: string | null
+    city?: string | null
+    state?: string | null
+    zipCode?: string | null
+    status?: $Enums.KiteuhStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KiteuhMemberCreateOrConnectWithoutApplicationInput = {
+    where: KiteuhMemberWhereUniqueInput
+    create: XOR<KiteuhMemberCreateWithoutApplicationInput, KiteuhMemberUncheckedCreateWithoutApplicationInput>
+  }
+
+  export type KiteuhMemberUpsertWithoutApplicationInput = {
+    update: XOR<KiteuhMemberUpdateWithoutApplicationInput, KiteuhMemberUncheckedUpdateWithoutApplicationInput>
+    create: XOR<KiteuhMemberCreateWithoutApplicationInput, KiteuhMemberUncheckedCreateWithoutApplicationInput>
+    where?: KiteuhMemberWhereInput
+  }
+
+  export type KiteuhMemberUpdateToOneWithWhereWithoutApplicationInput = {
+    where?: KiteuhMemberWhereInput
+    data: XOR<KiteuhMemberUpdateWithoutApplicationInput, KiteuhMemberUncheckedUpdateWithoutApplicationInput>
+  }
+
+  export type KiteuhMemberUpdateWithoutApplicationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    memberId?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    chapter?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumKiteuhStatusFieldUpdateOperationsInput | $Enums.KiteuhStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KiteuhMemberUncheckedUpdateWithoutApplicationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    memberId?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    chapter?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumKiteuhStatusFieldUpdateOperationsInput | $Enums.KiteuhStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KiteuhApplicationCreateWithoutMemberInput = {
+    id?: string
+    applicationNumber: string
+    status?: $Enums.KiteuhStatus
+    chapter: string
+    memberFirstName: string
+    memberMiddleName?: string | null
+    memberLastName: string
+    memberDateOfBirth: Date | string
+    memberAddress?: string | null
+    memberCity?: string | null
+    memberState?: string | null
+    memberZipCode?: string | null
+    memberEmail: string
+    memberPhone: string
+    beneficiaryFirstName?: string | null
+    beneficiaryMiddleName?: string | null
+    beneficiaryLastName?: string | null
+    beneficiaryEmail?: string | null
+    beneficiaryPhone?: string | null
+    beneficiaryAddress?: string | null
+    beneficiaryCity?: string | null
+    beneficiaryState?: string | null
+    beneficiaryZipCode?: string | null
+    assignedMemberId?: string | null
+    assignedBy?: string | null
+    assignedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KiteuhApplicationUncheckedCreateWithoutMemberInput = {
+    id?: string
+    applicationNumber: string
+    status?: $Enums.KiteuhStatus
+    chapter: string
+    memberFirstName: string
+    memberMiddleName?: string | null
+    memberLastName: string
+    memberDateOfBirth: Date | string
+    memberAddress?: string | null
+    memberCity?: string | null
+    memberState?: string | null
+    memberZipCode?: string | null
+    memberEmail: string
+    memberPhone: string
+    beneficiaryFirstName?: string | null
+    beneficiaryMiddleName?: string | null
+    beneficiaryLastName?: string | null
+    beneficiaryEmail?: string | null
+    beneficiaryPhone?: string | null
+    beneficiaryAddress?: string | null
+    beneficiaryCity?: string | null
+    beneficiaryState?: string | null
+    beneficiaryZipCode?: string | null
+    assignedMemberId?: string | null
+    assignedBy?: string | null
+    assignedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KiteuhApplicationCreateOrConnectWithoutMemberInput = {
+    where: KiteuhApplicationWhereUniqueInput
+    create: XOR<KiteuhApplicationCreateWithoutMemberInput, KiteuhApplicationUncheckedCreateWithoutMemberInput>
+  }
+
+  export type KiteuhApplicationUpsertWithoutMemberInput = {
+    update: XOR<KiteuhApplicationUpdateWithoutMemberInput, KiteuhApplicationUncheckedUpdateWithoutMemberInput>
+    create: XOR<KiteuhApplicationCreateWithoutMemberInput, KiteuhApplicationUncheckedCreateWithoutMemberInput>
+    where?: KiteuhApplicationWhereInput
+  }
+
+  export type KiteuhApplicationUpdateToOneWithWhereWithoutMemberInput = {
+    where?: KiteuhApplicationWhereInput
+    data: XOR<KiteuhApplicationUpdateWithoutMemberInput, KiteuhApplicationUncheckedUpdateWithoutMemberInput>
+  }
+
+  export type KiteuhApplicationUpdateWithoutMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumKiteuhStatusFieldUpdateOperationsInput | $Enums.KiteuhStatus
+    chapter?: StringFieldUpdateOperationsInput | string
+    memberFirstName?: StringFieldUpdateOperationsInput | string
+    memberMiddleName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberLastName?: StringFieldUpdateOperationsInput | string
+    memberDateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCity?: NullableStringFieldUpdateOperationsInput | string | null
+    memberState?: NullableStringFieldUpdateOperationsInput | string | null
+    memberZipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: StringFieldUpdateOperationsInput | string
+    memberPhone?: StringFieldUpdateOperationsInput | string
+    beneficiaryFirstName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryMiddleName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryLastName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryCity?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryState?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryZipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedMemberId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KiteuhApplicationUncheckedUpdateWithoutMemberInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicationNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumKiteuhStatusFieldUpdateOperationsInput | $Enums.KiteuhStatus
+    chapter?: StringFieldUpdateOperationsInput | string
+    memberFirstName?: StringFieldUpdateOperationsInput | string
+    memberMiddleName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberLastName?: StringFieldUpdateOperationsInput | string
+    memberDateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCity?: NullableStringFieldUpdateOperationsInput | string | null
+    memberState?: NullableStringFieldUpdateOperationsInput | string | null
+    memberZipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: StringFieldUpdateOperationsInput | string
+    memberPhone?: StringFieldUpdateOperationsInput | string
+    beneficiaryFirstName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryMiddleName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryLastName?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryCity?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryState?: NullableStringFieldUpdateOperationsInput | string | null
+    beneficiaryZipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedMemberId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

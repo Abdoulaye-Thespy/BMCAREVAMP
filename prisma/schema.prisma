@@ -58,3 +58,90 @@ model OrderItem {
   @@unique([orderId, productId])
   @@map("order_items")
 }
+
+
+
+// Kiteuh Program Models
+model KiteuhApplication {
+  id                      String   @id @default(cuid())
+  applicationNumber       String   @unique
+  status                  KiteuhStatus @default(PENDING)
+  
+  // Chapter Information
+  chapter                 String
+  
+  // Member Information
+  memberFirstName         String
+  memberMiddleName        String?
+  memberLastName          String
+  memberDateOfBirth       DateTime
+  memberAddress           String?
+  memberCity              String?
+  memberState             String?
+  memberZipCode           String?
+  memberEmail             String
+  memberPhone             String
+  
+  // Beneficiary Information
+  beneficiaryFirstName    String?
+  beneficiaryMiddleName   String?
+  beneficiaryLastName     String?
+  beneficiaryEmail        String?
+  beneficiaryPhone        String?
+  beneficiaryAddress      String?
+  beneficiaryCity         String?
+  beneficiaryState        String?
+  beneficiaryZipCode      String?
+  
+  // Admin Fields
+  assignedMemberId        String?   // The actual member ID assigned to the applicant
+  assignedBy              String?
+  assignedAt              DateTime?
+  notes                   String?
+  
+  // Timestamps
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  
+  // Relations - A member record is created from this application
+  member                  KiteuhMember? @relation("ApplicationToMember")
+  
+  @@index([status])
+  @@index([memberEmail])
+  @@index([memberPhone])
+  @@map("kiteuh_applications")
+}
+
+model KiteuhMember {
+  id                  String   @id @default(cuid())
+  memberId            String   @unique    // This is the official member ID (e.g., BMCA-2024-001)
+  fullName            String
+  email               String
+  phone               String
+  chapter             String
+  dateOfBirth         DateTime
+  address             String?
+  city                String?
+  state               String?
+  zipCode             String?
+  status              KiteuhStatus @default(ACTIVE)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  // Relations - Link back to the original application
+  application         KiteuhApplication? @relation("ApplicationToMember", fields: [applicationId], references: [id])
+  applicationId       String? @unique
+  
+  @@index([memberId])
+  @@index([status])
+  @@map("kiteuh_members")
+}
+
+enum KiteuhStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}

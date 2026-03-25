@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.4.2
- * Query Engine version: 94a226be1cf2967af2541cca5529f0f7ba866919
+ * Prisma Client JS version: 7.5.0
+ * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
  */
 Prisma.prismaVersion = {
-  client: "7.4.2",
-  engine: "94a226be1cf2967af2541cca5529f0f7ba866919"
+  client: "7.5.0",
+  engine: "280c870be64f457428992c43c1f6d557fab6e29e"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -153,6 +153,56 @@ exports.Prisma.OrderItemScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.KiteuhApplicationScalarFieldEnum = {
+  id: 'id',
+  applicationNumber: 'applicationNumber',
+  status: 'status',
+  chapter: 'chapter',
+  memberFirstName: 'memberFirstName',
+  memberMiddleName: 'memberMiddleName',
+  memberLastName: 'memberLastName',
+  memberDateOfBirth: 'memberDateOfBirth',
+  memberAddress: 'memberAddress',
+  memberCity: 'memberCity',
+  memberState: 'memberState',
+  memberZipCode: 'memberZipCode',
+  memberEmail: 'memberEmail',
+  memberPhone: 'memberPhone',
+  beneficiaryFirstName: 'beneficiaryFirstName',
+  beneficiaryMiddleName: 'beneficiaryMiddleName',
+  beneficiaryLastName: 'beneficiaryLastName',
+  beneficiaryEmail: 'beneficiaryEmail',
+  beneficiaryPhone: 'beneficiaryPhone',
+  beneficiaryAddress: 'beneficiaryAddress',
+  beneficiaryCity: 'beneficiaryCity',
+  beneficiaryState: 'beneficiaryState',
+  beneficiaryZipCode: 'beneficiaryZipCode',
+  assignedMemberId: 'assignedMemberId',
+  assignedBy: 'assignedBy',
+  assignedAt: 'assignedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.KiteuhMemberScalarFieldEnum = {
+  id: 'id',
+  memberId: 'memberId',
+  fullName: 'fullName',
+  email: 'email',
+  phone: 'phone',
+  chapter: 'chapter',
+  dateOfBirth: 'dateOfBirth',
+  address: 'address',
+  city: 'city',
+  state: 'state',
+  zipCode: 'zipCode',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  applicationId: 'applicationId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -182,12 +232,21 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.KiteuhStatus = exports.$Enums.KiteuhStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  SUSPENDED: 'SUSPENDED'
+};
 
 exports.Prisma.ModelName = {
   Package: 'Package',
   Order: 'Order',
-  OrderItem: 'OrderItem'
+  OrderItem: 'OrderItem',
+  KiteuhApplication: 'KiteuhApplication',
+  KiteuhMember: 'KiteuhMember'
 };
 
 /**

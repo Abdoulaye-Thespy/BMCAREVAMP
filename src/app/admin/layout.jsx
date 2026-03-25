@@ -41,6 +41,11 @@ export default function AdminLayout({ children }) {
       href: "/admin/orders",
     },
     {
+      title: "kiteuh",  // New Orders menu item
+      icon: ShoppingBag,
+      href: "/admin/kiteuhusers",
+    },
+    {
       title: "Settings",
       icon: Settings,
       href: "/admin/settings",
