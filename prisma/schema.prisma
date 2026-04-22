@@ -8,6 +8,66 @@ datasource db {
   provider = "postgresql"
 }
 
+// ==================== AUTH MODELS ====================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String? // For email/password auth (nullable for OAuth users)
+  role          String    @default("user") // 'user' or 'admin'
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts           Account[]
+  sessions           Session[]
+  verificationTokens VerificationToken[]
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  user       User?    @relation(fields: [userId], references: [id])
+  userId     String?
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
 model Package {
   id       Int    @id @default(autoincrement())
   name     String
@@ -17,95 +77,93 @@ model Package {
 }
 
 model Order {
-  id              String   @id @default(cuid())
-  stripeSessionId String   @unique @map("stripe_session_id")
-  stripePaymentId String?  @map("stripe_payment_id")
+  id              String  @id @default(cuid())
+  stripeSessionId String  @unique @map("stripe_session_id")
+  stripePaymentId String? @map("stripe_payment_id")
   email           String
   amount          Int
-  currency        String   @default("usd")
-  status          String   @default("pending") // pending, completed, failed
-  
+  currency        String  @default("usd")
+  status          String  @default("pending") // pending, completed, failed
+
   // Customer Information as JSON
-  customerInfo    Json     @map("customer_info")
-  
+  customerInfo Json @map("customer_info")
+
   // Relations
-  items           OrderItem[]
-  
+  items OrderItem[]
+
   // Timestamps
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("orders")
 }
 
 model OrderItem {
-  id        String   @id @default(cuid())
-  orderId   String   @map("order_id")
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId String   @map("product_id")
+  id        String @id @default(cuid())
+  orderId   String @map("order_id")
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String @map("product_id")
   quantity  Int
-  price     Int      // Price in cents
-  
+  price     Int // Price in cents
+
   // Product snapshot at time of purchase
-  productName     String   @map("product_name")
-  productCategory String?  @map("product_category")
-  
+  productName     String  @map("product_name")
+  productCategory String? @map("product_category")
+
   // T-shirt sizes - stored as JSON array
-  tshirtSizes     Json?    @map("tshirt_sizes") // Stores array of sizes like ["XL", "L", "M"]
-  
-  createdAt  DateTime @default(now()) @map("created_at")
+  tshirtSizes Json? @map("tshirt_sizes") // Stores array of sizes like ["XL", "L", "M"]
+
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@unique([orderId, productId])
   @@map("order_items")
 }
 
-
-
 // Kiteuh Program Models
 model KiteuhApplication {
-  id                      String   @id @default(cuid())
-  applicationNumber       String   @unique
-  status                  KiteuhStatus @default(PENDING)
-  
+  id                String       @id @default(cuid())
+  applicationNumber String       @unique
+  status            KiteuhStatus @default(PENDING)
+
   // Chapter Information
-  chapter                 String
-  
+  chapter String
+
   // Member Information
-  memberFirstName         String
-  memberMiddleName        String?
-  memberLastName          String
-  memberDateOfBirth       DateTime
-  memberAddress           String?
-  memberCity              String?
-  memberState             String?
-  memberZipCode           String?
-  memberEmail             String
-  memberPhone             String
-  
+  memberFirstName   String
+  memberMiddleName  String?
+  memberLastName    String
+  memberDateOfBirth DateTime
+  memberAddress     String?
+  memberCity        String?
+  memberState       String?
+  memberZipCode     String?
+  memberEmail       String
+  memberPhone       String
+
   // Beneficiary Information
-  beneficiaryFirstName    String?
-  beneficiaryMiddleName   String?
-  beneficiaryLastName     String?
-  beneficiaryEmail        String?
-  beneficiaryPhone        String?
-  beneficiaryAddress      String?
-  beneficiaryCity         String?
-  beneficiaryState        String?
-  beneficiaryZipCode      String?
-  
+  beneficiaryFirstName  String?
+  beneficiaryMiddleName String?
+  beneficiaryLastName   String?
+  beneficiaryEmail      String?
+  beneficiaryPhone      String?
+  beneficiaryAddress    String?
+  beneficiaryCity       String?
+  beneficiaryState      String?
+  beneficiaryZipCode    String?
+
   // Admin Fields
-  assignedMemberId        String?   // The actual member ID assigned to the applicant
-  assignedBy              String?
-  assignedAt              DateTime?
-  notes                   String?
-  
+  assignedMemberId String? // The actual member ID assigned to the applicant
+  assignedBy       String?
+  assignedAt       DateTime?
+  notes            String?
+
   // Timestamps
-  createdAt               DateTime @default(now())
-  updatedAt               DateTime @updatedAt
-  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations - A member record is created from this application
-  member                  KiteuhMember? @relation("ApplicationToMember")
-  
+  member KiteuhMember? @relation("ApplicationToMember")
+
   @@index([status])
   @@index([memberEmail])
   @@index([memberPhone])
@@ -113,25 +171,25 @@ model KiteuhApplication {
 }
 
 model KiteuhMember {
-  id                  String   @id @default(cuid())
-  memberId            String   @unique    // This is the official member ID (e.g., BMCA-2024-001)
-  fullName            String
-  email               String
-  phone               String
-  chapter             String
-  dateOfBirth         DateTime
-  address             String?
-  city                String?
-  state               String?
-  zipCode             String?
-  status              KiteuhStatus @default(ACTIVE)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-  
+  id          String       @id @default(cuid())
+  memberId    String       @unique // This is the official member ID (e.g., BMCA-2024-001)
+  fullName    String
+  email       String
+  phone       String
+  chapter     String
+  dateOfBirth DateTime
+  address     String?
+  city        String?
+  state       String?
+  zipCode     String?
+  status      KiteuhStatus @default(ACTIVE)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
   // Relations - Link back to the original application
-  application         KiteuhApplication? @relation("ApplicationToMember", fields: [applicationId], references: [id])
-  applicationId       String? @unique
-  
+  application   KiteuhApplication? @relation("ApplicationToMember", fields: [applicationId], references: [id])
+  applicationId String?            @unique
+
   @@index([memberId])
   @@index([status])
   @@map("kiteuh_members")
