@@ -1,3 +1,4 @@
+// app/api/kiteuh/route.js (Updated)
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { Resend } from "resend"
@@ -10,7 +11,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url)
     const status = searchParams.get("status")
     
-    const where = status ? { status } : {}
+    const where = status && status !== "all" ? { status } : {}
     
     const applications = await prisma.kiteuhApplication.findMany({
       where,
@@ -111,6 +112,125 @@ export async function POST(request) {
     console.error("Error creating application:", error)
     return NextResponse.json(
       { error: "Failed to submit application" },
+      { status: 500 }
+    )
+  }
+}
+
+// PUT - Admin updates application (assign member ID, approve, reject)
+export async function PUT(request) {
+  try {
+    const { applicationId, memberId, notes, status } = await request.json()
+    
+    // Get the application first
+    const application = await prisma.kiteuhApplication.findUnique({
+      where: { id: applicationId }
+    })
+    
+    if (!application) {
+      return NextResponse.json(
+        { error: "Application not found" },
+        { status: 404 }
+      )
+    }
+    
+    // Generate member ID if not provided
+    let assignedMemberId = memberId
+    if (!assignedMemberId) {
+      const year = new Date().getFullYear()
+      const count = await prisma.kiteuhMember.count()
+      assignedMemberId = `BMCA-${year}-${String(count + 1).padStart(4, '0')}`
+    }
+    
+    // Update the application
+    const updatedApplication = await prisma.kiteuhApplication.update({
+      where: { id: applicationId },
+      data: {
+        assignedMemberId,
+        notes: notes || null,
+        assignedAt: new Date(),
+        status: status || "ACTIVE"
+      }
+    })
+    
+    // Create a member record
+    const member = await prisma.kiteuhMember.create({
+      data: {
+        memberId: assignedMemberId,
+        fullName: `${application.memberFirstName} ${application.memberMiddleName ? application.memberMiddleName + ' ' : ''}${application.memberLastName}`,
+        email: application.memberEmail,
+        phone: application.memberPhone,
+        chapter: application.chapter,
+        dateOfBirth: application.memberDateOfBirth,
+        address: application.memberAddress,
+        city: application.memberCity,
+        state: application.memberState,
+        zipCode: application.memberZipCode,
+        status: "ACTIVE",
+        applicationId: application.id
+      }
+    })
+    
+    // Send notification email to applicant
+    await resend.emails.send({
+      from: "BMCA Kiteuh Program <convention2026@bmca.org>",
+      to: [application.memberEmail],
+      subject: "Your Kiteuh Member ID Has Been Assigned!",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background-color: #f97316; color: white; padding: 20px; text-align: center; }
+            .content { padding: 20px; }
+            .member-id { background-color: #fef3c7; padding: 15px; text-align: center; border-radius: 8px; margin: 20px 0; }
+            .member-id h2 { color: #f97316; margin: 0; }
+            .member-id p { font-size: 24px; font-weight: bold; margin: 10px 0 0; }
+            .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h2>Welcome to the Kiteuh Mutual Assurance Program!</h2>
+            </div>
+            <div class="content">
+              <p>Dear ${application.memberFirstName} ${application.memberLastName},</p>
+              <p>Congratulations! Your application has been approved and your member ID has been assigned.</p>
+              
+              <div class="member-id">
+                <h2>Your Member ID</h2>
+                <p>${assignedMemberId}</p>
+              </div>
+              
+              <p><strong>Assigned On:</strong> ${new Date().toLocaleDateString()}</p>
+              
+              ${notes ? `<p><strong>Admin Notes:</strong> ${notes}</p>` : ''}
+              
+              <p>You are now an official member of the Kiteuh Mutual Assurance Program. Please save your member ID for future reference.</p>
+              
+              <p>Best regards,<br>BMCA Kiteuh Program Team</p>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} Bafut Manjong Cultural Association</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    })
+    
+    return NextResponse.json({
+      success: true,
+      application: updatedApplication,
+      member
+    })
+  } catch (error) {
+    console.error("Error updating application:", error)
+    return NextResponse.json(
+      { error: "Failed to update application" },
       { status: 500 }
     )
   }
