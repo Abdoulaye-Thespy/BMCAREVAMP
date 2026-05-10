@@ -205,3 +205,20 @@ enum KiteuhStatus {
   INACTIVE
   SUSPENDED
 }
+
+
+// In your schema.prisma file
+
+model Chapter {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  phone       String?
+  email       String?
+  address     String?
+  members     String?
+  website     String?
+  president   Json?    // Store president object { name, photo }
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

@@ -20,7 +20,7 @@ export default function AdminSettings() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Organization Name</label>
               <input
                 type="text"
-                defaultValue="BMCA - Building Beirut Communities"
+                defaultValue="BMCA - Bafut Manjong Cultural Association"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
             </div>
@@ -28,7 +28,7 @@ export default function AdminSettings() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
               <input
                 type="email"
-                defaultValue="info@bmca.org"
+                defaultValue="info@bafutmanjongusa.org"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
             </div>
@@ -50,29 +50,6 @@ export default function AdminSettings() {
               <input type="checkbox" defaultChecked className="h-4 w-4" />
               <span className="text-gray-700">Email notifications for new registrations</span>
             </label>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" defaultChecked className="h-4 w-4" />
-              <span className="text-gray-700">Weekly activity reports</span>
-            </label>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" className="h-4 w-4" />
-              <span className="text-gray-700">SMS alerts for critical events</span>
-            </label>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Security Settings</h2>
-          <div className="space-y-4">
-            <Button variant="outline" className="w-full justify-start bg-transparent">
-              Change Password
-            </Button>
-            <Button variant="outline" className="w-full justify-start bg-transparent">
-              Two-Factor Authentication
-            </Button>
-            <Button variant="outline" className="w-full justify-start bg-transparent">
-              Active Sessions
-            </Button>
           </div>
         </Card>
 

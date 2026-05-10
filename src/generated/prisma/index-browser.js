@@ -244,6 +244,20 @@ exports.Prisma.KiteuhMemberScalarFieldEnum = {
   applicationId: 'applicationId'
 };
 
+exports.Prisma.ChapterScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  phone: 'phone',
+  email: 'email',
+  address: 'address',
+  members: 'members',
+  website: 'website',
+  president: 'president',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -291,7 +305,8 @@ exports.Prisma.ModelName = {
   Order: 'Order',
   OrderItem: 'OrderItem',
   KiteuhApplication: 'KiteuhApplication',
-  KiteuhMember: 'KiteuhMember'
+  KiteuhMember: 'KiteuhMember',
+  Chapter: 'Chapter'
 };
 
 /**

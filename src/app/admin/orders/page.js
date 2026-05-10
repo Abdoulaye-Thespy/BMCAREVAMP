@@ -39,6 +39,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 // Status badge component
 const StatusBadge = ({ status }) => {
@@ -55,7 +57,7 @@ const StatusBadge = ({ status }) => {
   return (
     <Badge className={`${config.color} flex items-center gap-1 capitalize`}>
       <Icon className="h-3 w-3" />
-      {status}
+      {status === 'completed' ? 'paid' : status}
     </Badge>
   )
 }
@@ -67,7 +69,6 @@ export default function OrdersAdmin() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
-  const [refundDialogOpen, setRefundDialogOpen] = useState(false)
 
   // Fetch orders from database
   useEffect(() => {
@@ -95,31 +96,20 @@ export default function OrdersAdmin() {
       order.customerInfo?.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.customerInfo?.lastName?.toLowerCase().includes(searchTerm.toLowerCase())
     
-    const matchesStatus = statusFilter === "all" || order.status === statusFilter
+    // Filter logic: 
+    // all = show everything
+    // pending = show only pending
+    // paid = show everything that is NOT pending (completed, failed, refunded)
+    let matchesStatus = true
+    if (statusFilter === "pending") {
+      matchesStatus = order.status === "pending"
+    } else if (statusFilter === "paid") {
+      matchesStatus = order.status !== "pending"
+    }
+    // statusFilter === "all" shows everything
     
     return matchesSearch && matchesStatus
   })
-
-  const handleRefund = async (orderId) => {
-    try {
-      const res = await fetch('/api/admin/orders/refund', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId })
-      })
-      
-      if (res.ok) {
-        // Update order status in local state
-        setOrders(orders.map(order => 
-          order.id === orderId ? { ...order, status: 'refunded' } : order
-        ))
-        setRefundDialogOpen(false)
-        setSelectedOrder(null)
-      }
-    } catch (error) {
-      console.error('Failed to process refund:', error)
-    }
-  }
 
   const handleResendEmail = async (orderId) => {
     try {
@@ -151,6 +141,70 @@ export default function OrdersAdmin() {
     }).format(amount / 100)
   }
 
+  const downloadPDF = () => {
+    const doc = new jsPDF()
+    
+    // Add title
+    doc.setFontSize(20)
+    doc.setTextColor(0, 0, 0)
+    doc.text('Orders Report', 14, 20)
+    doc.setFontSize(10)
+    doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 30)
+    doc.text(`Filter: ${statusFilter === 'all' ? 'All Orders' : statusFilter === 'paid' ? 'Paid' : 'Pending'}`, 14, 37)
+    if (searchTerm) {
+      doc.text(`Search: "${searchTerm}"`, 14, 44)
+    }
+    
+    let yPosition = 50
+    
+    // Prepare table data from filtered orders
+    const tableData = filteredOrders.map(order => [
+      order.id.slice(-8),
+      `${order.customerInfo?.firstName || ''} ${order.customerInfo?.lastName || ''}`,
+      order.email || '',
+      order.customerInfo?.phone || '',
+      formatDate(order.createdAt),
+      order.status === 'completed' ? 'Paid' : order.status,
+      order.items?.reduce((total, item) => total + item.quantity, 0) || 0,
+      order.items?.map(item => `${item.productName} (${item.quantity})${item.tshirtSizes?.length > 0 ? ` - Sizes: ${item.tshirtSizes.join(', ')}` : ''}`).join('\n') || '',
+      formatCurrency(order.amount)
+    ])
+    
+    autoTable(doc, {
+      startY: yPosition,
+      head: [['Order ID', 'Name', 'Email', 'Phone', 'Date', 'Status', 'Items', 'Products & Details', 'Amount']],
+      body: tableData,
+      theme: 'striped',
+      headStyles: { fillColor: [245, 166, 35], textColor: [255, 255, 255] },
+      columnStyles: {
+        7: { cellWidth: 'auto', halign: 'left' },
+      },
+      styles: { fontSize: 8, cellPadding: 2 },
+      margin: { left: 14, right: 14 }
+    })
+    
+    // Add summary
+    const finalY = doc.lastAutoTable.finalY + 10
+    doc.setFontSize(12)
+    doc.setTextColor(0, 0, 0)
+    doc.text(`Summary`, 14, finalY)
+    doc.setFontSize(10)
+    doc.text(`Total Orders: ${filteredOrders.length}`, 14, finalY + 7)
+    
+    const totalRevenue = filteredOrders
+      .filter(order => order.status === 'completed')
+      .reduce((sum, order) => sum + order.amount, 0)
+    doc.text(`Total Revenue (Paid Only): ${formatCurrency(totalRevenue)}`, 14, finalY + 14)
+    
+    const totalItems = filteredOrders.reduce((sum, order) => 
+      sum + (order.items?.reduce((itemSum, item) => itemSum + item.quantity, 0) || 0), 0
+    )
+    doc.text(`Total Items Sold: ${totalItems}`, 14, finalY + 21)
+    
+    // Save the PDF
+    doc.save(`orders-report-${new Date().toISOString().split('T')[0]}.pdf`)
+  }
+
   if (loading) {
     return (
       <div className="p-8 flex justify-center">
@@ -167,13 +221,22 @@ export default function OrdersAdmin() {
           <h1 className="text-3xl font-bold text-gray-900">Orders Management</h1>
           <p className="text-gray-600 mt-2">View and manage all customer orders</p>
         </div>
-        <Button 
-          onClick={fetchOrders}
-          className="bg-[#F5A623] hover:bg-[#F5A623]/90 text-white"
-        >
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
-        </Button>
+        <div className="flex gap-3">
+          <Button 
+            onClick={downloadPDF}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export Current View
+          </Button>
+          <Button 
+            onClick={fetchOrders}
+            className="bg-[#F5A623] hover:bg-[#F5A623]/90 text-white"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -197,9 +260,7 @@ export default function OrdersAdmin() {
               <SelectContent>
                 <SelectItem value="all">All Orders</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="failed">Failed</SelectItem>
-                <SelectItem value="refunded">Refunded</SelectItem>
+                <SelectItem value="paid">Paid</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -242,31 +303,31 @@ export default function OrdersAdmin() {
                     <span className="text-sm font-mono text-gray-900">
                       {order.id.slice(-8)}
                     </span>
-                  </td>
+                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900">
                       {order.customerInfo?.firstName} {order.customerInfo?.lastName}
                     </div>
                     <div className="text-sm text-gray-500">{order.email}</div>
-                  </td>
+                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
                       {formatDate(order.createdAt)}
                     </div>
-                  </td>
+                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-semibold text-gray-900">
                       {formatCurrency(order.amount)}
                     </div>
-                  </td>
+                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={order.status} />
-                  </td>
+                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900">
                       {order.items?.length || 0} items
                     </div>
-                  </td>
+                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -286,25 +347,10 @@ export default function OrdersAdmin() {
                           <Send className="h-4 w-4 mr-2" />
                           Resend Email
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Printer className="h-4 w-4 mr-2" />
-                          Print Receipt
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          onClick={() => {
-                            setSelectedOrder(order)
-                            setRefundDialogOpen(true)
-                          }}
-                          className="text-red-600"
-                          disabled={order.status === 'refunded'}
-                        >
-                          <DollarSign className="h-4 w-4 mr-2" />
-                          {order.status === 'refunded' ? 'Already Refunded' : 'Process Refund'}
-                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </td>
-                </tr>
+                   </td>
+                  </tr>
               ))}
             </tbody>
           </table>
@@ -327,10 +373,6 @@ export default function OrdersAdmin() {
             <div className="space-y-6">
               {/* Order Info */}
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Order ID</p>
-                  <p className="text-sm font-mono mt-1">{selectedOrder.id}</p>
-                </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">Date</p>
                   <p className="text-sm mt-1">{formatDate(selectedOrder.createdAt)}</p>
@@ -408,68 +450,8 @@ export default function OrdersAdmin() {
                   </div>
                 </div>
               </div>
-
-              {/* Actions */}
-              <div className="flex justify-end gap-3 pt-4 border-t">
-                <Button variant="outline" onClick={() => handleResendEmail(selectedOrder.id)}>
-                  <Send className="h-4 w-4 mr-2" />
-                  Resend Email
-                </Button>
-                <Button variant="outline">
-                  <Printer className="h-4 w-4 mr-2" />
-                  Print Receipt
-                </Button>
-                {selectedOrder.status !== 'refunded' && (
-                  <Button 
-                    variant="destructive"
-                    onClick={() => {
-                      setViewDialogOpen(false)
-                      setRefundDialogOpen(true)
-                    }}
-                  >
-                    <DollarSign className="h-4 w-4 mr-2" />
-                    Process Refund
-                  </Button>
-                )}
-              </div>
             </div>
           )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Refund Confirmation Dialog */}
-      <Dialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Refund</DialogTitle>
-          </DialogHeader>
-          <p className="text-gray-600">
-            Are you sure you want to refund this order? This action cannot be undone.
-          </p>
-          {selectedOrder && (
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-sm">
-                <strong>Order:</strong> {selectedOrder.id.slice(-8)}
-              </p>
-              <p className="text-sm">
-                <strong>Amount:</strong> {formatCurrency(selectedOrder.amount)}
-              </p>
-              <p className="text-sm">
-                <strong>Customer:</strong> {selectedOrder.customerInfo?.firstName} {selectedOrder.customerInfo?.lastName}
-              </p>
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setRefundDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button 
-              variant="destructive"
-              onClick={() => handleRefund(selectedOrder?.id)}
-            >
-              Process Refund
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
