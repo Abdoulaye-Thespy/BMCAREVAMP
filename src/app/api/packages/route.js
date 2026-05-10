@@ -1,3 +1,5 @@
+// app/api/packages/route.js
+
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 
@@ -10,7 +12,14 @@ export async function GET() {
         { name: 'asc' }
       ]
     })
-    return NextResponse.json(packages)
+    
+    // Parse items back to array for frontend
+    const packagesWithItems = packages.map(pkg => ({
+      ...pkg,
+      items: pkg.items ? pkg.items.split(',').map(item => item.trim()) : []
+    }))
+    
+    return NextResponse.json(packagesWithItems)
   } catch (error) {
     console.error('Failed to fetch packages:', error)
     return NextResponse.json(
@@ -33,15 +42,26 @@ export async function POST(request) {
       )
     }
 
+    // Convert items array to string if it's an array
+    let itemsString = data.items
+    if (Array.isArray(data.items)) {
+      itemsString = data.items.join(', ')
+    }
+
     const pkg = await prisma.package.create({
       data: {
         name: data.name,
         price: parseFloat(data.price),
         category: data.category,
-        items: data.items
+        items: itemsString // Store as string
       }
     })
-    return NextResponse.json(pkg, { status: 201 })
+    
+    // Return with items as array for consistency
+    return NextResponse.json({
+      ...pkg,
+      items: pkg.items.split(',').map(item => item.trim())
+    }, { status: 201 })
   } catch (error) {
     console.error('Failed to create package:', error)
     return NextResponse.json(
@@ -63,16 +83,26 @@ export async function PUT(request) {
       )
     }
 
+    // Convert items array to string if it's an array
+    let itemsString = data.items
+    if (Array.isArray(data.items)) {
+      itemsString = data.items.join(', ')
+    }
+
     const pkg = await prisma.package.update({
       where: { id: parseInt(id) },
       data: {
         name: data.name,
         price: parseFloat(data.price),
         category: data.category,
-        items: data.items
+        items: itemsString
       }
     })
-    return NextResponse.json(pkg)
+    
+    return NextResponse.json({
+      ...pkg,
+      items: pkg.items.split(',').map(item => item.trim())
+    })
   } catch (error) {
     console.error('Failed to update package:', error)
     return NextResponse.json(

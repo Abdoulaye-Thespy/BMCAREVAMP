@@ -42,7 +42,7 @@ const Badge = ({ children, className = '', ...props }) => {
   )
 }
 
-// Confirmation Popup Component with T-shirt sizes - FIXED
+// Confirmation Popup Component with T-shirt sizes
 const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, currentQuantity = 0, deadline }) => {
   const [quantity, setQuantity] = useState(1)
   const [tshirtSizes, setTshirtSizes] = useState([])
@@ -51,16 +51,14 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
   // Calculate number of t-shirts needed based on package type and quantity
   const getTshirtCount = () => {
     if (pkg.category === 'couple') {
-      return quantity * 2 // Couple package needs 2 shirts per package × quantity
+      return quantity * 2
     }
-    return quantity // All others need 1 shirt per package
+    return quantity
   }
 
   const tshirtCount = getTshirtCount()
 
-  // Initialize t-shirt sizes array when quantity or package changes
   useEffect(() => {
-    // Initialize with empty strings (no default size)
     setTshirtSizes(Array(tshirtCount).fill(''))
   }, [tshirtCount, isOpen])
 
@@ -72,9 +70,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
     }
   }, [currentQuantity, isOpen])
 
-  // Check if all t-shirt sizes are selected
   useEffect(() => {
-    // Check if every size has been selected (not empty string)
     const allSelected = tshirtSizes.every(size => size !== '')
     setAllSizesSelected(allSelected)
   }, [tshirtSizes])
@@ -91,13 +87,12 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
 
   const handleGoToCheckout = () => {
     if (allSizesSelected) {
-      // First add to cart, then go to checkout
       onConfirm(pkg, quantity, tshirtSizes)
       onGoToCheckout()
     }
   }
 
-  const increment = () => setQuantity(prev => prev + 1)
+  const increment = () => setQuantity(prev => prev > 10 ? 10 : prev + 1)
   const decrement = () => setQuantity(prev => prev > 1 ? prev - 1 : 1)
 
   const updateTshirtSize = (index, size) => {
@@ -106,7 +101,6 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
     setTshirtSizes(newSizes)
   }
 
-  // Generate person labels for couple packages
   const getPersonLabel = (index) => {
     if (pkg.category !== 'couple') return `Person ${index + 1}`
 
@@ -118,7 +112,6 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-auto max-h-[90vh] overflow-y-auto">
-        {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-t-2xl">
           <div className="flex justify-between items-start">
             <div>
@@ -129,18 +122,13 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
                 {currentQuantity > 0 ? 'Update your selection' : 'Confirm your selection'}
               </p>
             </div>
-            <button
-              onClick={onClose}
-              className="text-white hover:text-blue-200 transition-colors"
-            >
+            <button onClick={onClose} className="text-white hover:text-blue-200 transition-colors">
               <X className="h-6 w-6" />
             </button>
           </div>
         </div>
 
-        {/* Content */}
         <div className="p-6">
-          {/* Package Info */}
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
               <Star className="h-6 w-6 text-blue-600" />
@@ -156,18 +144,16 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
             </div>
           </div>
 
-          {/* Price Period Indicator */}
           <div className="mb-6 p-3 bg-blue-50 rounded-lg">
             <div className="flex items-center gap-2 text-blue-800">
               <Clock className="h-5 w-5" />
-              <span className="font-semibold">{deadline.label} Pricing</span>
+              <span className="font-semibold">{deadline?.label || 'Standard'} Pricing</span>
             </div>
             <p className="text-sm text-blue-600 mt-1">
-              {deadline.description}
+              {deadline?.description}
             </p>
           </div>
 
-          {/* Quantity Selector */}
           <div className="mb-6">
             <label className="block text-base font-medium text-gray-700 mb-3">
               {currentQuantity > 0 ? 'Update Quantity' : 'Quantity'}
@@ -195,7 +181,6 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
             </div>
           </div>
 
-          {/* T-shirt Size Selection */}
           {tshirtCount > 0 && (
             <div className="mb-6 border-t pt-4">
               <div className="flex items-center gap-2 mb-4">
@@ -238,11 +223,10 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
             </div>
           )}
 
-          {/* Features Preview */}
           <div className="border-t pt-4">
             <h5 className="font-medium text-gray-900 text-lg mb-3">Includes:</h5>
             <div className="grid grid-cols-2 gap-2">
-              {pkg.features.slice(0, 6).map((feature, idx) => (
+              {pkg.features?.slice(0, 6).map((feature, idx) => (
                 <div key={idx} className="flex items-center gap-2 text-base text-gray-600">
                   <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
                   <span className="text-sm">{feature}</span>
@@ -252,13 +236,8 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3 p-6 border-t">
-          <Button
-            variant="outline"
-            onClick={onClose}
-            className="flex-1 border-gray-300 hover:bg-gray-50 text-base"
-          >
+          <Button variant="outline" onClick={onClose} className="flex-1 border-gray-300 hover:bg-gray-50 text-base">
             Cancel
           </Button>
           <Button
@@ -291,8 +270,6 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
 // Helper function to determine current pricing period based on date (Central US/Canada time)
 const getCurrentDeadline = () => {
   const now = new Date()
-
-  // Convert to Central US/Canada time
   const centralTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Chicago' }))
 
   const earlyBirdEnd = new Date(DEADLINES.EARLY_BIRD.end)
@@ -302,70 +279,85 @@ const getCurrentDeadline = () => {
   const lateEnd = new Date(DEADLINES.LATE.end)
 
   if (centralTime <= earlyBirdEnd) {
-    return {
-      ...DEADLINES.EARLY_BIRD,
-      type: 'EARLY_BIRD'
-    }
+    return { ...DEADLINES.EARLY_BIRD, type: 'EARLY_BIRD' }
   } else if (centralTime >= standardStart && centralTime <= standardEnd) {
-    return {
-      ...DEADLINES.STANDARD,
-      type: 'STANDARD'
-    }
+    return { ...DEADLINES.STANDARD, type: 'STANDARD' }
   } else if (centralTime >= lateStart && centralTime <= lateEnd) {
-    return {
-      ...DEADLINES.LATE,
-      type: 'LATE'
-    }
+    return { ...DEADLINES.LATE, type: 'LATE' }
   } else {
-    // After late deadline
-    return {
-      ...DEADLINES.LATE,
-      type: 'LATE',
-      expired: true
-    }
+    return { ...DEADLINES.LATE, type: 'LATE', expired: true }
   }
 }
 
-// Get only Early Bird packages with simplified names
-const getEarlyBirdPackages = (packages) => {
+// Filter packages based on deadline type
+const filterByDeadline = (packages, deadlineType) => {
+  if (deadlineType === 'EARLY_BIRD') {
+    return packages.filter(pkg => pkg.originalName?.toLowerCase().includes('early bird'))
+  } else if (deadlineType === 'STANDARD') {
+    return packages.filter(pkg => pkg.originalName?.toLowerCase().includes('standard'))
+  } else if (deadlineType === 'LATE') {
+    return packages.filter(pkg => pkg.originalName?.toLowerCase().includes('late'))
+  }
   return packages
-    .filter(pkg => pkg.name.toLowerCase().includes('early bird'))
-    .map(pkg => {
-      // Extract category from the full name
-      const fullName = pkg.name
-      let simpleName = pkg.category
-      let categoryKey = ''
+}
 
-      // Clean up the name and set proper category key for filtering
-      if (fullName.includes('Kids')) {
-        simpleName = 'Kids'
-        categoryKey = 'kids'
-      } else if (fullName.includes('Elderly')) {
-        simpleName = 'Elderly 75+'
-        categoryKey = 'elderly'
-      } else if (fullName.includes('Singles')) {
-        simpleName = 'Adult'
-        categoryKey = 'adult'
-      } else if (fullName.includes('Couples')) {
-        simpleName = 'Couple'
-        categoryKey = 'couple'
-      } else if (fullName.includes('Non-Registered')) {
-        simpleName = 'Non-Registered'
-        categoryKey = 'non-registered'
-      }
+// Get packages with proper category mapping
+const getPackagesWithCategories = (packages, deadlineType) => {
+  // First filter by deadline for non-other packages
+  const filteredForDeadline = filterByDeadline(packages, deadlineType)
+  
+  return packages.map(pkg => {
+    const fullName = pkg.name?.toLowerCase() || ''
+    let categoryKey = ''
+    let simpleName = pkg.name
 
-      return {
-        id: pkg.id.toString(),
-        name: simpleName,
-        originalName: pkg.name,
-        category: categoryKey, // Use the mapped category key
-        displayCategory: pkg.category,
-        price: pkg.price,
-        description: simpleName,
-        features: pkg.items.split(',').map(item => item.trim()),
-        popular: pkg.category.includes('Couple') || pkg.name.includes('Cultural'),
-      }
-    })
+    // Check if this package belongs to the current deadline for main categories
+    const isForCurrentDeadline = deadlineType === 'EARLY_BIRD' 
+      ? fullName.includes('early bird')
+      : deadlineType === 'STANDARD'
+      ? fullName.includes('standard')
+      : deadlineType === 'LATE'
+      ? fullName.includes('late')
+      : true
+
+    // Map package names to categories
+    if (fullName.includes('kid')) {
+      categoryKey = 'kids'
+      simpleName = 'Kids'
+    } else if (fullName.includes('elderly') || fullName.includes('75+')) {
+      categoryKey = 'elderly'
+      simpleName = 'Elderly 75+'
+    } else if (fullName.includes('couple')) {
+      categoryKey = 'couple'
+      simpleName = 'Couple'
+    } else if (fullName.includes('non-registered')) {
+      categoryKey = 'non-registered'
+      simpleName = 'Non-Registered Elites'
+    } else if (fullName.includes('adult') || fullName.includes('single')) {
+      categoryKey = 'adult'
+      simpleName = 'Adult'
+    } else {
+      categoryKey = 'other'
+      simpleName = pkg.name
+    }
+
+    // For main categories (not 'other'), only show if they match the current deadline
+    // For 'other' category, always show regardless of deadline
+    const shouldShow = categoryKey === 'other' || isForCurrentDeadline
+
+    return {
+      id: pkg.id.toString(),
+      name: simpleName,
+      originalName: pkg.name,
+      category: categoryKey,
+      displayCategory: pkg.category,
+      price: pkg.price,
+      description: simpleName,
+      features: Array.isArray(pkg.items) ? pkg.items : (pkg.items ? pkg.items.split(',').map(item => item.trim()) : []),
+      popular: pkg.category === 'couple' || fullName.includes('cultural'),
+      shouldShow
+    }
+  }).filter(pkg => pkg.shouldShow)
 }
 
 const categoryLabels = {
@@ -373,112 +365,108 @@ const categoryLabels = {
   adult: 'Adult',
   couple: 'Couple',
   elderly: 'Elderly 75+',
-  'non-registered': 'Non-Registered Elites'
+  'non-registered': 'Non-Registered Elites',
+  other: 'Other Packages'
 }
 
-// Mobile Filters Component - Only Categories
-const MobileFilters = ({
-  selectedCategory,
-  setSelectedCategory,
-  filteredCount,
-  totalCount
-}) => {
-  const [isOpen, setIsOpen] = useState(false)
+const categoryOrder = ['kids', 'adult', 'couple', 'elderly', 'non-registered', 'other']
 
-  return (
-    <div className="lg:hidden mb-6">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between"
-        >
-          <div className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-blue-500" />
-            <span className="font-semibold text-gray-900 text-base">Filter by Category</span>
-            <span className="text-base text-gray-500 ml-2">
-              ({filteredCount} of {totalCount})
-            </span>
-          </div>
-          <ChevronDown className={`h-5 w-5 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-        </button>
-      </div>
-
-      {isOpen && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 mt-2">
-          <div>
-            <label className="block text-base font-medium text-gray-700 mb-2">Category</label>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
-            >
-              <option value="all">All Categories</option>
-              {Object.entries(categoryLabels).map(([key, label]) => (
-                <option key={key} value={key}>{label}</option>
-              ))}
-            </select>
-          </div>
-
-          {selectedCategory !== 'all' && (
-            <div className="pt-3 mt-3 border-t border-gray-200">
-              <div className="flex items-center justify-between">
-                <span className="text-base font-medium text-gray-700">Active Filter</span>
-                <button
-                  onClick={() => setSelectedCategory('all')}
-                  className="text-base text-blue-600 hover:text-blue-700"
-                >
-                  Clear
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
-
-// Sidebar Filters Component - Only Categories (Desktop)
+// Sidebar Filters Component
 const SidebarFilters = ({
   selectedCategory,
   setSelectedCategory,
   filteredCount,
   totalCount
 }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
   return (
-    <div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-fit sticky top-24">
-      <div className="flex items-center gap-2 mb-6 pb-4 border-b border-gray-200">
-        <Filter className="h-5 w-5 text-blue-500" />
-        <h3 className="text-lg font-semibold text-gray-900">Categories</h3>
-        <div className="ml-auto text-base text-gray-500">
-          {filteredCount} of {totalCount}
-        </div>
+    <>
+      {/* Mobile Filter Button */}
+      <div className="lg:hidden mb-4">
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="w-full flex items-center justify-between bg-white rounded-xl shadow-sm border border-gray-200 p-4"
+        >
+          <div className="flex items-center gap-2">
+            <Filter className="h-5 w-5 text-blue-500" />
+            <span className="font-semibold text-gray-900">Filter Categories</span>
+            <span className="text-sm text-gray-500">({filteredCount} of {totalCount})</span>
+          </div>
+          <ChevronDown className={`h-5 w-5 text-gray-500 transition-transform ${isMobileMenuOpen ? 'rotate-180' : ''}`} />
+        </button>
       </div>
 
-      <div className="space-y-2">
-        <button
-          onClick={() => setSelectedCategory('all')}
-          className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${selectedCategory === 'all'
-              ? 'bg-blue-100 text-blue-800 border border-blue-300'
-              : 'text-gray-700 hover:bg-gray-100 border border-transparent'
-            }`}
-        >
-          All Categories
-        </button>
-        {Object.entries(categoryLabels).map(([key, label]) => (
+      {/* Mobile Filter Menu */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <div className="space-y-2">
+            <button
+              onClick={() => {
+                setSelectedCategory('all')
+                setIsMobileMenuOpen(false)
+              }}
+              className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${selectedCategory === 'all'
+                  ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                  : 'text-gray-700 hover:bg-gray-100 border border-transparent'
+                }`}
+            >
+              All Categories
+            </button>
+            {categoryOrder.map(key => (
+              <button
+                key={key}
+                onClick={() => {
+                  setSelectedCategory(key)
+                  setIsMobileMenuOpen(false)
+                }}
+                className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${selectedCategory === key
+                    ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                    : 'text-gray-700 hover:bg-gray-100 border border-transparent'
+                  }`}
+              >
+                {categoryLabels[key]}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-fit sticky top-24">
+        <div className="flex items-center gap-2 mb-6 pb-4 border-b border-gray-200">
+          <Filter className="h-5 w-5 text-blue-500" />
+          <h3 className="text-lg font-semibold text-gray-900">Categories</h3>
+          <div className="ml-auto text-base text-gray-500">
+            {filteredCount} of {totalCount}
+          </div>
+        </div>
+
+        <div className="space-y-2">
           <button
-            key={key}
-            onClick={() => setSelectedCategory(key)}
-            className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${selectedCategory === key
+            onClick={() => setSelectedCategory('all')}
+            className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${selectedCategory === 'all'
                 ? 'bg-blue-100 text-blue-800 border border-blue-300'
                 : 'text-gray-700 hover:bg-gray-100 border border-transparent'
               }`}
           >
-            {label}
+            All Categories
           </button>
-        ))}
+          {categoryOrder.map(key => (
+            <button
+              key={key}
+              onClick={() => setSelectedCategory(key)}
+              className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${selectedCategory === key
+                  ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                  : 'text-gray-700 hover:bg-gray-100 border border-transparent'
+                }`}
+            >
+              {categoryLabels[key]}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 
@@ -511,11 +499,11 @@ export default function ConventionPage() {
     }
   }
 
-  // Get only Early Bird packages with simplified names
+  // Get all packages with proper categories and deadline filtering
   const conventionPackages = useMemo(() => {
     if (!packages.length) return []
-    return getEarlyBirdPackages(packages)
-  }, [packages])
+    return getPackagesWithCategories(packages, currentDeadline.type)
+  }, [packages, currentDeadline.type])
 
   // Get current quantity for a package in cart
   const getCurrentQuantity = (pkgId) => {
@@ -529,8 +517,6 @@ export default function ConventionPage() {
   }
 
   const handleConfirmAddToCart = (pkg, quantity, tshirtSizes) => {
-    // For couple packages, we store that it's a couple package but quantity is always 1
-    // The tshirtSizes array will have 2 sizes for the couple
     addToCart({
       id: pkg.id,
       name: pkg.name,
@@ -545,7 +531,6 @@ export default function ConventionPage() {
   }
 
   const handleGoToCheckout = () => {
-    // Navigate to cart page with information step pre-selected
     router.push('/cart?step=information')
   }
 
@@ -554,12 +539,28 @@ export default function ConventionPage() {
     setSelectedPackage(null)
   }
 
-  // Filter packages by category only
+  // Filter packages by category
   const filteredPackages = useMemo(() => {
     if (selectedCategory === 'all') {
       return conventionPackages
     }
     return conventionPackages.filter(pkg => pkg.category === selectedCategory)
+  }, [conventionPackages, selectedCategory])
+
+  // Separate main packages (kids, adult, couple, elderly, non-registered) from other packages
+  const mainCategories = ['kids', 'adult', 'couple', 'elderly', 'non-registered']
+  const mainPackages = conventionPackages.filter(pkg => mainCategories.includes(pkg.category))
+  const otherPackages = conventionPackages.filter(pkg => pkg.category === 'other')
+
+  // Group main packages by category when showing all
+  const groupedMainPackages = useMemo(() => {
+    if (selectedCategory !== 'all') return null
+    
+    const groups = {}
+    mainCategories.forEach(category => {
+      groups[category] = conventionPackages.filter(pkg => pkg.category === category)
+    })
+    return groups
   }, [conventionPackages, selectedCategory])
 
   // Format deadline message
@@ -592,7 +593,6 @@ export default function ConventionPage() {
     <main className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <Header />
 
-      {/* Add to Cart Popup */}
       {selectedPackage && (
         <AddToCartPopup
           pkg={selectedPackage}
@@ -607,7 +607,6 @@ export default function ConventionPage() {
 
       <section className="flex-grow py-8">
         <div className="container mx-auto px-4">
-          {/* Hero Section */}
           {/* Hero Section */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-base font-medium mb-4">
@@ -624,11 +623,9 @@ export default function ConventionPage() {
 
             {/* Two Column Layout for Info and Flyer */}
             <div className="max-w-5xl mx-auto mb-8 grid md:grid-cols-2 gap-6 items-center">
-              {/* Left Column - Information */}
               <div className="text-left space-y-4">
                 <div className="bg-white rounded-2xl shadow-lg p-6 border border-blue-100">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Event Details</h2>
-
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
                       <div className="bg-blue-100 p-2 rounded-lg">
@@ -675,7 +672,6 @@ export default function ConventionPage() {
                 </div>
               </div>
 
-              {/* Right Column - Flyer Image */}
               <div className="relative">
                 <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-4 border-blue-100 hover:border-blue-300 transition-all duration-300">
                   <img
@@ -723,18 +719,6 @@ export default function ConventionPage() {
                 </div>
               </div>
             </div>
-
-            {/* Location Badge with Airport Info */}
-            {/* <div className="flex flex-wrap justify-center gap-4 text-base text-gray-500">
-              <div className="flex items-center gap-1">
-                <MapPin className="h-4 w-4" />
-                <span>Location: Great Lakes Region, USA</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-gray-300">|</span>
-                <span className="text-blue-600 font-medium">Nearest Airport: Detroit Metropolitan Airport (DTW)</span>
-              </div>
-            </div> */}
           </div>
 
           {/* Hotel Booking Section */}
@@ -742,18 +726,10 @@ export default function ConventionPage() {
             <HotelBooking />
           </div>
 
-          {/* Mobile Filters - Only Categories */}
-          <MobileFilters
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            filteredCount={filteredPackages.length}
-            totalCount={conventionPackages.length}
-          />
-
           {/* Main Content with Sidebar */}
           <div className="flex flex-col lg:flex-row gap-6">
-            {/* Sidebar Filters (Desktop) - Only Categories */}
-            <div className="hidden lg:block lg:w-64 flex-shrink-0">
+            {/* Sidebar Filters */}
+            <div className="lg:w-64 flex-shrink-0">
               <SidebarFilters
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
@@ -762,13 +738,13 @@ export default function ConventionPage() {
               />
             </div>
 
-            {/* Packages Grid - All in one grid */}
+            {/* Packages Grid */}
             <div className="flex-1">
-              {/* Results Header */}
+              {/* Cart Summary */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">
-                    Early Bird Packages
+                    {selectedCategory === 'all' ? 'All Packages' : categoryLabels[selectedCategory]}
                   </h2>
                   <p className="text-gray-600 text-base mt-1">
                     Showing <span className="font-semibold text-blue-600">{filteredPackages.length}</span> packages
@@ -790,105 +766,296 @@ export default function ConventionPage() {
                 </div>
               </div>
 
-              {/* Single Grid for All Packages */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredPackages.map((pkg) => {
-                  const currentQuantity = getCurrentQuantity(pkg.id)
-                  return (
-                    <Card
-                      key={pkg.id}
-                      className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
-                          ? 'border-blue-300 shadow-md'
-                          : 'border-gray-200 hover:border-blue-200'
-                        } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
-                    >
-                      {/* Popular Badge */}
-                      {pkg.popular && (
-                        <div className="absolute top-3 right-3 z-10">
-                          <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
-                            <Star className="h-3 w-3 fill-current" />
-                            Popular
-                          </Badge>
-                        </div>
-                      )}
-
-                      {/* Deadline Badge */}
-                      <div className="absolute top-3 left-3 z-10">
-                        <Badge className={`${currentDeadline.type === 'EARLY_BIRD' ? 'bg-green-500' :
-                            currentDeadline.type === 'STANDARD' ? 'bg-orange-500' :
-                              'bg-red-500'
-                          } text-white flex items-center gap-1 text-sm`}>
-                          <Clock className="h-3 w-3" />
-                          Early Bird
-                        </Badge>
-                      </div>
-
-                      {/* Cart Indicator */}
-                      {currentQuantity > 0 && (
-                        <div className="absolute top-3 left-3 z-10 mt-8">
-                          <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
-                            <ShoppingCart className="h-3 w-3" />
-                            {currentQuantity}
-                          </Badge>
-                        </div>
-                      )}
-
-                      <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-                        <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
-                        <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
-                      </CardHeader>
-
-                      <CardContent className="flex-grow p-5">
-                        {/* Price with Early Bird indicator */}
-                        <div className="text-center mb-5">
-                          <div className="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full mb-2">
-                            Early Bird Price
+              {/* When showing a specific category */}
+              {selectedCategory !== 'all' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredPackages.map((pkg) => {
+                    const currentQuantity = getCurrentQuantity(pkg.id)
+                    return (
+                      <Card
+                        key={pkg.id}
+                        className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
+                            ? 'border-blue-300 shadow-md'
+                            : 'border-gray-200 hover:border-blue-200'
+                          } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
+                      >
+                        {pkg.popular && (
+                          <div className="absolute top-3 right-3 z-10">
+                            <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
+                              <Star className="h-3 w-3 fill-current" />
+                              Popular
+                            </Badge>
                           </div>
-                          <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                            ${pkg.price}
-                          </span>
-                          <p className="text-sm text-gray-500 mt-1">per person</p>
-                          {pkg.category === 'couple' && (
-                            <p className="text-xs text-blue-600 mt-1">Includes 2 shirts</p>
-                          )}
-                        </div>
+                        )}
 
-                        {/* Features */}
-                        <div className="mb-5">
-                          <div className="grid grid-cols-2 gap-3">
-                            {pkg.features.slice(0, 8).map((feature, idx) => (
-                              <div key={idx} className="flex items-start gap-2">
-                                <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
-                              </div>
-                            ))}
+                        {pkg.category !== 'other' && (
+                          <div className="absolute top-3 left-3 z-10">
+                            <Badge className={`${currentDeadline.type === 'EARLY_BIRD' ? 'bg-green-500' :
+                                currentDeadline.type === 'STANDARD' ? 'bg-orange-500' :
+                                  'bg-red-500'
+                              } text-white flex items-center gap-1 text-sm`}>
+                              <Clock className="h-3 w-3" />
+                              {currentDeadline.label}
+                            </Badge>
                           </div>
-                        </div>
-                      </CardContent>
+                        )}
 
-                      {/* Add to Cart Button */}
-                      <div className="p-5 pt-0">
-                        <Button
-                          onClick={() => handleAddToCartClick(pkg)}
-                          className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
-                              ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                              : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
-                            } text-white shadow-md hover:shadow-lg py-3`}
-                        >
-                          {currentQuantity > 0 ? (
-                            <span className="flex items-center gap-2">
-                              <ShoppingCart className="h-4 w-4" />
-                              Update ({currentQuantity})
+                        {currentQuantity > 0 && (
+                          <div className="absolute top-3 left-3 z-10 mt-8">
+                            <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
+                              <ShoppingCart className="h-3 w-3" />
+                              {currentQuantity}
+                            </Badge>
+                          </div>
+                        )}
+
+                        <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+                          <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
+                          <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
+                        </CardHeader>
+
+                        <CardContent className="flex-grow p-5">
+                          <div className="text-center mb-5">
+                            <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                              ${pkg.price}
                             </span>
-                          ) : (
-                            `Add to Cart - $${pkg.price}`
-                          )}
-                        </Button>
+                            <p className="text-sm text-gray-500 mt-1">per person</p>
+                            {pkg.category === 'couple' && (
+                              <p className="text-xs text-blue-600 mt-1">Includes 2 shirts</p>
+                            )}
+                          </div>
+
+                          <div className="mb-5">
+                            <div className="grid grid-cols-2 gap-3">
+                              {pkg.features.slice(0, 8).map((feature, idx) => (
+                                <div key={idx} className="flex items-start gap-2">
+                                  <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                  <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+
+                        <div className="p-5 pt-0">
+                          <Button
+                            onClick={() => handleAddToCartClick(pkg)}
+                            className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
+                                ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                                : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
+                              } text-white shadow-md hover:shadow-lg py-3`}
+                          >
+                            {currentQuantity > 0 ? (
+                              <span className="flex items-center gap-2">
+                                <ShoppingCart className="h-4 w-4" />
+                                Update ({currentQuantity})
+                              </span>
+                            ) : (
+                              `Add to Cart - $${pkg.price}`
+                            )}
+                          </Button>
+                        </div>
+                      </Card>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* When showing all categories - Main Categories grouped, Others separate */}
+              {selectedCategory === 'all' && (
+                <>
+                  {/* Main Categories Section (Kids, Adult, Couple, Elderly, Non-Registered) */}
+                  <div className="mb-8">
+                    <div className="mb-4 pb-2 border-b-2 border-blue-200">
+                      <h3 className="text-xl font-bold text-gray-800">
+                        Convention Registration Packages
+                      </h3>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {currentDeadline.label} Pricing - Valid until {currentDeadline.end}
+                      </p>
+                    </div>
+                    
+                    {/* Display all main packages in a single grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {mainPackages.map((pkg) => {
+                        const currentQuantity = getCurrentQuantity(pkg.id)
+                        return (
+                          <Card
+                            key={pkg.id}
+                            className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
+                                ? 'border-blue-300 shadow-md'
+                                : 'border-gray-200 hover:border-blue-200'
+                              } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
+                          >
+                            {pkg.popular && (
+                              <div className="absolute top-3 right-3 z-10">
+                                <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
+                                  <Star className="h-3 w-3 fill-current" />
+                                  Popular
+                                </Badge>
+                              </div>
+                            )}
+
+                            <div className="absolute top-3 left-3 z-10">
+                              <Badge className={`${currentDeadline.type === 'EARLY_BIRD' ? 'bg-green-500' :
+                                  currentDeadline.type === 'STANDARD' ? 'bg-orange-500' :
+                                    'bg-red-500'
+                                } text-white flex items-center gap-1 text-sm`}>
+                                <Clock className="h-3 w-3" />
+                                {currentDeadline.label}
+                              </Badge>
+                            </div>
+
+                            {currentQuantity > 0 && (
+                              <div className="absolute top-3 left-3 z-10 mt-8">
+                                <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
+                                  <ShoppingCart className="h-3 w-3" />
+                                  {currentQuantity}
+                                </Badge>
+                              </div>
+                            )}
+
+                            <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+                              <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
+                              <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
+                            </CardHeader>
+
+                            <CardContent className="flex-grow p-5">
+                              <div className="text-center mb-5">
+                                <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                                  ${pkg.price}
+                                </span>
+                                <p className="text-sm text-gray-500 mt-1">per person</p>
+                                {pkg.category === 'couple' && (
+                                  <p className="text-xs text-blue-600 mt-1">Includes 2 shirts</p>
+                                )}
+                              </div>
+
+                              <div className="mb-5">
+                                <div className="grid grid-cols-2 gap-3">
+                                  {pkg.features.slice(0, 8).map((feature, idx) => (
+                                    <div key={idx} className="flex items-start gap-2">
+                                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                      <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </CardContent>
+
+                            <div className="p-5 pt-0">
+                              <Button
+                                onClick={() => handleAddToCartClick(pkg)}
+                                className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
+                                    ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                                    : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
+                                  } text-white shadow-md hover:shadow-lg py-3`}
+                              >
+                                {currentQuantity > 0 ? (
+                                  <span className="flex items-center gap-2">
+                                    <ShoppingCart className="h-4 w-4" />
+                                    Update ({currentQuantity})
+                                  </span>
+                                ) : (
+                                  `Add to Cart - $${pkg.price}`
+                                )}
+                              </Button>
+                            </div>
+                          </Card>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Other Packages Section - Only shown if there are other packages */}
+                  {otherPackages.length > 0 && (
+                    <div className="mt-12">
+                      <div className="mb-4 pb-2 border-b-2 border-gray-300">
+                        <h3 className="text-xl font-bold text-gray-800">
+                          Other Packages
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Special packages available year-round
+                        </p>
                       </div>
-                    </Card>
-                  )
-                })}
-              </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {otherPackages.map((pkg) => {
+                          const currentQuantity = getCurrentQuantity(pkg.id)
+                          return (
+                            <Card
+                              key={pkg.id}
+                              className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 hover:border-blue-200 ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
+                            >
+                              {pkg.popular && (
+                                <div className="absolute top-3 right-3 z-10">
+                                  <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
+                                    <Star className="h-3 w-3 fill-current" />
+                                    Popular
+                                  </Badge>
+                                </div>
+                              )}
+
+                              {currentQuantity > 0 && (
+                                <div className="absolute top-3 left-3 z-10">
+                                  <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
+                                    <ShoppingCart className="h-3 w-3" />
+                                    {currentQuantity}
+                                  </Badge>
+                                </div>
+                              )}
+
+                              <CardHeader className="relative p-5 bg-gradient-to-r from-gray-600 to-gray-700 text-white">
+                                <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
+                                <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
+                              </CardHeader>
+
+                              <CardContent className="flex-grow p-5">
+                                <div className="text-center mb-5">
+                                  <span className="text-3xl font-bold text-gray-800">
+                                    ${pkg.price}
+                                  </span>
+                                  <p className="text-sm text-gray-500 mt-1">per person</p>
+                                </div>
+
+                                <div className="mb-5">
+                                  <div className="grid grid-cols-2 gap-3">
+                                    {pkg.features.slice(0, 8).map((feature, idx) => (
+                                      <div key={idx} className="flex items-start gap-2">
+                                        <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                        <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </CardContent>
+
+                              <div className="p-5 pt-0">
+                                <Button
+                                  onClick={() => handleAddToCartClick(pkg)}
+                                  className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
+                                      ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                                      : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
+                                    } text-white shadow-md hover:shadow-lg py-3`}
+                                >
+                                  {currentQuantity > 0 ? (
+                                    <span className="flex items-center gap-2">
+                                      <ShoppingCart className="h-4 w-4" />
+                                      Update ({currentQuantity})
+                                    </span>
+                                  ) : (
+                                    `Add to Cart - $${pkg.price}`
+                                  )}
+                                </Button>
+                              </div>
+                            </Card>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
 
               {/* No Results Message */}
               {filteredPackages.length === 0 && (

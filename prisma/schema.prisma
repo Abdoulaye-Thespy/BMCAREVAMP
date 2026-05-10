@@ -206,9 +206,6 @@ enum KiteuhStatus {
   SUSPENDED
 }
 
-
-// In your schema.prisma file
-
 model Chapter {
   id          Int      @id @default(autoincrement())
   name        String   @unique
