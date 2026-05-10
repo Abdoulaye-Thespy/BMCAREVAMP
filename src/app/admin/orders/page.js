@@ -194,7 +194,6 @@ export default function OrdersAdmin() {
     const totalRevenue = filteredOrders
       .filter(order => order.status === 'completed')
       .reduce((sum, order) => sum + order.amount, 0)
-    doc.text(`Total Revenue (Paid Only): ${formatCurrency(totalRevenue)}`, 14, finalY + 14)
     
     const totalItems = filteredOrders.reduce((sum, order) => 
       sum + (order.items?.reduce((itemSum, item) => itemSum + item.quantity, 0) || 0), 0
