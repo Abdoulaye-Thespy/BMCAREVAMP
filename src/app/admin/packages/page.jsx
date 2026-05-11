@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Edit2, Trash2, Plus, Calendar, Tag, List, Info, PackageIcon  } from "lucide-react"
+import { Edit2, Trash2, Plus, Calendar, Tag, List, Info, PackageIcon, Users, UserPlus, Eye, EyeOff } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
 
 // Deadline dates from the image
 const DEADLINES = {
@@ -22,12 +23,22 @@ export default function PackagesAdmin() {
   const [loading, setLoading] = useState(true)
   const [activeDeadline, setActiveDeadline] = useState("EARLY_BIRD")
   const [openDialog, setOpenDialog] = useState(false)
+  const [activeTab, setActiveTab] = useState("regular") // "regular" or "guest"
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState({
     name: "",
     price: 0,
     category: "",
     items: "",
+  })
+
+  // Guest package specific form data
+  const [guestFormData, setGuestFormData] = useState({
+    name: "",
+    price: 0,
+    items: "",
+    visibleOnGuestPage: true, // Controls visibility on guest page
+    visibleOnMainPage: false, // Controls visibility on main convention page
   })
 
   // Fetch packages from database
@@ -48,20 +59,24 @@ export default function PackagesAdmin() {
     }
   }
 
-  // Filter packages based on active deadline
+  // Filter packages based on active deadline (for regular packages only)
   const getFilteredPackages = () => {
     if (activeDeadline === "OTHER") {
-      // Show packages that don't match any deadline category
+      // Show packages that don't match any deadline category, excluding guest packages
       return packages.filter(pkg => {
         const name = pkg.name.toLowerCase()
         return !name.includes("early bird") && 
                !name.includes("standard") && 
-               !name.includes("late")
+               !name.includes("late") &&
+               !name.includes("guest")
       })
     }
     
     return packages.filter(pkg => {
       const name = pkg.name.toLowerCase()
+      // Filter out guest packages from regular deadlines
+      if (name.includes("guest")) return false
+      
       switch(activeDeadline) {
         case "EARLY_BIRD":
           return name.includes("early bird")
@@ -75,14 +90,40 @@ export default function PackagesAdmin() {
     })
   }
 
+  // Get guest packages with visibility info
+  const getGuestPackages = () => {
+    return packages.filter(pkg => {
+      const name = pkg.name.toLowerCase()
+      return name.includes("guest")
+    }).map(pkg => ({
+      ...pkg,
+      visibleOnGuestPage: pkg.visibleOnGuestPage !== false, // Default to true
+      visibleOnMainPage: pkg.visibleOnMainPage === true // Default to false
+    }))
+  }
+
   const handleEdit = (pkg) => {
-    setFormData({
-      name: pkg.name,
-      price: pkg.price,
-      category: pkg.category,
-      items: Array.isArray(pkg.items) ? pkg.items.join(', ') : pkg.items,
-    })
-    setEditingId(pkg.id)
+    // Check if it's a guest package
+    if (pkg.name.toLowerCase().includes("guest")) {
+      setGuestFormData({
+        name: pkg.name,
+        price: pkg.price,
+        items: Array.isArray(pkg.items) ? pkg.items.join(', ') : pkg.items,
+        visibleOnGuestPage: pkg.visibleOnGuestPage !== false,
+        visibleOnMainPage: pkg.visibleOnMainPage === true,
+      })
+      setEditingId(pkg.id)
+      setActiveTab("guest")
+    } else {
+      setFormData({
+        name: pkg.name,
+        price: pkg.price,
+        category: pkg.category,
+        items: Array.isArray(pkg.items) ? pkg.items.join(', ') : pkg.items,
+      })
+      setEditingId(pkg.id)
+      setActiveTab("regular")
+    }
     setOpenDialog(true)
   }
 
@@ -102,14 +143,14 @@ export default function PackagesAdmin() {
     }
   }
 
-  const handleSave = async () => {
+  const handleSaveRegular = async () => {
     // Validate required fields
     if (!formData.name || !formData.price || !formData.category || !formData.items) {
       alert('Please fill in all fields')
       return
     }
 
-    // Convert comma-separated items to array or store as string
+    // Convert comma-separated items to array
     const itemsArray = formData.items.split(',').map(item => item.trim()).filter(item => item)
     
     const packageData = {
@@ -143,9 +184,72 @@ export default function PackagesAdmin() {
     }
   }
 
-  const handleAddNew = () => {
+  const handleSaveGuest = async () => {
+    // Validate required fields
+    if (!guestFormData.name || !guestFormData.price || !guestFormData.items) {
+      alert('Please fill in all fields')
+      return
+    }
+
+    // Convert comma-separated items to array
+    const itemsArray = guestFormData.items.split(',').map(item => item.trim()).filter(item => item)
+    
+    const packageData = {
+      name: guestFormData.name,
+      price: parseFloat(guestFormData.price),
+      category: "Guest Package",
+      items: itemsArray,
+      visibleOnGuestPage: guestFormData.visibleOnGuestPage,
+      visibleOnMainPage: guestFormData.visibleOnMainPage,
+    }
+
+    try {
+      if (editingId) {
+        await fetch('/api/packages', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...packageData, id: editingId })
+        })
+      } else {
+        await fetch('/api/packages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(packageData)
+        })
+      }
+      fetchPackages()
+      setOpenDialog(false)
+      setEditingId(null)
+      setGuestFormData({ 
+        name: "", 
+        price: 0, 
+        items: "",
+        visibleOnGuestPage: true,
+        visibleOnMainPage: false,
+      })
+    } catch (error) {
+      console.error('Failed to save guest package:', error)
+      alert('Failed to save guest package')
+    }
+  }
+
+  const handleAddNewRegular = () => {
     setEditingId(null)
+    setActiveTab("regular")
     setFormData({ name: "", price: 0, category: "", items: "" })
+    setOpenDialog(true)
+  }
+
+  const handleAddNewGuest = () => {
+    setEditingId(null)
+    setActiveTab("guest")
+    setGuestFormData({ 
+      name: "", 
+      price: 0, 
+      items: "",
+      visibleOnGuestPage: true,
+      visibleOnMainPage: false,
+    })
     setOpenDialog(true)
   }
 
@@ -160,6 +264,7 @@ export default function PackagesAdmin() {
   }
 
   const filteredPackages = getFilteredPackages()
+  const guestPackages = getGuestPackages()
 
   if (loading) {
     return (
@@ -176,13 +281,107 @@ export default function PackagesAdmin() {
           <h1 className="text-3xl font-bold text-gray-900">BMCA 2026 Convention Packages</h1>
           <p className="text-gray-600 mt-2">Manage and create convention packages</p>
         </div>
-        <Button onClick={handleAddNew} className="bg-[#F5A623] hover:bg-[#F5A623]/90 text-white">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Package
-        </Button>
+        <div className="flex gap-3">
+          <Button onClick={handleAddNewGuest} className="bg-purple-600 hover:bg-purple-700 text-white">
+            <UserPlus className="h-4 w-4 mr-2" />
+            Add Guest Package
+          </Button>
+          <Button onClick={handleAddNewRegular} className="bg-[#F5A623] hover:bg-[#F5A623]/90 text-white">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Package
+          </Button>
+        </div>
       </div>
 
-      {/* Deadline Toggle */}
+      {/* Guest Packages Section */}
+      {guestPackages.length > 0 && (
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Users className="h-5 w-5 text-purple-600" />
+            <h2 className="text-xl font-semibold text-gray-900">Guest Packages</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {guestPackages.map((pkg) => {
+              const itemsList = formatItems(pkg.items)
+              return (
+                <Card key={pkg.id} className="p-6 hover:shadow-lg transition-all duration-300 border-l-4 border-l-purple-500">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-gray-900">{pkg.name}</h3>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <span className="inline-block px-3 py-1 text-xs font-medium bg-purple-100 text-purple-700 rounded-full">
+                          Guest Package
+                        </span>
+                        {pkg.visibleOnGuestPage && (
+                          <span className="inline-block px-3 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full flex items-center gap-1">
+                            <Eye className="h-3 w-3" />
+                            Visible on Guest Page
+                          </span>
+                        )}
+                        {!pkg.visibleOnGuestPage && (
+                          <span className="inline-block px-3 py-1 text-xs font-medium bg-red-100 text-red-700 rounded-full flex items-center gap-1">
+                            <EyeOff className="h-3 w-3" />
+                            Hidden from Guest Page
+                          </span>
+                        )}
+                        {pkg.visibleOnMainPage && (
+                          <span className="inline-block px-3 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-full flex items-center gap-1">
+                            <Eye className="h-3 w-3" />
+                            Visible on Main Page
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => handleEdit(pkg)} 
+                        className="p-2 hover:bg-blue-100 rounded-lg transition-colors"
+                        title="Edit package"
+                      >
+                        <Edit2 className="h-4 w-4 text-blue-600" />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(pkg.id)} 
+                        className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+                        title="Delete package"
+                      >
+                        <Trash2 className="h-4 w-4 text-red-600" />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <p className="text-3xl font-bold text-purple-600">${pkg.price.toLocaleString()}</p>
+                    <p className="text-xs text-gray-500 mt-1">per guest</p>
+                  </div>
+                  
+                  <div className="text-sm text-gray-600">
+                    <p className="font-semibold mb-2 flex items-center gap-2">
+                      <List className="h-4 w-4 text-purple-500" />
+                      What's Included:
+                    </p>
+                    <ul className="space-y-1">
+                      {itemsList.slice(0, 5).map((item, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-purple-500 mt-1">•</span>
+                          <span className="text-gray-700">{item}</span>
+                        </li>
+                      ))}
+                      {itemsList.length > 5 && (
+                        <li className="text-gray-500 text-xs pl-4">
+                          +{itemsList.length - 5} more items
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                </Card>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Deadline Toggle for Regular Packages */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-3">
           <Calendar className="h-5 w-5 text-[#F5A623]" />
@@ -248,91 +447,7 @@ export default function PackagesAdmin() {
         </div>
       </div>
 
-      {/* Add Package Dialog */}
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">
-              {editingId ? "Edit Package" : "Add New Package"}
-            </DialogTitle>
-            <DialogDescription>
-              Create a new convention package. Make sure to follow the naming convention for proper filtering.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-5 py-4">
-            <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-2 block">
-                Package Name *
-              </Label>
-              <Input
-                placeholder="e.g., Early Bird Package, Standard Package, Late Package, VIP Package"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                💡 Tip: Include "Early Bird", "Standard", or "Late" in the name for automatic filtering
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label className="text-sm font-semibold text-gray-700 mb-2 block">
-                  Price (USD) *
-                </Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  placeholder="0.00"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
-                  className="w-full"
-                />
-              </div>
-              
-              <div>
-                <Label className="text-sm font-semibold text-gray-700 mb-2 block">
-                  Category *
-                </Label>
-                <Input
-                  placeholder="e.g., Individual, Group, VIP"
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full"
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-2 block">
-                Items Included *
-              </Label>
-              <Textarea
-                placeholder="Enter items separated by commas, e.g.: Full Convention Access, Welcome Kit, Meals, T-Shirt, Certificate"
-                value={formData.items}
-                onChange={(e) => setFormData({ ...formData, items: e.target.value })}
-                rows={4}
-                className="w-full"
-              />
-              <div className="mt-2 p-2 bg-yellow-50 rounded-lg border border-yellow-200">
-                <p className="text-xs text-yellow-800 flex items-start gap-2">
-                  <Info className="h-3 w-3 mt-0.5" />
-                  <span>Separate each item with a comma (,). Example: "Full Convention Access, Welcome Kit, Meals, T-Shirt, Certificate"</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="pt-4">
-              <Button onClick={handleSave} className="w-full bg-[#F5A623] hover:bg-[#F5A623]/90 text-white">
-                {editingId ? "Update Package" : "Create Package"}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Packages Grid */}
+      {/* Regular Packages Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredPackages.map((pkg) => {
           const itemsList = formatItems(pkg.items)
@@ -416,7 +531,7 @@ export default function PackagesAdmin() {
           <PackageIcon className="h-12 w-12 text-gray-400 mx-auto mb-3" />
           <p className="text-gray-500">No packages found for this period.</p>
           <Button 
-            onClick={handleAddNew}
+            onClick={handleAddNewRegular}
             variant="outline" 
             className="mt-4 border-[#F5A623] text-[#F5A623] hover:bg-orange-50"
           >
@@ -425,6 +540,234 @@ export default function PackagesAdmin() {
           </Button>
         </div>
       )}
+
+      {/* Add/Edit Dialog with Tabs */}
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">
+              {editingId ? "Edit Package" : "Add New Package"}
+            </DialogTitle>
+            <DialogDescription>
+              {activeTab === "guest" 
+                ? "Create a guest package. Use the visibility switches to control where this package appears."
+                : "Create a new convention package. Make sure to follow the naming convention for proper filtering."}
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Tab Buttons */}
+          <div className="flex gap-2 border-b pb-2">
+            <button
+              onClick={() => setActiveTab("regular")}
+              className={`px-4 py-2 rounded-t-lg transition-colors ${
+                activeTab === "regular" 
+                  ? "bg-[#F5A623] text-white" 
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              Regular Package
+            </button>
+            <button
+              onClick={() => setActiveTab("guest")}
+              className={`px-4 py-2 rounded-t-lg transition-colors flex items-center gap-2 ${
+                activeTab === "guest" 
+                  ? "bg-purple-600 text-white" 
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              <UserPlus className="h-4 w-4" />
+              Guest Package
+            </button>
+          </div>
+          
+          <div className="space-y-5 py-4">
+            {/* Regular Package Form */}
+            {activeTab === "regular" && (
+              <>
+                <div>
+                  <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+                    Package Name *
+                  </Label>
+                  <Input
+                    placeholder="e.g., Early Bird Package, Standard Package, Late Package, VIP Package"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    💡 Tip: Include "Early Bird", "Standard", or "Late" in the name for automatic filtering
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+                      Price (USD) *
+                    </Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="0.00"
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+                      className="w-full"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+                      Category *
+                    </Label>
+                    <Input
+                      placeholder="e.g., Individual, Group, VIP"
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+                    Items Included *
+                  </Label>
+                  <Textarea
+                    placeholder="Enter items separated by commas, e.g.: Full Convention Access, Welcome Kit, Meals, T-Shirt, Certificate"
+                    value={formData.items}
+                    onChange={(e) => setFormData({ ...formData, items: e.target.value })}
+                    rows={4}
+                    className="w-full"
+                  />
+                  <div className="mt-2 p-2 bg-yellow-50 rounded-lg border border-yellow-200">
+                    <p className="text-xs text-yellow-800 flex items-start gap-2">
+                      <Info className="h-3 w-3 mt-0.5" />
+                      <span>Separate each item with a comma (,). Example: "Full Convention Access, Welcome Kit, Meals, T-Shirt, Certificate"</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <Button onClick={handleSaveRegular} className="w-full bg-[#F5A623] hover:bg-[#F5A623]/90 text-white">
+                    {editingId ? "Update Package" : "Create Package"}
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {/* Guest Package Form with Visibility Controls */}
+            {activeTab === "guest" && (
+              <>
+                <div>
+                  <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+                    Guest Package Name *
+                  </Label>
+                  <Input
+                    placeholder="e.g., Guest Pass, Visitor Pass, Day Pass"
+                    value={guestFormData.name}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, name: e.target.value })}
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+                    Price (USD) *
+                  </Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={guestFormData.price}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, price: parseFloat(e.target.value) })}
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+                    Category (Pre-filled - Read Only)
+                  </Label>
+                  <Input
+                    value="Guest Package"
+                    disabled
+                    className="w-full bg-gray-100 cursor-not-allowed"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    🔒 Category is automatically set to "Guest Package" and cannot be changed
+                  </p>
+                </div>
+
+                {/* Visibility Settings */}
+                <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                    <Eye className="h-4 w-4" />
+                    Visibility Settings
+                  </h3>
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700">
+                        Show on Guest Page
+                      </Label>
+                      <p className="text-xs text-gray-500">
+                        When enabled, this package will be visible to guests on the /guest page
+                      </p>
+                    </div>
+                    <Switch
+                      checked={guestFormData.visibleOnGuestPage}
+                      onCheckedChange={(checked) => 
+                        setGuestFormData({ ...guestFormData, visibleOnGuestPage: checked })
+                      }
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700">
+                        Show on Main Convention Page
+                      </Label>
+                      <p className="text-xs text-gray-500">
+                        When enabled, this package will be visible on the main convention page alongside regular packages
+                      </p>
+                    </div>
+                    <Switch
+                      checked={guestFormData.visibleOnMainPage}
+                      onCheckedChange={(checked) => 
+                        setGuestFormData({ ...guestFormData, visibleOnMainPage: checked })
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold text-gray-700 mb-2 block">
+                    Items Included *
+                  </Label>
+                  <Textarea
+                    placeholder="Enter items separated by commas, e.g.: Convention Access, Welcome Kit, Meals"
+                    value={guestFormData.items}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, items: e.target.value })}
+                    rows={4}
+                    className="w-full"
+                  />
+                  <div className="mt-2 p-2 bg-yellow-50 rounded-lg border border-yellow-200">
+                    <p className="text-xs text-yellow-800 flex items-start gap-2">
+                      <Info className="h-3 w-3 mt-0.5" />
+                      <span>Separate each item with a comma (,). Example: "Convention Access, Welcome Kit, Meals"</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <Button onClick={handleSaveGuest} className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                    {editingId ? "Update Guest Package" : "Create Guest Package"}
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

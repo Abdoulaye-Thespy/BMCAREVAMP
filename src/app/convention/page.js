@@ -303,10 +303,15 @@ const filterByDeadline = (packages, deadlineType) => {
 
 // Get packages with proper category mapping
 const getPackagesWithCategories = (packages, deadlineType) => {
-  // First filter by deadline for non-other packages
-  const filteredForDeadline = filterByDeadline(packages, deadlineType)
+  // First filter by deadline for non-other packages, but EXCLUDE guest packages
+  const nonGuestPackages = packages.filter(pkg => {
+    const name = pkg.name?.toLowerCase() || ''
+    return !name.includes('guest') && pkg.category !== 'Guest Package'
+  })
   
-  return packages.map(pkg => {
+  const filteredForDeadline = filterByDeadline(nonGuestPackages, deadlineType)
+  
+  return nonGuestPackages.map(pkg => {
     const fullName = pkg.name?.toLowerCase() || ''
     let categoryKey = ''
     let simpleName = pkg.name
@@ -499,7 +504,7 @@ export default function ConventionPage() {
     }
   }
 
-  // Get all packages with proper categories and deadline filtering
+  // Get all packages with proper categories and deadline filtering (guest packages excluded)
   const conventionPackages = useMemo(() => {
     if (!packages.length) return []
     return getPackagesWithCategories(packages, currentDeadline.type)
@@ -551,17 +556,6 @@ export default function ConventionPage() {
   const mainCategories = ['kids', 'adult', 'couple', 'elderly', 'non-registered']
   const mainPackages = conventionPackages.filter(pkg => mainCategories.includes(pkg.category))
   const otherPackages = conventionPackages.filter(pkg => pkg.category === 'other')
-
-  // Group main packages by category when showing all
-  const groupedMainPackages = useMemo(() => {
-    if (selectedCategory !== 'all') return null
-    
-    const groups = {}
-    mainCategories.forEach(category => {
-      groups[category] = conventionPackages.filter(pkg => pkg.category === category)
-    })
-    return groups
-  }, [conventionPackages, selectedCategory])
 
   // Format deadline message
   const getDeadlineMessage = () => {
