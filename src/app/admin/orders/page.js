@@ -192,7 +192,7 @@ export default function OrdersAdmin() {
     
     // Prepare table data from filtered orders with original serial numbers
     const tableData = filteredOrders.map((order) => [
-      order.originalIndex, // Use original index instead of filtered index
+      order.originalIndex,
       order.id.slice(-8),
       `${order.customerInfo?.firstName || ''} ${order.customerInfo?.lastName || ''}`,
       getChapterName(order.customerInfo?.chapter),
@@ -222,44 +222,36 @@ export default function OrdersAdmin() {
       margin: { left: 10, right: 10 }
     })
     
-    // Add summary
+    // Add summary - ONLY COUNTS, no revenue
     const finalY = doc.lastAutoTable.finalY + 10
     doc.setFontSize(12)
     doc.setTextColor(0, 0, 0)
     doc.text(`Summary`, 14, finalY)
     doc.setFontSize(10)
     doc.text(`Total Orders: ${filteredOrders.length}`, 14, finalY + 7)
-    
-    const totalRevenue = filteredOrders
-      .filter(order => order.status === 'completed')
-      .reduce((sum, order) => sum + order.amount, 0)
-    
-    const totalItems = filteredOrders.reduce((sum, order) => 
+    doc.text(`Total Paid Orders: ${filteredOrders.filter(o => o.status === 'completed').length}`, 14, finalY + 14)
+    doc.text(`Total Pending Orders: ${filteredOrders.filter(o => o.status === 'pending').length}`, 14, finalY + 21)
+    doc.text(`Total Items Sold: ${filteredOrders.reduce((sum, order) => 
       sum + (order.items?.reduce((itemSum, item) => itemSum + item.quantity, 0) || 0), 0
-    )
-    doc.text(`Total Revenue: ${formatCurrency(totalRevenue)}`, 14, finalY + 14)
-    doc.text(`Total Items Sold: ${totalItems}`, 14, finalY + 21)
+    )}`, 14, finalY + 28)
     
-    // Chapter breakdown
+    // Chapter breakdown - ONLY COUNTS, no revenue
     const chapterStats = {}
     filteredOrders.forEach(order => {
       const chapterName = getChapterName(order.customerInfo?.chapter)
       if (!chapterStats[chapterName]) {
-        chapterStats[chapterName] = { count: 0, revenue: 0 }
+        chapterStats[chapterName] = 0
       }
-      chapterStats[chapterName].count++
-      if (order.status === 'completed') {
-        chapterStats[chapterName].revenue += order.amount
-      }
+      chapterStats[chapterName]++
     })
     
-    let summaryY = finalY + 35
+    let summaryY = finalY + 42
     doc.setFontSize(12)
     doc.text('Chapter Breakdown', 14, summaryY)
     doc.setFontSize(8)
     summaryY += 7
-    Object.entries(chapterStats).forEach(([chapter, stats]) => {
-      doc.text(`${chapter}: ${stats.count} orders - ${formatCurrency(stats.revenue)}`, 14, summaryY)
+    Object.entries(chapterStats).forEach(([chapter, count]) => {
+      doc.text(`${chapter}: ${count} orders`, 14, summaryY)
       summaryY += 5
     })
     
@@ -271,7 +263,7 @@ export default function OrdersAdmin() {
   const downloadExcel = () => {
     // Prepare data for Excel with original serial numbers
     const excelData = filteredOrders.map((order) => ({
-      '#': order.originalIndex, // Use original index instead of filtered index
+      '#': order.originalIndex,
       'Order ID': order.id.slice(-8),
       'Full Order ID': order.id,
       'First Name': order.customerInfo?.firstName || '',
@@ -307,7 +299,7 @@ export default function OrdersAdmin() {
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'Orders')
     
-    // Add summary sheet
+    // Add summary sheet - ONLY COUNTS, no revenue
     const summaryData = [
       ['Report Summary'],
       ['Generated Date', new Date().toLocaleString()],
@@ -317,27 +309,23 @@ export default function OrdersAdmin() {
       ['Total Orders', filteredOrders.length],
       ['Total Paid Orders', filteredOrders.filter(o => o.status === 'completed').length],
       ['Total Pending Orders', filteredOrders.filter(o => o.status === 'pending').length],
-      ['Total Revenue', formatCurrency(filteredOrders.filter(o => o.status === 'completed').reduce((sum, o) => sum + o.amount, 0))],
       ['Total Items Sold', filteredOrders.reduce((sum, o) => sum + (o.items?.reduce((itemSum, item) => itemSum + item.quantity, 0) || 0), 0)],
       [''],
       ['Chapter Breakdown'],
     ]
     
-    // Add chapter breakdown
+    // Add chapter breakdown - ONLY COUNTS, no revenue
     const chapterStats = {}
     filteredOrders.forEach(order => {
       const chapterName = getChapterName(order.customerInfo?.chapter)
       if (!chapterStats[chapterName]) {
-        chapterStats[chapterName] = { count: 0, revenue: 0 }
+        chapterStats[chapterName] = 0
       }
-      chapterStats[chapterName].count++
-      if (order.status === 'completed') {
-        chapterStats[chapterName].revenue += order.amount
-      }
+      chapterStats[chapterName]++
     })
     
-    Object.entries(chapterStats).forEach(([chapter, stats]) => {
-      summaryData.push([`${chapter}`, `${stats.count} orders`, `${formatCurrency(stats.revenue)}`])
+    Object.entries(chapterStats).forEach(([chapter, count]) => {
+      summaryData.push([`${chapter}`, `${count} orders`])
     })
     
     const wsSummary = XLSX.utils.aoa_to_sheet(summaryData)
