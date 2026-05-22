@@ -45,6 +45,34 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import * as XLSX from 'xlsx'
 
+// Chapter data mapping
+const chaptersData = [
+  { id: 1, name: "Houston Chapter" },
+  { id: 2, name: "Dallas Chapter" },
+  { id: 3, name: "Florida Chapter" },
+  { id: 4, name: "Boston Chapter" },
+  { id: 5, name: "Great Lakes Chapter" },
+  { id: 6, name: "Los Angeles Chapter" },
+  { id: 7, name: "United West Coast Chapter" },
+  { id: 8, name: "United East Coast Chapter" },
+  { id: 9, name: "Minnesota Chapter" },
+  { id: 10, name: "DC Metro Chapter" },
+  { id: 11, name: "Delaware Chapter" },
+  { id: 12, name: "Midwest Chapter" },
+  { id: 13, name: "Nebraska Chapter" }
+]
+
+// Helper function to get chapter name from ID (handles both string and number)
+const getChapterName = (chapterId) => {
+  if (!chapterId) return 'N/A'
+  
+  // Convert to number if it's a string
+  const id = typeof chapterId === 'string' ? parseInt(chapterId) : chapterId
+  
+  const chapter = chaptersData.find(ch => ch.id === id)
+  return chapter ? chapter.name : `Chapter ${chapterId}`
+}
+
 // Status badge component
 const StatusBadge = ({ status }) => {
   const statusConfig = {
@@ -99,7 +127,8 @@ export default function OrdersAdmin() {
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.customerInfo?.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customerInfo?.lastName?.toLowerCase().includes(searchTerm.toLowerCase())
+      order.customerInfo?.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      getChapterName(order.customerInfo?.chapter).toLowerCase().includes(searchTerm.toLowerCase())
     
     let matchesStatus = true
     if (statusFilter === "pending") {
@@ -141,9 +170,9 @@ export default function OrdersAdmin() {
     }).format(amount / 100)
   }
 
-  // Export to PDF with serial numbers
+  // Export to PDF with serial numbers and chapter names
   const downloadPDF = () => {
-    const doc = new jsPDF()
+    const doc = new jsPDF({ orientation: 'landscape' })
     
     // Add title
     doc.setFontSize(20)
@@ -156,13 +185,12 @@ export default function OrdersAdmin() {
       doc.text(`Search: "${searchTerm}"`, 14, 44)
     }
     
-    let yPosition = 50
-    
-    // Prepare table data from filtered orders with serial numbers
+    // Prepare table data from filtered orders with serial numbers and chapter names
     const tableData = filteredOrders.map((order, index) => [
       index + 1, // Serial number
       order.id.slice(-8),
       `${order.customerInfo?.firstName || ''} ${order.customerInfo?.lastName || ''}`,
+      getChapterName(order.customerInfo?.chapter),
       order.email || '',
       order.customerInfo?.phone || '',
       formatDate(order.createdAt),
@@ -173,17 +201,19 @@ export default function OrdersAdmin() {
     ])
     
     autoTable(doc, {
-      startY: yPosition,
-      head: [['#', 'Order ID', 'Name', 'Email', 'Phone', 'Date', 'Status', 'Items', 'Products & Details', 'Amount']],
+      startY: 50,
+      head: [['#', 'Order ID', 'Customer Name', 'Chapter', 'Email', 'Phone', 'Date', 'Status', 'Items', 'Products & Details', 'Amount']],
       body: tableData,
       theme: 'striped',
       headStyles: { fillColor: [245, 166, 35], textColor: [255, 255, 255] },
       columnStyles: {
-        0: { cellWidth: 10 },
+        0: { cellWidth: 8 },
         1: { cellWidth: 20 },
-        8: { cellWidth: 'auto', halign: 'left' },
+        2: { cellWidth: 25 },
+        3: { cellWidth: 25 },
+        9: { cellWidth: 'auto', halign: 'left' },
       },
-      styles: { fontSize: 8, cellPadding: 2 },
+      styles: { fontSize: 7, cellPadding: 2 },
       margin: { left: 10, right: 10 }
     })
     
@@ -205,11 +235,34 @@ export default function OrdersAdmin() {
     doc.text(`Total Revenue: ${formatCurrency(totalRevenue)}`, 14, finalY + 14)
     doc.text(`Total Items Sold: ${totalItems}`, 14, finalY + 21)
     
+    // Chapter breakdown
+    const chapterStats = {}
+    filteredOrders.forEach(order => {
+      const chapterName = getChapterName(order.customerInfo?.chapter)
+      if (!chapterStats[chapterName]) {
+        chapterStats[chapterName] = { count: 0, revenue: 0 }
+      }
+      chapterStats[chapterName].count++
+      if (order.status === 'completed') {
+        chapterStats[chapterName].revenue += order.amount
+      }
+    })
+    
+    let summaryY = finalY + 35
+    doc.setFontSize(12)
+    doc.text('Chapter Breakdown', 14, summaryY)
+    doc.setFontSize(8)
+    summaryY += 7
+    Object.entries(chapterStats).forEach(([chapter, stats]) => {
+      doc.text(`${chapter}: ${stats.count} orders - ${formatCurrency(stats.revenue)}`, 14, summaryY)
+      summaryY += 5
+    })
+    
     // Save the PDF
     doc.save(`orders-report-${new Date().toISOString().split('T')[0]}.pdf`)
   }
 
-  // Export to Excel with serial numbers
+  // Export to Excel with serial numbers and chapter names
   const downloadExcel = () => {
     // Prepare data for Excel
     const excelData = filteredOrders.map((order, index) => ({
@@ -218,6 +271,7 @@ export default function OrdersAdmin() {
       'Full Order ID': order.id,
       'First Name': order.customerInfo?.firstName || '',
       'Last Name': order.customerInfo?.lastName || '',
+      'Chapter': getChapterName(order.customerInfo?.chapter),
       'Email': order.email || '',
       'Phone': order.customerInfo?.phone || '',
       'Date': formatDate(order.createdAt),
@@ -226,14 +280,13 @@ export default function OrdersAdmin() {
       'Products': order.items?.map(item => `${item.productName} (${item.quantity})${item.tshirtSizes?.length > 0 ? ` - Sizes: ${item.tshirtSizes.join(', ')}` : ''}`).join('; ') || '',
       'Amount': formatCurrency(order.amount),
       'Address': `${order.customerInfo?.address || ''}, ${order.customerInfo?.city || ''}, ${order.customerInfo?.state || ''} ${order.customerInfo?.zipCode || ''}, ${order.customerInfo?.country || ''}`,
-      'Chapter': order.customerInfo?.chapter || '',
       'Payment ID': order.stripePaymentId || 'N/A'
     }))
 
     // Create worksheet
     const ws = XLSX.utils.json_to_sheet(excelData)
     
-    // Auto-size columns (basic implementation)
+    // Auto-size columns
     const maxWidth = 50
     const colWidths = {}
     excelData.forEach(row => {
@@ -260,8 +313,27 @@ export default function OrdersAdmin() {
       ['Total Paid Orders', filteredOrders.filter(o => o.status === 'completed').length],
       ['Total Pending Orders', filteredOrders.filter(o => o.status === 'pending').length],
       ['Total Revenue', formatCurrency(filteredOrders.filter(o => o.status === 'completed').reduce((sum, o) => sum + o.amount, 0))],
-      ['Total Items Sold', filteredOrders.reduce((sum, o) => sum + (o.items?.reduce((itemSum, item) => itemSum + item.quantity, 0) || 0), 0)]
+      ['Total Items Sold', filteredOrders.reduce((sum, o) => sum + (o.items?.reduce((itemSum, item) => itemSum + item.quantity, 0) || 0), 0)],
+      [''],
+      ['Chapter Breakdown'],
     ]
+    
+    // Add chapter breakdown
+    const chapterStats = {}
+    filteredOrders.forEach(order => {
+      const chapterName = getChapterName(order.customerInfo?.chapter)
+      if (!chapterStats[chapterName]) {
+        chapterStats[chapterName] = { count: 0, revenue: 0 }
+      }
+      chapterStats[chapterName].count++
+      if (order.status === 'completed') {
+        chapterStats[chapterName].revenue += order.amount
+      }
+    })
+    
+    Object.entries(chapterStats).forEach(([chapter, stats]) => {
+      summaryData.push([`${chapter}`, `${stats.count} orders`, `${formatCurrency(stats.revenue)}`])
+    })
     
     const wsSummary = XLSX.utils.aoa_to_sheet(summaryData)
     XLSX.utils.book_append_sheet(wb, wsSummary, 'Summary')
@@ -317,7 +389,7 @@ export default function OrdersAdmin() {
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Search by order ID, email, or customer name..."
+              placeholder="Search by order ID, email, customer name, or chapter..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -355,6 +427,9 @@ export default function OrdersAdmin() {
                   Customer
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Chapter
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Date
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -383,31 +458,36 @@ export default function OrdersAdmin() {
                     <span className="text-sm font-mono text-gray-900">
                       {order.id.slice(-8)}
                     </span>
-                    </td>
+                  </td>
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900">
                       {order.customerInfo?.firstName} {order.customerInfo?.lastName}
                     </div>
                     <div className="text-sm text-gray-500">{order.email}</div>
-                    </td>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">
+                      {getChapterName(order.customerInfo?.chapter)}
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
                       {formatDate(order.createdAt)}
                     </div>
-                    </td>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-semibold text-gray-900">
                       {formatCurrency(order.amount)}
                     </div>
-                    </td>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={order.status} />
-                    </td>
+                  </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900">
                       {order.items?.reduce((total, item) => total + item.quantity, 0) || 0} items
                     </div>
-                    </td>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -429,11 +509,11 @@ export default function OrdersAdmin() {
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                    </td>
-                  </tr>
+                  </td>
+                </tr>
               ))}
             </tbody>
-           </table>
+          </table>
         </div>
 
         {filteredOrders.length === 0 && (
@@ -495,7 +575,9 @@ export default function OrdersAdmin() {
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Chapter</p>
-                    <p className="text-sm">{selectedOrder.customerInfo?.chapter}</p>
+                    <p className="text-sm font-medium text-[#F5A623]">
+                      {getChapterName(selectedOrder.customerInfo?.chapter)}
+                    </p>
                   </div>
                   <div className="col-span-2">
                     <p className="text-xs text-gray-500">Address</p>
@@ -510,8 +592,8 @@ export default function OrdersAdmin() {
               <div className="border-t pt-4">
                 <h3 className="font-semibold mb-3">Order Items</h3>
                 <div className="space-y-2">
-                  {selectedOrder.items?.map((item, index) => (
-                    <div key={index} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                  {selectedOrder.items?.map((item, idx) => (
+                    <div key={idx} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
                       <div>
                         <p className="font-medium">{item.productName}</p>
                         <p className="text-sm text-gray-600">
