@@ -113,7 +113,12 @@ export default function OrdersAdmin() {
       const data = await res.json()
       // Sort orders by creation date (oldest first for serial numbers)
       const sortedOrders = data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-      setOrders(sortedOrders)
+      // Add original index to each order (1-based)
+      const ordersWithIndex = sortedOrders.map((order, idx) => ({
+        ...order,
+        originalIndex: idx + 1
+      }))
+      setOrders(ordersWithIndex)
     } catch (error) {
       console.error('Failed to fetch orders:', error)
     } finally {
@@ -185,9 +190,9 @@ export default function OrdersAdmin() {
       doc.text(`Search: "${searchTerm}"`, 14, 44)
     }
     
-    // Prepare table data from filtered orders with serial numbers and chapter names
-    const tableData = filteredOrders.map((order, index) => [
-      index + 1, // Serial number
+    // Prepare table data from filtered orders with original serial numbers
+    const tableData = filteredOrders.map((order) => [
+      order.originalIndex, // Use original index instead of filtered index
       order.id.slice(-8),
       `${order.customerInfo?.firstName || ''} ${order.customerInfo?.lastName || ''}`,
       getChapterName(order.customerInfo?.chapter),
@@ -264,9 +269,9 @@ export default function OrdersAdmin() {
 
   // Export to Excel with serial numbers and chapter names
   const downloadExcel = () => {
-    // Prepare data for Excel
-    const excelData = filteredOrders.map((order, index) => ({
-      '#': index + 1,
+    // Prepare data for Excel with original serial numbers
+    const excelData = filteredOrders.map((order) => ({
+      '#': order.originalIndex, // Use original index instead of filtered index
       'Order ID': order.id.slice(-8),
       'Full Order ID': order.id,
       'First Name': order.customerInfo?.firstName || '',
@@ -447,11 +452,11 @@ export default function OrdersAdmin() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredOrders.map((order, index) => (
+              {filteredOrders.map((order) => (
                 <tr key={order.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-sm font-medium text-gray-900">
-                      {index + 1}
+                      {order.originalIndex}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
