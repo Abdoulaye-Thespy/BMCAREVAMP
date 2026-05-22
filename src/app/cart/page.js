@@ -14,6 +14,7 @@ import PaymentSuccess from '@/components/payment-success'
 import { updateOrderStatus } from '../actions/stripe'
 
 // Chapters data
+// Chapters data
 const chaptersData = [
   {
     id: 1,
@@ -180,6 +181,20 @@ const chaptersData = [
     website: "will be added soon",
     president: {
       name: "Robinson Neba",
+      photo: "/president-placeholder.jpg"
+    }
+  },
+  {
+    id: 13,
+    name: "Nebraska Chapter",
+    description: "Serving the Nebraska community",
+    phone: "will be added soon",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "will be added soon",
       photo: "/president-placeholder.jpg"
     }
   }
