@@ -13,7 +13,9 @@ import {
   Eye,
   Printer,
   Send,
-  MoreVertical
+  MoreVertical,
+  FileText,
+  FileSpreadsheet
 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -41,6 +43,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import * as XLSX from 'xlsx'
 
 // Status badge component
 const StatusBadge = ({ status }) => {
@@ -80,7 +83,9 @@ export default function OrdersAdmin() {
       setLoading(true)
       const res = await fetch('/api/admin/orders')
       const data = await res.json()
-      setOrders(data)
+      // Sort orders by creation date (oldest first for serial numbers)
+      const sortedOrders = data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+      setOrders(sortedOrders)
     } catch (error) {
       console.error('Failed to fetch orders:', error)
     } finally {
@@ -96,17 +101,12 @@ export default function OrdersAdmin() {
       order.customerInfo?.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.customerInfo?.lastName?.toLowerCase().includes(searchTerm.toLowerCase())
     
-    // Filter logic: 
-    // all = show everything
-    // pending = show only pending
-    // paid = show everything that is NOT pending (completed, failed, refunded)
     let matchesStatus = true
     if (statusFilter === "pending") {
       matchesStatus = order.status === "pending"
     } else if (statusFilter === "paid") {
       matchesStatus = order.status !== "pending"
     }
-    // statusFilter === "all" shows everything
     
     return matchesSearch && matchesStatus
   })
@@ -141,6 +141,7 @@ export default function OrdersAdmin() {
     }).format(amount / 100)
   }
 
+  // Export to PDF with serial numbers
   const downloadPDF = () => {
     const doc = new jsPDF()
     
@@ -157,8 +158,9 @@ export default function OrdersAdmin() {
     
     let yPosition = 50
     
-    // Prepare table data from filtered orders
-    const tableData = filteredOrders.map(order => [
+    // Prepare table data from filtered orders with serial numbers
+    const tableData = filteredOrders.map((order, index) => [
+      index + 1, // Serial number
       order.id.slice(-8),
       `${order.customerInfo?.firstName || ''} ${order.customerInfo?.lastName || ''}`,
       order.email || '',
@@ -172,15 +174,17 @@ export default function OrdersAdmin() {
     
     autoTable(doc, {
       startY: yPosition,
-      head: [['Order ID', 'Name', 'Email', 'Phone', 'Date', 'Status', 'Items', 'Products & Details', 'Amount']],
+      head: [['#', 'Order ID', 'Name', 'Email', 'Phone', 'Date', 'Status', 'Items', 'Products & Details', 'Amount']],
       body: tableData,
       theme: 'striped',
       headStyles: { fillColor: [245, 166, 35], textColor: [255, 255, 255] },
       columnStyles: {
-        7: { cellWidth: 'auto', halign: 'left' },
+        0: { cellWidth: 10 },
+        1: { cellWidth: 20 },
+        8: { cellWidth: 'auto', halign: 'left' },
       },
       styles: { fontSize: 8, cellPadding: 2 },
-      margin: { left: 14, right: 14 }
+      margin: { left: 10, right: 10 }
     })
     
     // Add summary
@@ -198,10 +202,72 @@ export default function OrdersAdmin() {
     const totalItems = filteredOrders.reduce((sum, order) => 
       sum + (order.items?.reduce((itemSum, item) => itemSum + item.quantity, 0) || 0), 0
     )
+    doc.text(`Total Revenue: ${formatCurrency(totalRevenue)}`, 14, finalY + 14)
     doc.text(`Total Items Sold: ${totalItems}`, 14, finalY + 21)
     
     // Save the PDF
     doc.save(`orders-report-${new Date().toISOString().split('T')[0]}.pdf`)
+  }
+
+  // Export to Excel with serial numbers
+  const downloadExcel = () => {
+    // Prepare data for Excel
+    const excelData = filteredOrders.map((order, index) => ({
+      '#': index + 1,
+      'Order ID': order.id.slice(-8),
+      'Full Order ID': order.id,
+      'First Name': order.customerInfo?.firstName || '',
+      'Last Name': order.customerInfo?.lastName || '',
+      'Email': order.email || '',
+      'Phone': order.customerInfo?.phone || '',
+      'Date': formatDate(order.createdAt),
+      'Status': order.status === 'completed' ? 'Paid' : order.status,
+      'Items Count': order.items?.reduce((total, item) => total + item.quantity, 0) || 0,
+      'Products': order.items?.map(item => `${item.productName} (${item.quantity})${item.tshirtSizes?.length > 0 ? ` - Sizes: ${item.tshirtSizes.join(', ')}` : ''}`).join('; ') || '',
+      'Amount': formatCurrency(order.amount),
+      'Address': `${order.customerInfo?.address || ''}, ${order.customerInfo?.city || ''}, ${order.customerInfo?.state || ''} ${order.customerInfo?.zipCode || ''}, ${order.customerInfo?.country || ''}`,
+      'Chapter': order.customerInfo?.chapter || '',
+      'Payment ID': order.stripePaymentId || 'N/A'
+    }))
+
+    // Create worksheet
+    const ws = XLSX.utils.json_to_sheet(excelData)
+    
+    // Auto-size columns (basic implementation)
+    const maxWidth = 50
+    const colWidths = {}
+    excelData.forEach(row => {
+      Object.keys(row).forEach(key => {
+        const value = row[key]?.toString() || ''
+        colWidths[key] = Math.min(maxWidth, Math.max(colWidths[key] || 0, value.length))
+      })
+    })
+    
+    ws['!cols'] = Object.keys(excelData[0] || {}).map(key => ({ wch: colWidths[key] || 15 }))
+    
+    // Create workbook
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Orders')
+    
+    // Add summary sheet
+    const summaryData = [
+      ['Report Summary'],
+      ['Generated Date', new Date().toLocaleString()],
+      ['Filter Applied', statusFilter === 'all' ? 'All Orders' : statusFilter === 'paid' ? 'Paid' : 'Pending'],
+      ['Search Term', searchTerm || 'None'],
+      [''],
+      ['Total Orders', filteredOrders.length],
+      ['Total Paid Orders', filteredOrders.filter(o => o.status === 'completed').length],
+      ['Total Pending Orders', filteredOrders.filter(o => o.status === 'pending').length],
+      ['Total Revenue', formatCurrency(filteredOrders.filter(o => o.status === 'completed').reduce((sum, o) => sum + o.amount, 0))],
+      ['Total Items Sold', filteredOrders.reduce((sum, o) => sum + (o.items?.reduce((itemSum, item) => itemSum + item.quantity, 0) || 0), 0)]
+    ]
+    
+    const wsSummary = XLSX.utils.aoa_to_sheet(summaryData)
+    XLSX.utils.book_append_sheet(wb, wsSummary, 'Summary')
+    
+    // Save file
+    XLSX.writeFile(wb, `orders-report-${new Date().toISOString().split('T')[0]}.xlsx`)
   }
 
   if (loading) {
@@ -222,11 +288,18 @@ export default function OrdersAdmin() {
         </div>
         <div className="flex gap-3">
           <Button 
+            onClick={downloadExcel}
+            className="bg-green-600 hover:bg-green-700 text-white"
+          >
+            <FileSpreadsheet className="h-4 w-4 mr-2" />
+            Export Excel
+          </Button>
+          <Button 
             onClick={downloadPDF}
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
-            <Download className="h-4 w-4 mr-2" />
-            Export Current View
+            <FileText className="h-4 w-4 mr-2" />
+            Export PDF
           </Button>
           <Button 
             onClick={fetchOrders}
@@ -273,6 +346,9 @@ export default function OrdersAdmin() {
             <thead className="bg-gray-50 border-b">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  #
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Order ID
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -296,37 +372,42 @@ export default function OrdersAdmin() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredOrders.map((order) => (
+              {filteredOrders.map((order, index) => (
                 <tr key={order.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="text-sm font-medium text-gray-900">
+                      {index + 1}
+                    </span>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-sm font-mono text-gray-900">
                       {order.id.slice(-8)}
                     </span>
-                   </td>
+                    </td>
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900">
                       {order.customerInfo?.firstName} {order.customerInfo?.lastName}
                     </div>
                     <div className="text-sm text-gray-500">{order.email}</div>
-                   </td>
+                    </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
                       {formatDate(order.createdAt)}
                     </div>
-                   </td>
+                    </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-semibold text-gray-900">
                       {formatCurrency(order.amount)}
                     </div>
-                   </td>
+                    </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={order.status} />
-                   </td>
+                    </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900">
-                      {order.items?.length || 0} items
+                      {order.items?.reduce((total, item) => total + item.quantity, 0) || 0} items
                     </div>
-                   </td>
+                    </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -348,11 +429,11 @@ export default function OrdersAdmin() {
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                   </td>
+                    </td>
                   </tr>
               ))}
             </tbody>
-          </table>
+           </table>
         </div>
 
         {filteredOrders.length === 0 && (
@@ -372,6 +453,10 @@ export default function OrdersAdmin() {
             <div className="space-y-6">
               {/* Order Info */}
               <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Order #</p>
+                  <p className="text-sm mt-1 font-mono">{selectedOrder.id.slice(-8)}</p>
+                </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">Date</p>
                   <p className="text-sm mt-1">{formatDate(selectedOrder.createdAt)}</p>
