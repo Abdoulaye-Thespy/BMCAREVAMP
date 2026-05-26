@@ -197,6 +197,20 @@ const chaptersData = [
       name: "will be added soon",
       photo: "/president-placeholder.jpg"
     }
+  },
+    {
+    id: 14,
+    name: "Canada Chapter",
+    description: "Serving the community in Canada",
+    phone: "will be added soon",
+    email: "will be added soon",
+    address: "will be added soon",
+    members: "will be added soon",
+    website: "will be added soon",
+    president: {
+      name: "will be added soon",
+      photo: "/president-placeholder.jpg"
+    }
   }
 ]
 

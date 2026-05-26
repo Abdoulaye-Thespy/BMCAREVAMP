@@ -59,7 +59,8 @@ const chaptersData = [
   { id: 10, name: "DC Metro Chapter" },
   { id: 11, name: "Delaware Chapter" },
   { id: 12, name: "Midwest Chapter" },
-  { id: 13, name: "Nebraska Chapter" }
+  { id: 13, name: "Nebraska Chapter" },
+  { id: 14, name: "Canada Chapter" }
 ]
 
 // Helper function to get chapter name from ID (handles both string and number)
