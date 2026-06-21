@@ -10,23 +10,12 @@ import { Check, Filter, Star, Users, Calendar, MapPin, X, Plus, Minus, ShoppingC
 import { HotelBooking } from '@/components/sections/hotel-booking'
 import { useRouter } from 'next/navigation'
 
-// Deadline dates with Father's Day promotion (Early Bird extended to June 24th)
+// Only Early Bird deadline (Father's Day promotion until June 24th)
 const DEADLINES = {
   EARLY_BIRD: {
-    end: "June 24, 2026 23:59:59", // Extended for Father's Day promotion
+    end: "June 24, 2026 23:59:59",
     label: "Early Bird",
     description: "🎉 Father's Day Special! Save up to $40"
-  },
-  STANDARD: {
-    start: "June 25, 2026 00:00:00", // Starts after June 24th
-    end: "June 30, 2026 23:59:59",
-    label: "Standard"
-  },
-  LATE: {
-    start: "July 1, 2026 00:00:00",
-    end: "July 13, 2026 23:59:59",
-    label: "Late",
-    description: "Limited availability"
   }
 }
 
@@ -147,7 +136,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
           <div className="mb-6 p-3 bg-blue-50 rounded-lg">
             <div className="flex items-center gap-2 text-blue-800">
               <Clock className="h-5 w-5" />
-              <span className="font-semibold">{deadline?.label || 'Standard'} Pricing</span>
+              <span className="font-semibold">{deadline?.label || 'Early Bird'} Pricing</span>
             </div>
             <p className="text-sm text-blue-600 mt-1">
               {deadline?.description}
@@ -267,73 +256,57 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
   )
 }
 
-// Helper function to determine current pricing period based on date (Central US/Canada time)
-const getCurrentDeadline = () => {
-  const now = new Date()
-  const centralTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Chicago' }))
+// Get Early Bird packages only
+const getEarlyBirdPackages = (packages) => {
+  return packages
+    .filter(pkg => {
+      const name = pkg.name?.toLowerCase() || ''
+      // Only include packages that are Early Bird
+      return name.includes('early bird') || name.includes('early')
+    })
+    .map(pkg => {
+      const fullName = pkg.name?.toLowerCase() || ''
+      let categoryKey = ''
+      let simpleName = pkg.name
 
-  // Father's Day promotion: Early Bird extended to June 24th
-  const earlyBirdEnd = new Date(DEADLINES.EARLY_BIRD.end)
-  const standardStart = new Date(DEADLINES.STANDARD.start)
-  const standardEnd = new Date(DEADLINES.STANDARD.end)
-  const lateStart = new Date(DEADLINES.LATE.start)
-  const lateEnd = new Date(DEADLINES.LATE.end)
+      // Map package names to categories
+      if (fullName.includes('kid') || fullName.includes('children')) {
+        categoryKey = 'kids'
+        simpleName = 'Kids'
+      } else if (fullName.includes('elderly') || fullName.includes('75+')) {
+        categoryKey = 'elderly'
+        simpleName = 'Elderly 75+'
+      } else if (fullName.includes('couple')) {
+        categoryKey = 'couple'
+        simpleName = 'Couple'
+      } else if (fullName.includes('non-registered') || fullName.includes('non registered')) {
+        categoryKey = 'non-registered'
+        simpleName = 'Non-Registered Elites'
+      } else if (fullName.includes('adult') || fullName.includes('single')) {
+        categoryKey = 'adult'
+        simpleName = 'Adult'
+      } else if (fullName.includes('guest')) {
+        // Guest packages are not shown
+        categoryKey = 'guest'
+        simpleName = pkg.name
+      } else {
+        categoryKey = 'other'
+        simpleName = pkg.name
+      }
 
-  if (centralTime <= earlyBirdEnd) {
-    return { ...DEADLINES.EARLY_BIRD, type: 'EARLY_BIRD' }
-  } else if (centralTime >= standardStart && centralTime <= standardEnd) {
-    return { ...DEADLINES.STANDARD, type: 'STANDARD' }
-  } else if (centralTime >= lateStart && centralTime <= lateEnd) {
-    return { ...DEADLINES.LATE, type: 'LATE' }
-  } else {
-    return { ...DEADLINES.LATE, type: 'LATE', expired: true }
-  }
-}
-
-// Get packages with proper category mapping - ALWAYS SHOW ALL PACKAGES WITH THEIR PRICES
-const getPackagesWithCategories = (packages) => {
-  return packages.map(pkg => {
-    const fullName = pkg.name?.toLowerCase() || ''
-    let categoryKey = ''
-    let simpleName = pkg.name
-
-    // Map package names to categories
-    if (fullName.includes('kid') || fullName.includes('children')) {
-      categoryKey = 'kids'
-      simpleName = 'Kids'
-    } else if (fullName.includes('elderly') || fullName.includes('75+')) {
-      categoryKey = 'elderly'
-      simpleName = 'Elderly 75+'
-    } else if (fullName.includes('couple')) {
-      categoryKey = 'couple'
-      simpleName = 'Couple'
-    } else if (fullName.includes('non-registered') || fullName.includes('non registered')) {
-      categoryKey = 'non-registered'
-      simpleName = 'Non-Registered Elites'
-    } else if (fullName.includes('adult') || fullName.includes('single')) {
-      categoryKey = 'adult'
-      simpleName = 'Adult'
-    } else if (fullName.includes('guest')) {
-      // Guest packages are not shown in the main list
-      categoryKey = 'guest'
-      simpleName = pkg.name
-    } else {
-      categoryKey = 'other'
-      simpleName = pkg.name
-    }
-
-    return {
-      id: pkg.id.toString(),
-      name: simpleName,
-      originalName: pkg.name,
-      category: categoryKey,
-      displayCategory: pkg.category,
-      price: pkg.price,
-      description: simpleName,
-      features: Array.isArray(pkg.items) ? pkg.items : (pkg.items ? pkg.items.split(',').map(item => item.trim()) : []),
-      popular: pkg.category === 'couple' || fullName.includes('cultural'),
-    }
-  }).filter(pkg => pkg.category !== 'guest') // Exclude guest packages
+      return {
+        id: pkg.id.toString(),
+        name: simpleName,
+        originalName: pkg.name,
+        category: categoryKey,
+        displayCategory: pkg.category,
+        price: pkg.price,
+        description: simpleName,
+        features: Array.isArray(pkg.items) ? pkg.items : (pkg.items ? pkg.items.split(',').map(item => item.trim()) : []),
+        popular: pkg.category === 'couple' || fullName.includes('cultural'),
+      }
+    })
+    .filter(pkg => pkg.category !== 'guest') // Exclude guest packages
 }
 
 const categoryLabels = {
@@ -455,8 +428,8 @@ export default function ConventionPage() {
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('all')
 
-  // Get current pricing period
-  const currentDeadline = getCurrentDeadline()
+  // Early Bird deadline
+  const currentDeadline = DEADLINES.EARLY_BIRD
 
   // Fetch packages from database
   useEffect(() => {
@@ -475,10 +448,10 @@ export default function ConventionPage() {
     }
   }
 
-  // Get all packages with proper categories (guest packages excluded)
+  // Get only Early Bird packages
   const conventionPackages = useMemo(() => {
     if (!packages.length) return []
-    return getPackagesWithCategories(packages)
+    return getEarlyBirdPackages(packages)
   }, [packages])
 
   // Get current quantity for a package in cart
@@ -523,25 +496,10 @@ export default function ConventionPage() {
     return conventionPackages.filter(pkg => pkg.category === selectedCategory)
   }, [conventionPackages, selectedCategory])
 
-  // Separate main packages (kids, adult, couple, elderly, non-registered) from other packages
+  // Separate main packages from other packages
   const mainCategories = ['kids', 'adult', 'couple', 'elderly', 'non-registered']
   const mainPackages = conventionPackages.filter(pkg => mainCategories.includes(pkg.category))
   const otherPackages = conventionPackages.filter(pkg => pkg.category === 'other')
-
-  // Format deadline message
-  const getDeadlineMessage = () => {
-    if (currentDeadline.type === 'EARLY_BIRD') {
-      return `🎉 Father's Day Special! Early Bird prices extended until ${currentDeadline.end} (Central US/Canada Time)`
-    } else if (currentDeadline.type === 'STANDARD') {
-      return `Standard prices valid until ${currentDeadline.end}`
-    } else if (currentDeadline.type === 'LATE') {
-      return `Late registration ends on ${currentDeadline.end}`
-    }
-    return ''
-  }
-
-  // Check if it's Father's Day promotion period
-  const isFathersDayPromotion = currentDeadline.type === 'EARLY_BIRD'
 
   if (loading) {
     return (
@@ -655,58 +613,42 @@ export default function ConventionPage() {
             </div>
 
             {/* Father's Day Promotion Banner */}
-            {isFathersDayPromotion && (
-              <div className="max-w-4xl mx-auto mb-6">
-                <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-5 shadow-lg border border-orange-300 animate-pulse">
-                  <div className="flex items-center justify-center gap-4 flex-wrap">
-                    <Heart className="h-8 w-8 text-white fill-current" />
-                    <div className="text-center">
-                      <p className="text-white font-bold text-xl flex items-center gap-2">
-                        <Gift className="h-6 w-6" />
-                        🎉 FATHER'S DAY SPECIAL! 🎉
-                      </p>
-                      <p className="text-white text-lg font-semibold">
-                        Early Bird Prices Extended Until June 24th!
-                      </p>
-                      <p className="text-white/90 text-sm">
-                        Save up to $40 on all convention packages. Don't miss out!
-                      </p>
-                    </div>
-                    <Heart className="h-8 w-8 text-white fill-current" />
+            <div className="max-w-4xl mx-auto mb-6">
+              <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-5 shadow-lg border border-orange-300 animate-pulse">
+                <div className="flex items-center justify-center gap-4 flex-wrap">
+                  <Heart className="h-8 w-8 text-white fill-current" />
+                  <div className="text-center">
+                    <p className="text-white font-bold text-xl flex items-center gap-2">
+                      <Gift className="h-6 w-6" />
+                      🎉 FATHER'S DAY SPECIAL! 🎉
+                    </p>
+                    <p className="text-white text-lg font-semibold">
+                      Early Bird Prices Available Until June 24th!
+                    </p>
+                    <p className="text-white/90 text-sm">
+                      Save up to $40 on all convention packages. Don't miss out!
+                    </p>
                   </div>
+                  <Heart className="h-8 w-8 text-white fill-current" />
                 </div>
               </div>
-            )}
+            </div>
 
             {/* Deadline Banner */}
             <div className="max-w-3xl mx-auto mb-6">
-              <div className={`p-4 rounded-xl ${currentDeadline.type === 'EARLY_BIRD' ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-400 shadow-md' :
-                  currentDeadline.type === 'STANDARD' ? 'bg-orange-50 border border-orange-200' :
-                    'bg-red-50 border border-red-200'
-                }`}>
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-400 shadow-md p-4 rounded-xl">
                 <div className="flex items-center gap-3">
-                  <Clock className={`h-6 w-6 ${currentDeadline.type === 'EARLY_BIRD' ? 'text-green-600' :
-                      currentDeadline.type === 'STANDARD' ? 'text-orange-600' :
-                        'text-red-600'
-                    }`} />
+                  <Clock className="h-6 w-6 text-green-600" />
                   <div className="text-left">
-                    <p className={`font-semibold ${currentDeadline.type === 'EARLY_BIRD' ? 'text-green-800' :
-                        currentDeadline.type === 'STANDARD' ? 'text-orange-800' :
-                          'text-red-800'
-                      }`}>
-                      {currentDeadline.type === 'EARLY_BIRD' ? '🎁 FATHER\'S DAY PROMOTION' : currentDeadline.label} Pricing Active
+                    <p className="font-semibold text-green-800">
+                      🎁 FATHER'S DAY PROMOTION - Early Bird Pricing Active
                     </p>
-                    <p className={`text-sm ${currentDeadline.type === 'EARLY_BIRD' ? 'text-green-600' :
-                        currentDeadline.type === 'STANDARD' ? 'text-orange-600' :
-                          'text-red-600'
-                      }`}>
-                      {getDeadlineMessage()}
+                    <p className="text-sm text-green-600">
+                      Early Bird prices available until June 24, 2026 (Central US/Canada Time)
                     </p>
-                    {currentDeadline.description && (
-                      <p className="text-sm mt-1 text-gray-600">
-                        {currentDeadline.description}
-                      </p>
-                    )}
+                    <p className="text-sm mt-1 text-gray-600">
+                      {currentDeadline.description}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -736,10 +678,13 @@ export default function ConventionPage() {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">
-                    {selectedCategory === 'all' ? 'All Packages' : categoryLabels[selectedCategory]}
+                    {selectedCategory === 'all' ? 'Early Bird Packages' : categoryLabels[selectedCategory]}
                   </h2>
                   <p className="text-gray-600 text-base mt-1">
-                    Showing <span className="font-semibold text-blue-600">{filteredPackages.length}</span> packages
+                    Showing <span className="font-semibold text-blue-600">{filteredPackages.length}</span> Early Bird packages
+                  </p>
+                  <p className="text-sm text-green-600 font-medium">
+                    🎉 Father's Day Special - Save up to $40!
                   </p>
                 </div>
                 <div className="flex items-center gap-4 mt-2 sm:mt-0">
@@ -758,311 +703,100 @@ export default function ConventionPage() {
                 </div>
               </div>
 
-              {/* When showing a specific category */}
-              {selectedCategory !== 'all' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredPackages.map((pkg) => {
-                    const currentQuantity = getCurrentQuantity(pkg.id)
-                    return (
-                      <Card
-                        key={pkg.id}
-                        className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
-                            ? 'border-blue-300 shadow-md'
-                            : 'border-gray-200 hover:border-blue-200'
-                          } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
-                      >
-                        {pkg.popular && (
-                          <div className="absolute top-3 right-3 z-10">
-                            <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
-                              <Star className="h-3 w-3 fill-current" />
-                              Popular
-                            </Badge>
-                          </div>
-                        )}
-
-                        {pkg.category !== 'other' && (
-                          <div className="absolute top-3 left-3 z-10">
-                            <Badge className={`${currentDeadline.type === 'EARLY_BIRD' ? 'bg-gradient-to-r from-green-500 to-emerald-500 border-2 border-green-300' :
-                                currentDeadline.type === 'STANDARD' ? 'bg-orange-500' :
-                                  'bg-red-500'
-                              } text-white flex items-center gap-1 text-sm`}>
-                              <Clock className="h-3 w-3" />
-                              {currentDeadline.type === 'EARLY_BIRD' ? '🌟 EARLY BIRD' : currentDeadline.label}
-                            </Badge>
-                          </div>
-                        )}
-
-                        {currentQuantity > 0 && (
-                          <div className="absolute top-3 left-3 z-10 mt-8">
-                            <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
-                              <ShoppingCart className="h-3 w-3" />
-                              {currentQuantity}
-                            </Badge>
-                          </div>
-                        )}
-
-                        <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-                          <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
-                          <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
-                        </CardHeader>
-
-                        <CardContent className="flex-grow p-5">
-                          <div className="text-center mb-5">
-                            <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                              ${pkg.price}
-                            </span>
-                            <p className="text-sm text-gray-500 mt-1">per person</p>
-                            {pkg.category === 'couple' && (
-                              <p className="text-xs text-blue-600 mt-1">Includes 2 shirts</p>
-                            )}
-                          </div>
-
-                          <div className="mb-5">
-                            <div className="grid grid-cols-2 gap-3">
-                              {pkg.features.slice(0, 8).map((feature, idx) => (
-                                <div key={idx} className="flex items-start gap-2">
-                                  <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                  <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </CardContent>
-
-                        <div className="p-5 pt-0">
-                          <Button
-                            onClick={() => handleAddToCartClick(pkg)}
-                            className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
-                                ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                                : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
-                              } text-white shadow-md hover:shadow-lg py-3`}
-                          >
-                            {currentQuantity > 0 ? (
-                              <span className="flex items-center gap-2">
-                                <ShoppingCart className="h-4 w-4" />
-                                Update ({currentQuantity})
-                              </span>
-                            ) : (
-                              `Add to Cart - $${pkg.price}`
-                            )}
-                          </Button>
+              {/* Display all packages in a single grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredPackages.map((pkg) => {
+                  const currentQuantity = getCurrentQuantity(pkg.id)
+                  return (
+                    <Card
+                      key={pkg.id}
+                      className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
+                          ? 'border-blue-300 shadow-md'
+                          : 'border-gray-200 hover:border-blue-200'
+                        } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
+                    >
+                      {pkg.popular && (
+                        <div className="absolute top-3 right-3 z-10">
+                          <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
+                            <Star className="h-3 w-3 fill-current" />
+                            Popular
+                          </Badge>
                         </div>
-                      </Card>
-                    )
-                  })}
-                </div>
-              )}
+                      )}
 
-              {/* When showing all categories - Main Categories grouped, Others separate */}
-              {selectedCategory === 'all' && (
-                <>
-                  {/* Main Categories Section */}
-                  <div className="mb-8">
-                    <div className="mb-4 pb-2 border-b-2 border-blue-200">
-                      <h3 className="text-xl font-bold text-gray-800">
-                        Convention Registration Packages
-                      </h3>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {currentDeadline.type === 'EARLY_BIRD' 
-                          ? `🎉 FATHER'S DAY SPECIAL - ${currentDeadline.label} Pricing until ${currentDeadline.end}` 
-                          : `${currentDeadline.label} Pricing - Valid until ${currentDeadline.end}`}
-                      </p>
-                    </div>
-                    
-                    {/* Display all main packages in a single grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {mainPackages.map((pkg) => {
-                        const currentQuantity = getCurrentQuantity(pkg.id)
-                        return (
-                          <Card
-                            key={pkg.id}
-                            className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
-                                ? 'border-blue-300 shadow-md'
-                                : 'border-gray-200 hover:border-blue-200'
-                              } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
-                          >
-                            {pkg.popular && (
-                              <div className="absolute top-3 right-3 z-10">
-                                <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
-                                  <Star className="h-3 w-3 fill-current" />
-                                  Popular
-                                </Badge>
-                              </div>
-                            )}
-
-                            <div className="absolute top-3 left-3 z-10">
-                              <Badge className={`${currentDeadline.type === 'EARLY_BIRD' ? 'bg-gradient-to-r from-green-500 to-emerald-500 border-2 border-green-300 shadow-lg' :
-                                  currentDeadline.type === 'STANDARD' ? 'bg-orange-500' :
-                                    'bg-red-500'
-                                } text-white flex items-center gap-1 text-sm`}>
-                                <Clock className="h-3 w-3" />
-                                {currentDeadline.type === 'EARLY_BIRD' ? '🌟 FATHER\'S DAY' : currentDeadline.label}
-                              </Badge>
-                            </div>
-
-                            {currentQuantity > 0 && (
-                              <div className="absolute top-3 left-3 z-10 mt-8">
-                                <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
-                                  <ShoppingCart className="h-3 w-3" />
-                                  {currentQuantity}
-                                </Badge>
-                              </div>
-                            )}
-
-                            <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-                              <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
-                              <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
-                            </CardHeader>
-
-                            <CardContent className="flex-grow p-5">
-                              <div className="text-center mb-5">
-                                <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                                  ${pkg.price}
-                                </span>
-                                <p className="text-sm text-gray-500 mt-1">per person</p>
-                                {pkg.category === 'couple' && (
-                                  <p className="text-xs text-blue-600 mt-1">Includes 2 shirts</p>
-                                )}
-                              </div>
-
-                              <div className="mb-5">
-                                <div className="grid grid-cols-2 gap-3">
-                                  {pkg.features.slice(0, 8).map((feature, idx) => (
-                                    <div key={idx} className="flex items-start gap-2">
-                                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                      <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </CardContent>
-
-                            <div className="p-5 pt-0">
-                              <Button
-                                onClick={() => handleAddToCartClick(pkg)}
-                                className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
-                                    ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                                    : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
-                                  } text-white shadow-md hover:shadow-lg py-3`}
-                              >
-                                {currentQuantity > 0 ? (
-                                  <span className="flex items-center gap-2">
-                                    <ShoppingCart className="h-4 w-4" />
-                                    Update ({currentQuantity})
-                                  </span>
-                                ) : (
-                                  `Add to Cart - $${pkg.price}`
-                                )}
-                              </Button>
-                            </div>
-                          </Card>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Other Packages Section */}
-                  {otherPackages.length > 0 && (
-                    <div className="mt-12">
-                      <div className="mb-4 pb-2 border-b-2 border-gray-300">
-                        <h3 className="text-xl font-bold text-gray-800">
-                          Other Packages
-                        </h3>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Special packages available year-round
-                        </p>
+                      <div className="absolute top-3 left-3 z-10">
+                        <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 border-2 border-green-300 shadow-lg text-white flex items-center gap-1 text-sm">
+                          <Clock className="h-3 w-3" />
+                          🌟 EARLY BIRD
+                        </Badge>
                       </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {otherPackages.map((pkg) => {
-                          const currentQuantity = getCurrentQuantity(pkg.id)
-                          return (
-                            <Card
-                              key={pkg.id}
-                              className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 hover:border-blue-200 ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
-                            >
-                              {pkg.popular && (
-                                <div className="absolute top-3 right-3 z-10">
-                                  <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
-                                    <Star className="h-3 w-3 fill-current" />
-                                    Popular
-                                  </Badge>
-                                </div>
-                              )}
 
-                              {currentQuantity > 0 && (
-                                <div className="absolute top-3 left-3 z-10">
-                                  <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
-                                    <ShoppingCart className="h-3 w-3" />
-                                    {currentQuantity}
-                                  </Badge>
-                                </div>
-                              )}
+                      {currentQuantity > 0 && (
+                        <div className="absolute top-3 left-3 z-10 mt-8">
+                          <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
+                            <ShoppingCart className="h-3 w-3" />
+                            {currentQuantity}
+                          </Badge>
+                        </div>
+                      )}
 
-                              <CardHeader className="relative p-5 bg-gradient-to-r from-gray-600 to-gray-700 text-white">
-                                <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
-                                <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
-                              </CardHeader>
+                      <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+                        <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
+                        <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
+                      </CardHeader>
 
-                              <CardContent className="flex-grow p-5">
-                                <div className="text-center mb-5">
-                                  <span className="text-3xl font-bold text-gray-800">
-                                    ${pkg.price}
-                                  </span>
-                                  <p className="text-sm text-gray-500 mt-1">per person</p>
-                                </div>
+                      <CardContent className="flex-grow p-5">
+                        <div className="text-center mb-5">
+                          <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                            ${pkg.price}
+                          </span>
+                          <p className="text-sm text-gray-500 mt-1">per person</p>
+                          {pkg.category === 'couple' && (
+                            <p className="text-xs text-blue-600 mt-1">Includes 2 shirts</p>
+                          )}
+                        </div>
 
-                                <div className="mb-5">
-                                  <div className="grid grid-cols-2 gap-3">
-                                    {pkg.features.slice(0, 8).map((feature, idx) => (
-                                      <div key={idx} className="flex items-start gap-2">
-                                        <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                        <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              </CardContent>
-
-                              <div className="p-5 pt-0">
-                                <Button
-                                  onClick={() => handleAddToCartClick(pkg)}
-                                  className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
-                                      ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                                      : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
-                                    } text-white shadow-md hover:shadow-lg py-3`}
-                                >
-                                  {currentQuantity > 0 ? (
-                                    <span className="flex items-center gap-2">
-                                      <ShoppingCart className="h-4 w-4" />
-                                      Update ({currentQuantity})
-                                    </span>
-                                  ) : (
-                                    `Add to Cart - $${pkg.price}`
-                                  )}
-                                </Button>
+                        <div className="mb-5">
+                          <div className="grid grid-cols-2 gap-3">
+                            {pkg.features.slice(0, 8).map((feature, idx) => (
+                              <div key={idx} className="flex items-start gap-2">
+                                <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
                               </div>
-                            </Card>
-                          )
-                        })}
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+
+                      <div className="p-5 pt-0">
+                        <Button
+                          onClick={() => handleAddToCartClick(pkg)}
+                          className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
+                              ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                              : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
+                            } text-white shadow-md hover:shadow-lg py-3`}
+                        >
+                          {currentQuantity > 0 ? (
+                            <span className="flex items-center gap-2">
+                              <ShoppingCart className="h-4 w-4" />
+                              Update ({currentQuantity})
+                            </span>
+                          ) : (
+                            `Add to Cart - $${pkg.price}`
+                          )}
+                        </Button>
                       </div>
-                    </div>
-                  )}
-                </>
-              )}
+                    </Card>
+                  )
+                })}
+              </div>
 
               {/* No Results Message */}
               {filteredPackages.length === 0 && (
                 <div className="text-center py-12">
                   <div className="text-4xl mb-3">😔</div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">No packages found</h3>
-                  <p className="text-gray-600 text-lg mb-4">Try adjusting your category filter.</p>
-                  <Button
-                    onClick={() => setSelectedCategory('all')}
-                    className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white text-base"
-                  >
-                    Clear Filter
-                  </Button>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">No Early Bird packages found</h3>
+                  <p className="text-gray-600 text-lg mb-4">Check back later for available packages.</p>
                 </div>
               )}
             </div>
