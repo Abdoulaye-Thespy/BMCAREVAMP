@@ -256,57 +256,57 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
   )
 }
 
-// Get Early Bird packages only
-const getEarlyBirdPackages = (packages) => {
-  return packages
-    .filter(pkg => {
-      const name = pkg.name?.toLowerCase() || ''
-      // Only include packages that are Early Bird
-      return name.includes('early bird') || name.includes('early')
-    })
-    .map(pkg => {
-      const fullName = pkg.name?.toLowerCase() || ''
-      let categoryKey = ''
-      let simpleName = pkg.name
+// Get packages - Early Bird packages and Other packages (non-early bird, non-standard, non-late)
+const getPackagesWithCategories = (packages) => {
+  return packages.map(pkg => {
+    const fullName = pkg.name?.toLowerCase() || ''
+    let categoryKey = ''
+    let simpleName = pkg.name
+    let isEarlyBird = false
 
-      // Map package names to categories
-      if (fullName.includes('kid') || fullName.includes('children')) {
-        categoryKey = 'kids'
-        simpleName = 'Kids'
-      } else if (fullName.includes('elderly') || fullName.includes('75+')) {
-        categoryKey = 'elderly'
-        simpleName = 'Elderly 75+'
-      } else if (fullName.includes('couple')) {
-        categoryKey = 'couple'
-        simpleName = 'Couple'
-      } else if (fullName.includes('non-registered') || fullName.includes('non registered')) {
-        categoryKey = 'non-registered'
-        simpleName = 'Non-Registered Elites'
-      } else if (fullName.includes('adult') || fullName.includes('single')) {
-        categoryKey = 'adult'
-        simpleName = 'Adult'
-      } else if (fullName.includes('guest')) {
-        // Guest packages are not shown
-        categoryKey = 'guest'
-        simpleName = pkg.name
-      } else {
-        categoryKey = 'other'
-        simpleName = pkg.name
-      }
+    // Check if it's an Early Bird package
+    if (fullName.includes('early bird') || fullName.includes('early')) {
+      isEarlyBird = true
+    }
 
-      return {
-        id: pkg.id.toString(),
-        name: simpleName,
-        originalName: pkg.name,
-        category: categoryKey,
-        displayCategory: pkg.category,
-        price: pkg.price,
-        description: simpleName,
-        features: Array.isArray(pkg.items) ? pkg.items : (pkg.items ? pkg.items.split(',').map(item => item.trim()) : []),
-        popular: pkg.category === 'couple' || fullName.includes('cultural'),
-      }
-    })
-    .filter(pkg => pkg.category !== 'guest') // Exclude guest packages
+    // Map package names to categories
+    if (fullName.includes('kid') || fullName.includes('children')) {
+      categoryKey = 'kids'
+      simpleName = 'Kids'
+    } else if (fullName.includes('elderly') || fullName.includes('75+')) {
+      categoryKey = 'elderly'
+      simpleName = 'Elderly 75+'
+    } else if (fullName.includes('couple')) {
+      categoryKey = 'couple'
+      simpleName = 'Couple'
+    } else if (fullName.includes('non-registered') || fullName.includes('non registered')) {
+      categoryKey = 'non-registered'
+      simpleName = 'Non-Registered Elites'
+    } else if (fullName.includes('adult') || fullName.includes('single')) {
+      categoryKey = 'adult'
+      simpleName = 'Adult'
+    } else if (fullName.includes('guest')) {
+      // Guest packages are not shown
+      categoryKey = 'guest'
+      simpleName = pkg.name
+    } else {
+      categoryKey = 'other'
+      simpleName = pkg.name
+    }
+
+    return {
+      id: pkg.id.toString(),
+      name: simpleName,
+      originalName: pkg.name,
+      category: categoryKey,
+      displayCategory: pkg.category,
+      price: pkg.price,
+      description: simpleName,
+      features: Array.isArray(pkg.items) ? pkg.items : (pkg.items ? pkg.items.split(',').map(item => item.trim()) : []),
+      popular: pkg.category === 'couple' || fullName.includes('cultural'),
+      isEarlyBird: isEarlyBird,
+    }
+  }).filter(pkg => pkg.category !== 'guest') // Exclude guest packages
 }
 
 const categoryLabels = {
@@ -448,11 +448,23 @@ export default function ConventionPage() {
     }
   }
 
-  // Get only Early Bird packages
-  const conventionPackages = useMemo(() => {
+  // Get all packages with categories
+  const allPackages = useMemo(() => {
     if (!packages.length) return []
-    return getEarlyBirdPackages(packages)
+    return getPackagesWithCategories(packages)
   }, [packages])
+
+  // Separate packages: Early Bird vs Others
+  const earlyBirdPackages = allPackages.filter(pkg => pkg.isEarlyBird === true)
+  const otherPackages = allPackages.filter(pkg => pkg.isEarlyBird === false && pkg.category === 'other')
+
+  // For filtering based on selected category
+  const filteredPackages = useMemo(() => {
+    if (selectedCategory === 'all') {
+      return allPackages
+    }
+    return allPackages.filter(pkg => pkg.category === selectedCategory)
+  }, [allPackages, selectedCategory])
 
   // Get current quantity for a package in cart
   const getCurrentQuantity = (pkgId) => {
@@ -487,19 +499,6 @@ export default function ConventionPage() {
     setIsPopupOpen(false)
     setSelectedPackage(null)
   }
-
-  // Filter packages by category
-  const filteredPackages = useMemo(() => {
-    if (selectedCategory === 'all') {
-      return conventionPackages
-    }
-    return conventionPackages.filter(pkg => pkg.category === selectedCategory)
-  }, [conventionPackages, selectedCategory])
-
-  // Separate main packages from other packages
-  const mainCategories = ['kids', 'adult', 'couple', 'elderly', 'non-registered']
-  const mainPackages = conventionPackages.filter(pkg => mainCategories.includes(pkg.category))
-  const otherPackages = conventionPackages.filter(pkg => pkg.category === 'other')
 
   if (loading) {
     return (
@@ -626,7 +625,7 @@ export default function ConventionPage() {
                       Early Bird Prices Available Until June 24th!
                     </p>
                     <p className="text-white/90 text-sm">
-                      Save up to $40 on all convention packages. Don't miss out!
+                      Save up to $40 on all Early Bird packages. Don't miss out!
                     </p>
                   </div>
                   <Heart className="h-8 w-8 text-white fill-current" />
@@ -668,7 +667,7 @@ export default function ConventionPage() {
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
                 filteredCount={filteredPackages.length}
-                totalCount={conventionPackages.length}
+                totalCount={allPackages.length}
               />
             </div>
 
@@ -678,13 +677,10 @@ export default function ConventionPage() {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">
-                    {selectedCategory === 'all' ? 'Early Bird Packages' : categoryLabels[selectedCategory]}
+                    {selectedCategory === 'all' ? 'All Packages' : categoryLabels[selectedCategory]}
                   </h2>
                   <p className="text-gray-600 text-base mt-1">
-                    Showing <span className="font-semibold text-blue-600">{filteredPackages.length}</span> Early Bird packages
-                  </p>
-                  <p className="text-sm text-green-600 font-medium">
-                    🎉 Father's Day Special - Save up to $40!
+                    Showing <span className="font-semibold text-blue-600">{filteredPackages.length}</span> packages
                   </p>
                 </div>
                 <div className="flex items-center gap-4 mt-2 sm:mt-0">
@@ -703,100 +699,303 @@ export default function ConventionPage() {
                 </div>
               </div>
 
-              {/* Display all packages in a single grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredPackages.map((pkg) => {
-                  const currentQuantity = getCurrentQuantity(pkg.id)
-                  return (
-                    <Card
-                      key={pkg.id}
-                      className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
-                          ? 'border-blue-300 shadow-md'
-                          : 'border-gray-200 hover:border-blue-200'
-                        } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
-                    >
-                      {pkg.popular && (
-                        <div className="absolute top-3 right-3 z-10">
-                          <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
-                            <Star className="h-3 w-3 fill-current" />
-                            Popular
-                          </Badge>
-                        </div>
-                      )}
-
-                      <div className="absolute top-3 left-3 z-10">
-                        <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 border-2 border-green-300 shadow-lg text-white flex items-center gap-1 text-sm">
-                          <Clock className="h-3 w-3" />
-                          🌟 EARLY BIRD
-                        </Badge>
-                      </div>
-
-                      {currentQuantity > 0 && (
-                        <div className="absolute top-3 left-3 z-10 mt-8">
-                          <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
-                            <ShoppingCart className="h-3 w-3" />
-                            {currentQuantity}
-                          </Badge>
-                        </div>
-                      )}
-
-                      <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-                        <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
-                        <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
-                      </CardHeader>
-
-                      <CardContent className="flex-grow p-5">
-                        <div className="text-center mb-5">
-                          <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                            ${pkg.price}
-                          </span>
-                          <p className="text-sm text-gray-500 mt-1">per person</p>
-                          {pkg.category === 'couple' && (
-                            <p className="text-xs text-blue-600 mt-1">Includes 2 shirts</p>
-                          )}
-                        </div>
-
-                        <div className="mb-5">
-                          <div className="grid grid-cols-2 gap-3">
-                            {pkg.features.slice(0, 8).map((feature, idx) => (
-                              <div key={idx} className="flex items-start gap-2">
-                                <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
-                              </div>
-                            ))}
+              {/* When showing a specific category (not 'all') */}
+              {selectedCategory !== 'all' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredPackages.map((pkg) => {
+                    const currentQuantity = getCurrentQuantity(pkg.id)
+                    return (
+                      <Card
+                        key={pkg.id}
+                        className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
+                            ? 'border-blue-300 shadow-md'
+                            : 'border-gray-200 hover:border-blue-200'
+                          } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
+                      >
+                        {pkg.popular && (
+                          <div className="absolute top-3 right-3 z-10">
+                            <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
+                              <Star className="h-3 w-3 fill-current" />
+                              Popular
+                            </Badge>
                           </div>
-                        </div>
-                      </CardContent>
+                        )}
 
-                      <div className="p-5 pt-0">
-                        <Button
-                          onClick={() => handleAddToCartClick(pkg)}
-                          className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
-                              ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                              : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
-                            } text-white shadow-md hover:shadow-lg py-3`}
-                        >
-                          {currentQuantity > 0 ? (
-                            <span className="flex items-center gap-2">
-                              <ShoppingCart className="h-4 w-4" />
-                              Update ({currentQuantity})
+                        {pkg.isEarlyBird && (
+                          <div className="absolute top-3 left-3 z-10">
+                            <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 border-2 border-green-300 shadow-lg text-white flex items-center gap-1 text-sm">
+                              <Clock className="h-3 w-3" />
+                              🌟 EARLY BIRD
+                            </Badge>
+                          </div>
+                        )}
+
+                        {currentQuantity > 0 && (
+                          <div className="absolute top-3 left-3 z-10 mt-8">
+                            <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
+                              <ShoppingCart className="h-3 w-3" />
+                              {currentQuantity}
+                            </Badge>
+                          </div>
+                        )}
+
+                        <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+                          <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
+                          <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
+                        </CardHeader>
+
+                        <CardContent className="flex-grow p-5">
+                          <div className="text-center mb-5">
+                            <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                              ${pkg.price}
                             </span>
-                          ) : (
-                            `Add to Cart - $${pkg.price}`
-                          )}
-                        </Button>
+                            <p className="text-sm text-gray-500 mt-1">per person</p>
+                            {pkg.category === 'couple' && (
+                              <p className="text-xs text-blue-600 mt-1">Includes 2 shirts</p>
+                            )}
+                          </div>
+
+                          <div className="mb-5">
+                            <div className="grid grid-cols-2 gap-3">
+                              {pkg.features.slice(0, 8).map((feature, idx) => (
+                                <div key={idx} className="flex items-start gap-2">
+                                  <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                  <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+
+                        <div className="p-5 pt-0">
+                          <Button
+                            onClick={() => handleAddToCartClick(pkg)}
+                            className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
+                                ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                                : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
+                              } text-white shadow-md hover:shadow-lg py-3`}
+                          >
+                            {currentQuantity > 0 ? (
+                              <span className="flex items-center gap-2">
+                                <ShoppingCart className="h-4 w-4" />
+                                Update ({currentQuantity})
+                              </span>
+                            ) : (
+                              `Add to Cart - $${pkg.price}`
+                            )}
+                          </Button>
+                        </div>
+                      </Card>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* When showing all categories - Early Bird Packages + Other Packages */}
+              {selectedCategory === 'all' && (
+                <>
+                  {/* Early Bird Packages Section */}
+                  <div className="mb-8">
+                    <div className="mb-4 pb-2 border-b-2 border-green-300">
+                      <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <Gift className="h-5 w-5 text-green-600" />
+                        Early Bird Packages
+                      </h3>
+                      <p className="text-sm text-green-600 mt-1">
+                        🎉 Father's Day Special - Save up to $40! Available until June 24th
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {earlyBirdPackages.map((pkg) => {
+                        const currentQuantity = getCurrentQuantity(pkg.id)
+                        return (
+                          <Card
+                            key={pkg.id}
+                            className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
+                                ? 'border-blue-300 shadow-md'
+                                : 'border-gray-200 hover:border-blue-200'
+                              } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
+                          >
+                            {pkg.popular && (
+                              <div className="absolute top-3 right-3 z-10">
+                                <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
+                                  <Star className="h-3 w-3 fill-current" />
+                                  Popular
+                                </Badge>
+                              </div>
+                            )}
+
+                            <div className="absolute top-3 left-3 z-10">
+                              <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 border-2 border-green-300 shadow-lg text-white flex items-center gap-1 text-sm">
+                                <Clock className="h-3 w-3" />
+                                🌟 EARLY BIRD
+                              </Badge>
+                            </div>
+
+                            {currentQuantity > 0 && (
+                              <div className="absolute top-3 left-3 z-10 mt-8">
+                                <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
+                                  <ShoppingCart className="h-3 w-3" />
+                                  {currentQuantity}
+                                </Badge>
+                              </div>
+                            )}
+
+                            <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+                              <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
+                              <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
+                            </CardHeader>
+
+                            <CardContent className="flex-grow p-5">
+                              <div className="text-center mb-5">
+                                <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                                  ${pkg.price}
+                                </span>
+                                <p className="text-sm text-gray-500 mt-1">per person</p>
+                                {pkg.category === 'couple' && (
+                                  <p className="text-xs text-blue-600 mt-1">Includes 2 shirts</p>
+                                )}
+                              </div>
+
+                              <div className="mb-5">
+                                <div className="grid grid-cols-2 gap-3">
+                                  {pkg.features.slice(0, 8).map((feature, idx) => (
+                                    <div key={idx} className="flex items-start gap-2">
+                                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                      <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </CardContent>
+
+                            <div className="p-5 pt-0">
+                              <Button
+                                onClick={() => handleAddToCartClick(pkg)}
+                                className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
+                                    ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                                    : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
+                                  } text-white shadow-md hover:shadow-lg py-3`}
+                              >
+                                {currentQuantity > 0 ? (
+                                  <span className="flex items-center gap-2">
+                                    <ShoppingCart className="h-4 w-4" />
+                                    Update ({currentQuantity})
+                                  </span>
+                                ) : (
+                                  `Add to Cart - $${pkg.price}`
+                                )}
+                              </Button>
+                            </div>
+                          </Card>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Other Packages Section */}
+                  {otherPackages.length > 0 && (
+                    <div className="mt-12">
+                      <div className="mb-4 pb-2 border-b-2 border-gray-300">
+                        <h3 className="text-xl font-bold text-gray-800">
+                          Other Packages
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Special packages available year-round
+                        </p>
                       </div>
-                    </Card>
-                  )
-                })}
-              </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {otherPackages.map((pkg) => {
+                          const currentQuantity = getCurrentQuantity(pkg.id)
+                          return (
+                            <Card
+                              key={pkg.id}
+                              className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 hover:border-blue-200 ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
+                            >
+                              {pkg.popular && (
+                                <div className="absolute top-3 right-3 z-10">
+                                  <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
+                                    <Star className="h-3 w-3 fill-current" />
+                                    Popular
+                                  </Badge>
+                                </div>
+                              )}
+
+                              {currentQuantity > 0 && (
+                                <div className="absolute top-3 left-3 z-10">
+                                  <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
+                                    <ShoppingCart className="h-3 w-3" />
+                                    {currentQuantity}
+                                  </Badge>
+                                </div>
+                              )}
+
+                              <CardHeader className="relative p-5 bg-gradient-to-r from-gray-600 to-gray-700 text-white">
+                                <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
+                                <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
+                              </CardHeader>
+
+                              <CardContent className="flex-grow p-5">
+                                <div className="text-center mb-5">
+                                  <span className="text-3xl font-bold text-gray-800">
+                                    ${pkg.price}
+                                  </span>
+                                  <p className="text-sm text-gray-500 mt-1">per person</p>
+                                </div>
+
+                                <div className="mb-5">
+                                  <div className="grid grid-cols-2 gap-3">
+                                    {pkg.features.slice(0, 8).map((feature, idx) => (
+                                      <div key={idx} className="flex items-start gap-2">
+                                        <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                        <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </CardContent>
+
+                              <div className="p-5 pt-0">
+                                <Button
+                                  onClick={() => handleAddToCartClick(pkg)}
+                                  className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
+                                      ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                                      : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
+                                    } text-white shadow-md hover:shadow-lg py-3`}
+                                >
+                                  {currentQuantity > 0 ? (
+                                    <span className="flex items-center gap-2">
+                                      <ShoppingCart className="h-4 w-4" />
+                                      Update ({currentQuantity})
+                                    </span>
+                                  ) : (
+                                    `Add to Cart - $${pkg.price}`
+                                  )}
+                                </Button>
+                              </div>
+                            </Card>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
 
               {/* No Results Message */}
               {filteredPackages.length === 0 && (
                 <div className="text-center py-12">
                   <div className="text-4xl mb-3">😔</div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">No Early Bird packages found</h3>
-                  <p className="text-gray-600 text-lg mb-4">Check back later for available packages.</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">No packages found</h3>
+                  <p className="text-gray-600 text-lg mb-4">Try adjusting your category filter.</p>
+                  <Button
+                    onClick={() => setSelectedCategory('all')}
+                    className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white text-base"
+                  >
+                    Clear Filter
+                  </Button>
                 </div>
               )}
             </div>
