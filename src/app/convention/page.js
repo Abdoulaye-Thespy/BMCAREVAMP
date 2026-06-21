@@ -6,19 +6,19 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useCart } from '@/context/cart-context'
 import { useState, useMemo, useEffect } from 'react'
-import { Check, Filter, Star, Users, Calendar, MapPin, X, Plus, Minus, ShoppingCart, ChevronDown, Clock, Shirt, ArrowRight } from 'lucide-react'
+import { Check, Filter, Star, Users, Calendar, MapPin, X, Plus, Minus, ShoppingCart, ChevronDown, Clock, Shirt, ArrowRight, Gift, Heart } from 'lucide-react'
 import { HotelBooking } from '@/components/sections/hotel-booking'
 import { useRouter } from 'next/navigation'
 
-// Deadline dates from the image (Central US/Canada time)
+// Deadline dates with Father's Day promotion (Early Bird extended to June 24th)
 const DEADLINES = {
   EARLY_BIRD: {
-    end: "May 31, 2026 23:59:59",
+    end: "June 24, 2026 23:59:59", // Extended for Father's Day promotion
     label: "Early Bird",
-    description: "Save up to $40"
+    description: "🎉 Father's Day Special! Save up to $40"
   },
   STANDARD: {
-    start: "June 1, 2026 00:00:00",
+    start: "June 25, 2026 00:00:00", // Starts after June 24th
     end: "June 30, 2026 23:59:59",
     label: "Standard"
   },
@@ -272,6 +272,7 @@ const getCurrentDeadline = () => {
   const now = new Date()
   const centralTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Chicago' }))
 
+  // Father's Day promotion: Early Bird extended to June 24th
   const earlyBirdEnd = new Date(DEADLINES.EARLY_BIRD.end)
   const standardStart = new Date(DEADLINES.STANDARD.start)
   const standardEnd = new Date(DEADLINES.STANDARD.end)
@@ -289,44 +290,15 @@ const getCurrentDeadline = () => {
   }
 }
 
-// Filter packages based on deadline type
-const filterByDeadline = (packages, deadlineType) => {
-  if (deadlineType === 'EARLY_BIRD') {
-    return packages.filter(pkg => pkg.originalName?.toLowerCase().includes('early bird'))
-  } else if (deadlineType === 'STANDARD') {
-    return packages.filter(pkg => pkg.originalName?.toLowerCase().includes('standard'))
-  } else if (deadlineType === 'LATE') {
-    return packages.filter(pkg => pkg.originalName?.toLowerCase().includes('late'))
-  }
-  return packages
-}
-
-// Get packages with proper category mapping
-const getPackagesWithCategories = (packages, deadlineType) => {
-  // First filter by deadline for non-other packages, but EXCLUDE guest packages
-  const nonGuestPackages = packages.filter(pkg => {
-    const name = pkg.name?.toLowerCase() || ''
-    return !name.includes('guest') && pkg.category !== 'Guest Package'
-  })
-  
-  const filteredForDeadline = filterByDeadline(nonGuestPackages, deadlineType)
-  
-  return nonGuestPackages.map(pkg => {
+// Get packages with proper category mapping - ALWAYS SHOW ALL PACKAGES WITH THEIR PRICES
+const getPackagesWithCategories = (packages) => {
+  return packages.map(pkg => {
     const fullName = pkg.name?.toLowerCase() || ''
     let categoryKey = ''
     let simpleName = pkg.name
 
-    // Check if this package belongs to the current deadline for main categories
-    const isForCurrentDeadline = deadlineType === 'EARLY_BIRD' 
-      ? fullName.includes('early bird')
-      : deadlineType === 'STANDARD'
-      ? fullName.includes('standard')
-      : deadlineType === 'LATE'
-      ? fullName.includes('late')
-      : true
-
     // Map package names to categories
-    if (fullName.includes('kid')) {
+    if (fullName.includes('kid') || fullName.includes('children')) {
       categoryKey = 'kids'
       simpleName = 'Kids'
     } else if (fullName.includes('elderly') || fullName.includes('75+')) {
@@ -335,20 +307,20 @@ const getPackagesWithCategories = (packages, deadlineType) => {
     } else if (fullName.includes('couple')) {
       categoryKey = 'couple'
       simpleName = 'Couple'
-    } else if (fullName.includes('non-registered')) {
+    } else if (fullName.includes('non-registered') || fullName.includes('non registered')) {
       categoryKey = 'non-registered'
       simpleName = 'Non-Registered Elites'
     } else if (fullName.includes('adult') || fullName.includes('single')) {
       categoryKey = 'adult'
       simpleName = 'Adult'
+    } else if (fullName.includes('guest')) {
+      // Guest packages are not shown in the main list
+      categoryKey = 'guest'
+      simpleName = pkg.name
     } else {
       categoryKey = 'other'
       simpleName = pkg.name
     }
-
-    // For main categories (not 'other'), only show if they match the current deadline
-    // For 'other' category, always show regardless of deadline
-    const shouldShow = categoryKey === 'other' || isForCurrentDeadline
 
     return {
       id: pkg.id.toString(),
@@ -360,9 +332,8 @@ const getPackagesWithCategories = (packages, deadlineType) => {
       description: simpleName,
       features: Array.isArray(pkg.items) ? pkg.items : (pkg.items ? pkg.items.split(',').map(item => item.trim()) : []),
       popular: pkg.category === 'couple' || fullName.includes('cultural'),
-      shouldShow
     }
-  }).filter(pkg => pkg.shouldShow)
+  }).filter(pkg => pkg.category !== 'guest') // Exclude guest packages
 }
 
 const categoryLabels = {
@@ -504,11 +475,11 @@ export default function ConventionPage() {
     }
   }
 
-  // Get all packages with proper categories and deadline filtering (guest packages excluded)
+  // Get all packages with proper categories (guest packages excluded)
   const conventionPackages = useMemo(() => {
     if (!packages.length) return []
-    return getPackagesWithCategories(packages, currentDeadline.type)
-  }, [packages, currentDeadline.type])
+    return getPackagesWithCategories(packages)
+  }, [packages])
 
   // Get current quantity for a package in cart
   const getCurrentQuantity = (pkgId) => {
@@ -560,7 +531,7 @@ export default function ConventionPage() {
   // Format deadline message
   const getDeadlineMessage = () => {
     if (currentDeadline.type === 'EARLY_BIRD') {
-      return `Early Bird prices end on ${currentDeadline.end}`
+      return `🎉 Father's Day Special! Early Bird prices extended until ${currentDeadline.end} (Central US/Canada Time)`
     } else if (currentDeadline.type === 'STANDARD') {
       return `Standard prices valid until ${currentDeadline.end}`
     } else if (currentDeadline.type === 'LATE') {
@@ -568,6 +539,9 @@ export default function ConventionPage() {
     }
     return ''
   }
+
+  // Check if it's Father's Day promotion period
+  const isFathersDayPromotion = currentDeadline.type === 'EARLY_BIRD'
 
   if (loading) {
     return (
@@ -680,9 +654,33 @@ export default function ConventionPage() {
               </div>
             </div>
 
+            {/* Father's Day Promotion Banner */}
+            {isFathersDayPromotion && (
+              <div className="max-w-4xl mx-auto mb-6">
+                <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-5 shadow-lg border border-orange-300 animate-pulse">
+                  <div className="flex items-center justify-center gap-4 flex-wrap">
+                    <Heart className="h-8 w-8 text-white fill-current" />
+                    <div className="text-center">
+                      <p className="text-white font-bold text-xl flex items-center gap-2">
+                        <Gift className="h-6 w-6" />
+                        🎉 FATHER'S DAY SPECIAL! 🎉
+                      </p>
+                      <p className="text-white text-lg font-semibold">
+                        Early Bird Prices Extended Until June 24th!
+                      </p>
+                      <p className="text-white/90 text-sm">
+                        Save up to $40 on all convention packages. Don't miss out!
+                      </p>
+                    </div>
+                    <Heart className="h-8 w-8 text-white fill-current" />
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Deadline Banner */}
             <div className="max-w-3xl mx-auto mb-6">
-              <div className={`p-4 rounded-xl ${currentDeadline.type === 'EARLY_BIRD' ? 'bg-green-50 border border-green-200' :
+              <div className={`p-4 rounded-xl ${currentDeadline.type === 'EARLY_BIRD' ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-400 shadow-md' :
                   currentDeadline.type === 'STANDARD' ? 'bg-orange-50 border border-orange-200' :
                     'bg-red-50 border border-red-200'
                 }`}>
@@ -696,13 +694,13 @@ export default function ConventionPage() {
                         currentDeadline.type === 'STANDARD' ? 'text-orange-800' :
                           'text-red-800'
                       }`}>
-                      {currentDeadline.label} Pricing Active
+                      {currentDeadline.type === 'EARLY_BIRD' ? '🎁 FATHER\'S DAY PROMOTION' : currentDeadline.label} Pricing Active
                     </p>
                     <p className={`text-sm ${currentDeadline.type === 'EARLY_BIRD' ? 'text-green-600' :
                         currentDeadline.type === 'STANDARD' ? 'text-orange-600' :
                           'text-red-600'
                       }`}>
-                      {getDeadlineMessage()} (Central US/Canada Time)
+                      {getDeadlineMessage()}
                     </p>
                     {currentDeadline.description && (
                       <p className="text-sm mt-1 text-gray-600">
@@ -784,12 +782,12 @@ export default function ConventionPage() {
 
                         {pkg.category !== 'other' && (
                           <div className="absolute top-3 left-3 z-10">
-                            <Badge className={`${currentDeadline.type === 'EARLY_BIRD' ? 'bg-green-500' :
+                            <Badge className={`${currentDeadline.type === 'EARLY_BIRD' ? 'bg-gradient-to-r from-green-500 to-emerald-500 border-2 border-green-300' :
                                 currentDeadline.type === 'STANDARD' ? 'bg-orange-500' :
                                   'bg-red-500'
                               } text-white flex items-center gap-1 text-sm`}>
                               <Clock className="h-3 w-3" />
-                              {currentDeadline.label}
+                              {currentDeadline.type === 'EARLY_BIRD' ? '🌟 EARLY BIRD' : currentDeadline.label}
                             </Badge>
                           </div>
                         )}
@@ -858,14 +856,16 @@ export default function ConventionPage() {
               {/* When showing all categories - Main Categories grouped, Others separate */}
               {selectedCategory === 'all' && (
                 <>
-                  {/* Main Categories Section (Kids, Adult, Couple, Elderly, Non-Registered) */}
+                  {/* Main Categories Section */}
                   <div className="mb-8">
                     <div className="mb-4 pb-2 border-b-2 border-blue-200">
                       <h3 className="text-xl font-bold text-gray-800">
                         Convention Registration Packages
                       </h3>
                       <p className="text-sm text-gray-500 mt-1">
-                        {currentDeadline.label} Pricing - Valid until {currentDeadline.end}
+                        {currentDeadline.type === 'EARLY_BIRD' 
+                          ? `🎉 FATHER'S DAY SPECIAL - ${currentDeadline.label} Pricing until ${currentDeadline.end}` 
+                          : `${currentDeadline.label} Pricing - Valid until ${currentDeadline.end}`}
                       </p>
                     </div>
                     
@@ -891,12 +891,12 @@ export default function ConventionPage() {
                             )}
 
                             <div className="absolute top-3 left-3 z-10">
-                              <Badge className={`${currentDeadline.type === 'EARLY_BIRD' ? 'bg-green-500' :
+                              <Badge className={`${currentDeadline.type === 'EARLY_BIRD' ? 'bg-gradient-to-r from-green-500 to-emerald-500 border-2 border-green-300 shadow-lg' :
                                   currentDeadline.type === 'STANDARD' ? 'bg-orange-500' :
                                     'bg-red-500'
                                 } text-white flex items-center gap-1 text-sm`}>
                                 <Clock className="h-3 w-3" />
-                                {currentDeadline.label}
+                                {currentDeadline.type === 'EARLY_BIRD' ? '🌟 FATHER\'S DAY' : currentDeadline.label}
                               </Badge>
                             </div>
 
@@ -961,7 +961,7 @@ export default function ConventionPage() {
                     </div>
                   </div>
 
-                  {/* Other Packages Section - Only shown if there are other packages */}
+                  {/* Other Packages Section */}
                   {otherPackages.length > 0 && (
                     <div className="mt-12">
                       <div className="mb-4 pb-2 border-b-2 border-gray-300">
