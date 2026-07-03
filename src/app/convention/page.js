@@ -6,16 +6,17 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useCart } from '@/context/cart-context'
 import { useState, useMemo, useEffect } from 'react'
-import { Check, Filter, Star, Users, Calendar, MapPin, X, Plus, Minus, ShoppingCart, ChevronDown, Clock, Shirt, ArrowRight, Gift, Heart } from 'lucide-react'
+import { Check, Filter, Star, Users, Calendar, MapPin, X, Plus, Minus, ShoppingCart, ChevronDown, Clock, Shirt, ArrowRight, AlertCircle } from 'lucide-react'
 import { HotelBooking } from '@/components/sections/hotel-booking'
 import { useRouter } from 'next/navigation'
 
-// Only Early Bird deadline (Father's Day promotion until June 24th)
+// Late deadline
 const DEADLINES = {
-  EARLY_BIRD: {
-    end: "June 24, 2026 23:59:59",
-    label: "Early Bird",
-    description: "🎉 Father's Day Special! Save up to $40"
+  LATE: {
+    start: "July 1, 2026 00:00:00",
+    end: "July 13, 2026 23:59:59",
+    label: "Late",
+    description: "⏰ Limited availability – register now!"
   }
 }
 
@@ -101,17 +102,17 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-auto max-h-[90vh] overflow-y-auto">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-t-2xl">
+        <div className="bg-gradient-to-r from-red-600 to-orange-600 text-white p-6 rounded-t-2xl">
           <div className="flex justify-between items-start">
             <div>
               <h3 className="text-xl font-bold">
                 {currentQuantity > 0 ? 'Update Cart' : 'Add to Cart'}
               </h3>
-              <p className="text-blue-100 mt-1">
+              <p className="text-orange-100 mt-1">
                 {currentQuantity > 0 ? 'Update your selection' : 'Confirm your selection'}
               </p>
             </div>
-            <button onClick={onClose} className="text-white hover:text-blue-200 transition-colors">
+            <button onClick={onClose} className="text-white hover:text-orange-200 transition-colors">
               <X className="h-6 w-6" />
             </button>
           </div>
@@ -119,26 +120,26 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
 
         <div className="p-6">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Star className="h-6 w-6 text-blue-600" />
+            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+              <Star className="h-6 w-6 text-orange-600" />
             </div>
             <div>
               <h4 className="font-semibold text-gray-900 text-lg">{pkg.name}</h4>
               <p className="text-gray-600 text-base">{pkg.description}</p>
               {currentQuantity > 0 && (
-                <div className="text-base text-blue-600 mt-1">
+                <div className="text-base text-orange-600 mt-1">
                   Currently in cart: {currentQuantity}
                 </div>
               )}
             </div>
           </div>
 
-          <div className="mb-6 p-3 bg-blue-50 rounded-lg">
-            <div className="flex items-center gap-2 text-blue-800">
+          <div className="mb-6 p-3 bg-orange-50 rounded-lg">
+            <div className="flex items-center gap-2 text-orange-800">
               <Clock className="h-5 w-5" />
-              <span className="font-semibold">{deadline?.label || 'Early Bird'} Pricing</span>
+              <span className="font-semibold">{deadline?.label || 'Late'} Registration</span>
             </div>
-            <p className="text-sm text-blue-600 mt-1">
+            <p className="text-sm text-orange-600 mt-1">
               {deadline?.description}
             </p>
           </div>
@@ -151,20 +152,20 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
               <div className="flex items-center gap-4">
                 <button
                   onClick={decrement}
-                  className="w-12 h-12 rounded-full border-2 border-blue-500 text-blue-500 flex items-center justify-center hover:bg-blue-50 transition-colors"
+                  className="w-12 h-12 rounded-full border-2 border-orange-500 text-orange-500 flex items-center justify-center hover:bg-orange-50 transition-colors"
                 >
                   <Minus className="h-5 w-5" />
                 </button>
                 <span className="text-3xl font-bold text-gray-900 w-12 text-center">{quantity}</span>
                 <button
                   onClick={increment}
-                  className="w-12 h-12 rounded-full border-2 border-blue-500 text-blue-500 flex items-center justify-center hover:bg-blue-50 transition-colors"
+                  className="w-12 h-12 rounded-full border-2 border-orange-500 text-orange-500 flex items-center justify-center hover:bg-orange-50 transition-colors"
                 >
                   <Plus className="h-5 w-5" />
                 </button>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-blue-600">${totalPrice}</div>
+                <div className="text-3xl font-bold text-orange-600">${totalPrice}</div>
                 <div className="text-base text-gray-500">${pkg.price} × {quantity}</div>
               </div>
             </div>
@@ -173,7 +174,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
           {tshirtCount > 0 && (
             <div className="mb-6 border-t pt-4">
               <div className="flex items-center gap-2 mb-4">
-                <Shirt className="h-5 w-5 text-blue-600" />
+                <Shirt className="h-5 w-5 text-orange-600" />
                 <h5 className="font-semibold text-gray-900 text-lg">
                   Select T-shirt Sizes ({tshirtCount} {tshirtCount === 1 ? 'shirt' : 'shirts'})
                 </h5>
@@ -191,7 +192,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
                     <select
                       value={tshirtSizes[index] || ''}
                       onChange={(e) => updateTshirtSize(index, e.target.value)}
-                      className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base ${tshirtSizes[index] ? 'border-gray-300' : 'border-red-300 bg-red-50'
+                      className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-base ${tshirtSizes[index] ? 'border-gray-300' : 'border-red-300 bg-red-50'
                         }`}
                     >
                       <option value="" disabled>Select a size</option>
@@ -233,7 +234,7 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
             onClick={handleConfirm}
             disabled={!allSizesSelected}
             className={`flex-1 text-base ${allSizesSelected
-                ? 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-lg hover:shadow-xl'
+                ? 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white shadow-lg hover:shadow-xl'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
           >
@@ -256,17 +257,18 @@ const AddToCartPopup = ({ pkg, isOpen, onClose, onConfirm, onGoToCheckout, curre
   )
 }
 
-// Get packages - Early Bird packages and Other packages (non-early bird, non-standard, non-late)
+// Get packages - Late and Other (non-early, non-standard, non-late, non-guest)
 const getPackagesWithCategories = (packages) => {
   return packages.map(pkg => {
     const fullName = pkg.name?.toLowerCase() || ''
     let categoryKey = ''
     let simpleName = pkg.name
-    let isEarlyBird = false
+    let isLate = false
+    let isOther = false
 
-    // Check if it's an Early Bird package
-    if (fullName.includes('early bird') || fullName.includes('early')) {
-      isEarlyBird = true
+    // Detect Late
+    if (fullName.includes('late')) {
+      isLate = true
     }
 
     // Map package names to categories
@@ -294,6 +296,13 @@ const getPackagesWithCategories = (packages) => {
       simpleName = pkg.name
     }
 
+    // Check if it's "other" (not early bird, not standard, not late, not guest)
+    const isEarlyBird = fullName.includes('early bird') || fullName.includes('early')
+    const isStandard = fullName.includes('standard')
+    if (!isEarlyBird && !isStandard && !isLate && categoryKey !== 'guest') {
+      isOther = true
+    }
+
     return {
       id: pkg.id.toString(),
       name: simpleName,
@@ -304,7 +313,8 @@ const getPackagesWithCategories = (packages) => {
       description: simpleName,
       features: Array.isArray(pkg.items) ? pkg.items : (pkg.items ? pkg.items.split(',').map(item => item.trim()) : []),
       popular: pkg.category === 'couple' || fullName.includes('cultural'),
-      isEarlyBird: isEarlyBird,
+      isLate,
+      isOther,
     }
   }).filter(pkg => pkg.category !== 'guest') // Exclude guest packages
 }
@@ -338,7 +348,7 @@ const SidebarFilters = ({
           className="w-full flex items-center justify-between bg-white rounded-xl shadow-sm border border-gray-200 p-4"
         >
           <div className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-blue-500" />
+            <Filter className="h-5 w-5 text-orange-500" />
             <span className="font-semibold text-gray-900">Filter Categories</span>
             <span className="text-sm text-gray-500">({filteredCount} of {totalCount})</span>
           </div>
@@ -356,7 +366,7 @@ const SidebarFilters = ({
                 setIsMobileMenuOpen(false)
               }}
               className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${selectedCategory === 'all'
-                  ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                  ? 'bg-orange-100 text-orange-800 border border-orange-300'
                   : 'text-gray-700 hover:bg-gray-100 border border-transparent'
                 }`}
             >
@@ -370,7 +380,7 @@ const SidebarFilters = ({
                   setIsMobileMenuOpen(false)
                 }}
                 className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${selectedCategory === key
-                    ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                    ? 'bg-orange-100 text-orange-800 border border-orange-300'
                     : 'text-gray-700 hover:bg-gray-100 border border-transparent'
                   }`}
               >
@@ -384,7 +394,7 @@ const SidebarFilters = ({
       {/* Desktop Sidebar */}
       <div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-fit sticky top-24">
         <div className="flex items-center gap-2 mb-6 pb-4 border-b border-gray-200">
-          <Filter className="h-5 w-5 text-blue-500" />
+          <Filter className="h-5 w-5 text-orange-500" />
           <h3 className="text-lg font-semibold text-gray-900">Categories</h3>
           <div className="ml-auto text-base text-gray-500">
             {filteredCount} of {totalCount}
@@ -395,7 +405,7 @@ const SidebarFilters = ({
           <button
             onClick={() => setSelectedCategory('all')}
             className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${selectedCategory === 'all'
-                ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                ? 'bg-orange-100 text-orange-800 border border-orange-300'
                 : 'text-gray-700 hover:bg-gray-100 border border-transparent'
               }`}
           >
@@ -406,7 +416,7 @@ const SidebarFilters = ({
               key={key}
               onClick={() => setSelectedCategory(key)}
               className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-base ${selectedCategory === key
-                  ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                  ? 'bg-orange-100 text-orange-800 border border-orange-300'
                   : 'text-gray-700 hover:bg-gray-100 border border-transparent'
                 }`}
             >
@@ -428,8 +438,8 @@ export default function ConventionPage() {
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('all')
 
-  // Early Bird deadline
-  const currentDeadline = DEADLINES.EARLY_BIRD
+  // Late deadline
+  const currentDeadline = DEADLINES.LATE
 
   // Fetch packages from database
   useEffect(() => {
@@ -454,17 +464,17 @@ export default function ConventionPage() {
     return getPackagesWithCategories(packages)
   }, [packages])
 
-  // Separate packages: Early Bird vs Others
-  const earlyBirdPackages = allPackages.filter(pkg => pkg.isEarlyBird === true)
-  const otherPackages = allPackages.filter(pkg => pkg.isEarlyBird === false && pkg.category === 'other')
+  // Separate Late and Other packages
+  const latePackages = allPackages.filter(pkg => pkg.isLate === true)
+  const otherPackages = allPackages.filter(pkg => pkg.isOther === true)
 
-  // For filtering based on selected category
+  // For filtering based on selected category (combine both late and other when 'all')
   const filteredPackages = useMemo(() => {
     if (selectedCategory === 'all') {
-      return allPackages
+      return [...latePackages, ...otherPackages]
     }
     return allPackages.filter(pkg => pkg.category === selectedCategory)
-  }, [allPackages, selectedCategory])
+  }, [allPackages, selectedCategory, latePackages, otherPackages])
 
   // Get current quantity for a package in cart
   const getCurrentQuantity = (pkgId) => {
@@ -502,7 +512,7 @@ export default function ConventionPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      <main className="min-h-screen flex flex-col bg-gradient-to-br from-orange-50 via-white to-orange-50">
         <Header />
         <section className="flex-grow py-8">
           <div className="container mx-auto px-4 text-center">
@@ -515,7 +525,7 @@ export default function ConventionPage() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <main className="min-h-screen flex flex-col bg-gradient-to-br from-orange-50 via-white to-orange-50">
       <Header />
 
       {selectedPackage && (
@@ -534,27 +544,27 @@ export default function ConventionPage() {
         <div className="container mx-auto px-4">
           {/* Hero Section */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-base font-medium mb-4">
+            <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-800 px-4 py-2 rounded-full text-base font-medium mb-4">
               <Calendar className="h-4 w-4" />
               July 30th to August 2nd, 2026
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
               BMCA 2026 Convention
             </h1>
             <p className="text-xl text-gray-600 mb-4 max-w-3xl mx-auto">
               Join us for an unforgettable experience filled with culture, celebration, and community.
-              Choose the perfect package that suits your needs.
+              Late registration is now open – secure your spot today!
             </p>
 
             {/* Two Column Layout for Info and Flyer */}
             <div className="max-w-5xl mx-auto mb-8 grid md:grid-cols-2 gap-6 items-center">
               <div className="text-left space-y-4">
-                <div className="bg-white rounded-2xl shadow-lg p-6 border border-blue-100">
+                <div className="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Event Details</h2>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
-                      <div className="bg-blue-100 p-2 rounded-lg">
-                        <Calendar className="h-5 w-5 text-blue-600" />
+                      <div className="bg-orange-100 p-2 rounded-lg">
+                        <Calendar className="h-5 w-5 text-orange-600" />
                       </div>
                       <div>
                         <p className="font-semibold text-gray-900">Dates</p>
@@ -564,13 +574,13 @@ export default function ConventionPage() {
                     </div>
 
                     <div className="flex items-start gap-3">
-                      <div className="bg-blue-100 p-2 rounded-lg">
-                        <MapPin className="h-5 w-5 text-blue-600" />
+                      <div className="bg-orange-100 p-2 rounded-lg">
+                        <MapPin className="h-5 w-5 text-orange-600" />
                       </div>
                       <div>
                         <p className="font-semibold text-gray-900">Location</p>
                         <p className="text-gray-600">Great Lakes Region, USA</p>
-                        <p className="text-sm text-blue-600 mt-1 flex items-center gap-1">
+                        <p className="text-sm text-orange-600 mt-1 flex items-center gap-1">
                           <span className="font-medium">Nearest Airport:</span> Detroit Metropolitan Airport (DTW)
                         </p>
                         <p className="text-xs text-gray-500 mt-1">Approximately 30-45 minutes drive</p>
@@ -578,8 +588,8 @@ export default function ConventionPage() {
                     </div>
 
                     <div className="flex items-start gap-3">
-                      <div className="bg-blue-100 p-2 rounded-lg">
-                        <Users className="h-5 w-5 text-blue-600" />
+                      <div className="bg-orange-100 p-2 rounded-lg">
+                        <Users className="h-5 w-5 text-orange-600" />
                       </div>
                       <div>
                         <p className="font-semibold text-gray-900">Organizer</p>
@@ -598,52 +608,51 @@ export default function ConventionPage() {
               </div>
 
               <div className="relative">
-                <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-4 border-blue-100 hover:border-blue-300 transition-all duration-300">
+                <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-4 border-orange-100 hover:border-orange-300 transition-all duration-300">
                   <img
                     src="/conventionflyer.png"
                     alt="BMCA 26th Convention Flyer - Strength in Unity - Great Lakes 2021 (2026)"
                     className="w-full h-auto object-cover"
                   />
                 </div>
-                <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-xs px-3 py-1 rounded-full shadow-lg">
+                <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-orange-600 to-red-600 text-white text-xs px-3 py-1 rounded-full shadow-lg">
                   26th Anniversary
                 </div>
               </div>
             </div>
 
-            {/* Father's Day Promotion Banner */}
+            {/* Late Registration Banner */}
             <div className="max-w-4xl mx-auto mb-6">
-              <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-5 shadow-lg border border-orange-300 animate-pulse">
+              <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-xl p-5 shadow-lg border border-red-300 animate-pulse">
                 <div className="flex items-center justify-center gap-4 flex-wrap">
-                  <Heart className="h-8 w-8 text-white fill-current" />
+                  <AlertCircle className="h-8 w-8 text-white" />
                   <div className="text-center">
                     <p className="text-white font-bold text-xl flex items-center gap-2">
-                      <Gift className="h-6 w-6" />
-                      🎉 FATHER'S DAY SPECIAL! 🎉
+                      ⏰ LATE REGISTRATION NOW OPEN!
                     </p>
                     <p className="text-white text-lg font-semibold">
-                      Early Bird Prices Available Until June 24th!
+                      Limited spots available – Don't miss out!
                     </p>
                     <p className="text-white/90 text-sm">
-                      Save up to $40 on all Early Bird packages. Don't miss out!
+                      Register now before it's too late!
                     </p>
                   </div>
-                  <Heart className="h-8 w-8 text-white fill-current" />
+                  <AlertCircle className="h-8 w-8 text-white" />
                 </div>
               </div>
             </div>
 
             {/* Deadline Banner */}
             <div className="max-w-3xl mx-auto mb-6">
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-400 shadow-md p-4 rounded-xl">
+              <div className="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-400 shadow-md p-4 rounded-xl">
                 <div className="flex items-center gap-3">
-                  <Clock className="h-6 w-6 text-green-600" />
+                  <Clock className="h-6 w-6 text-red-600" />
                   <div className="text-left">
-                    <p className="font-semibold text-green-800">
-                      🎁 FATHER'S DAY PROMOTION - Early Bird Pricing Active
+                    <p className="font-semibold text-red-800">
+                      ⏰ LATE REGISTRATION - Limited Availability
                     </p>
-                    <p className="text-sm text-green-600">
-                      Early Bird prices available until June 24, 2026 (Central US/Canada Time)
+                    <p className="text-sm text-red-600">
+                      Late registration ends on July 30TH, 2026 (Central US/Canada Time)
                     </p>
                     <p className="text-sm mt-1 text-gray-600">
                       {currentDeadline.description}
@@ -667,7 +676,7 @@ export default function ConventionPage() {
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
                 filteredCount={filteredPackages.length}
-                totalCount={allPackages.length}
+                totalCount={latePackages.length + otherPackages.length}
               />
             </div>
 
@@ -680,7 +689,7 @@ export default function ConventionPage() {
                     {selectedCategory === 'all' ? 'All Packages' : categoryLabels[selectedCategory]}
                   </h2>
                   <p className="text-gray-600 text-base mt-1">
-                    Showing <span className="font-semibold text-blue-600">{filteredPackages.length}</span> packages
+                    Showing <span className="font-semibold text-orange-600">{filteredPackages.length}</span> packages
                   </p>
                 </div>
                 <div className="flex items-center gap-4 mt-2 sm:mt-0">
@@ -708,24 +717,24 @@ export default function ConventionPage() {
                       <Card
                         key={pkg.id}
                         className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
-                            ? 'border-blue-300 shadow-md'
-                            : 'border-gray-200 hover:border-blue-200'
+                            ? 'border-orange-300 shadow-md'
+                            : 'border-gray-200 hover:border-orange-200'
                           } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
                       >
                         {pkg.popular && (
                           <div className="absolute top-3 right-3 z-10">
-                            <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
+                            <Badge className="bg-gradient-to-r from-orange-600 to-red-600 text-white flex items-center gap-1 text-sm">
                               <Star className="h-3 w-3 fill-current" />
                               Popular
                             </Badge>
                           </div>
                         )}
 
-                        {pkg.isEarlyBird && (
+                        {pkg.isLate && (
                           <div className="absolute top-3 left-3 z-10">
-                            <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 border-2 border-green-300 shadow-lg text-white flex items-center gap-1 text-sm">
-                              <Clock className="h-3 w-3" />
-                              🌟 EARLY BIRD
+                            <Badge className="bg-gradient-to-r from-red-500 to-orange-500 border-2 border-red-300 shadow-lg text-white flex items-center gap-1 text-sm">
+                              <AlertCircle className="h-3 w-3" />
+                              ⏰ LATE
                             </Badge>
                           </div>
                         )}
@@ -739,19 +748,19 @@ export default function ConventionPage() {
                           </div>
                         )}
 
-                        <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+                        <CardHeader className="relative p-5 bg-gradient-to-r from-red-600 to-orange-600 text-white">
                           <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
                           <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
                         </CardHeader>
 
                         <CardContent className="flex-grow p-5">
                           <div className="text-center mb-5">
-                            <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                            <span className="text-3xl font-bold text-red-600">
                               ${pkg.price}
                             </span>
                             <p className="text-sm text-gray-500 mt-1">per person</p>
                             {pkg.category === 'couple' && (
-                              <p className="text-xs text-blue-600 mt-1">Includes 2 shirts</p>
+                              <p className="text-xs text-red-500 mt-1">Includes 2 shirts</p>
                             )}
                           </div>
 
@@ -772,7 +781,7 @@ export default function ConventionPage() {
                             onClick={() => handleAddToCartClick(pkg)}
                             className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
                                 ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                                : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
+                                : 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700'
                               } text-white shadow-md hover:shadow-lg py-3`}
                           >
                             {currentQuantity > 0 ? (
@@ -791,108 +800,110 @@ export default function ConventionPage() {
                 </div>
               )}
 
-              {/* When showing all categories - Early Bird Packages + Other Packages */}
+              {/* When showing all categories - Late Packages + Other Packages */}
               {selectedCategory === 'all' && (
                 <>
-                  {/* Early Bird Packages Section */}
-                  <div className="mb-8">
-                    <div className="mb-4 pb-2 border-b-2 border-green-300">
-                      <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <Gift className="h-5 w-5 text-green-600" />
-                        Early Bird Packages
-                      </h3>
-                      <p className="text-sm text-green-600 mt-1">
-                        🎉 Father's Day Special - Save up to $40! Available until June 24th
-                      </p>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {earlyBirdPackages.map((pkg) => {
-                        const currentQuantity = getCurrentQuantity(pkg.id)
-                        return (
-                          <Card
-                            key={pkg.id}
-                            className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
-                                ? 'border-blue-300 shadow-md'
-                                : 'border-gray-200 hover:border-blue-200'
-                              } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
-                          >
-                            {pkg.popular && (
-                              <div className="absolute top-3 right-3 z-10">
-                                <Badge className="bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center gap-1 text-sm">
-                                  <Star className="h-3 w-3 fill-current" />
-                                  Popular
-                                </Badge>
-                              </div>
-                            )}
-
-                            <div className="absolute top-3 left-3 z-10">
-                              <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 border-2 border-green-300 shadow-lg text-white flex items-center gap-1 text-sm">
-                                <Clock className="h-3 w-3" />
-                                🌟 EARLY BIRD
-                              </Badge>
-                            </div>
-
-                            {currentQuantity > 0 && (
-                              <div className="absolute top-3 left-3 z-10 mt-8">
-                                <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
-                                  <ShoppingCart className="h-3 w-3" />
-                                  {currentQuantity}
-                                </Badge>
-                              </div>
-                            )}
-
-                            <CardHeader className="relative p-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-                              <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
-                              <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
-                            </CardHeader>
-
-                            <CardContent className="flex-grow p-5">
-                              <div className="text-center mb-5">
-                                <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                                  ${pkg.price}
-                                </span>
-                                <p className="text-sm text-gray-500 mt-1">per person</p>
-                                {pkg.category === 'couple' && (
-                                  <p className="text-xs text-blue-600 mt-1">Includes 2 shirts</p>
-                                )}
-                              </div>
-
-                              <div className="mb-5">
-                                <div className="grid grid-cols-2 gap-3">
-                                  {pkg.features.slice(0, 8).map((feature, idx) => (
-                                    <div key={idx} className="flex items-start gap-2">
-                                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                      <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
-                                    </div>
-                                  ))}
+                  {/* Late Packages Section */}
+                  {latePackages.length > 0 && (
+                    <div className="mb-8">
+                      <div className="mb-4 pb-2 border-b-2 border-red-300">
+                        <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                          <AlertCircle className="h-5 w-5 text-red-500" />
+                          Late Registration Packages
+                        </h3>
+                        <p className="text-sm text-red-500 mt-1">
+                          ⏰ Limited availability – register now before they're gone!
+                        </p>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {latePackages.map((pkg) => {
+                          const currentQuantity = getCurrentQuantity(pkg.id)
+                          return (
+                            <Card
+                              key={pkg.id}
+                              className={`flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden border ${pkg.popular
+                                  ? 'border-orange-300 shadow-md'
+                                  : 'border-gray-200 hover:border-orange-200'
+                                } ${currentQuantity > 0 ? 'ring-1 ring-green-200 border-green-300' : ''}`}
+                            >
+                              {pkg.popular && (
+                                <div className="absolute top-3 right-3 z-10">
+                                  <Badge className="bg-gradient-to-r from-orange-600 to-red-600 text-white flex items-center gap-1 text-sm">
+                                    <Star className="h-3 w-3 fill-current" />
+                                    Popular
+                                  </Badge>
                                 </div>
-                              </div>
-                            </CardContent>
+                              )}
 
-                            <div className="p-5 pt-0">
-                              <Button
-                                onClick={() => handleAddToCartClick(pkg)}
-                                className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
-                                    ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                                    : 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900'
-                                  } text-white shadow-md hover:shadow-lg py-3`}
-                              >
-                                {currentQuantity > 0 ? (
-                                  <span className="flex items-center gap-2">
-                                    <ShoppingCart className="h-4 w-4" />
-                                    Update ({currentQuantity})
+                              <div className="absolute top-3 left-3 z-10">
+                                <Badge className="bg-gradient-to-r from-red-500 to-orange-500 border-2 border-red-300 shadow-lg text-white flex items-center gap-1 text-sm">
+                                  <AlertCircle className="h-3 w-3" />
+                                  ⏰ LATE
+                                </Badge>
+                              </div>
+
+                              {currentQuantity > 0 && (
+                                <div className="absolute top-3 left-3 z-10 mt-8">
+                                  <Badge className="bg-green-500 text-white flex items-center gap-1 text-sm">
+                                    <ShoppingCart className="h-3 w-3" />
+                                    {currentQuantity}
+                                  </Badge>
+                                </div>
+                              )}
+
+                              <CardHeader className="relative p-5 bg-gradient-to-r from-red-600 to-orange-600 text-white">
+                                <CardTitle className="text-xl text-center">{pkg.name}</CardTitle>
+                                <CardDescription className="text-white/90 text-center text-base">{pkg.description}</CardDescription>
+                              </CardHeader>
+
+                              <CardContent className="flex-grow p-5">
+                                <div className="text-center mb-5">
+                                  <span className="text-3xl font-bold text-red-600">
+                                    ${pkg.price}
                                   </span>
-                                ) : (
-                                  `Add to Cart - $${pkg.price}`
-                                )}
-                              </Button>
-                            </div>
-                          </Card>
-                        )
-                      })}
+                                  <p className="text-sm text-gray-500 mt-1">per person</p>
+                                  {pkg.category === 'couple' && (
+                                    <p className="text-xs text-red-500 mt-1">Includes 2 shirts</p>
+                                  )}
+                                </div>
+
+                                <div className="mb-5">
+                                  <div className="grid grid-cols-2 gap-3">
+                                    {pkg.features.slice(0, 8).map((feature, idx) => (
+                                      <div key={idx} className="flex items-start gap-2">
+                                        <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                        <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </CardContent>
+
+                              <div className="p-5 pt-0">
+                                <Button
+                                  onClick={() => handleAddToCartClick(pkg)}
+                                  className={`w-full text-base font-semibold transition-all ${currentQuantity > 0
+                                      ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                                      : 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700'
+                                    } text-white shadow-md hover:shadow-lg py-3`}
+                                >
+                                  {currentQuantity > 0 ? (
+                                    <span className="flex items-center gap-2">
+                                      <ShoppingCart className="h-4 w-4" />
+                                      Update ({currentQuantity})
+                                    </span>
+                                  ) : (
+                                    `Add to Cart - $${pkg.price}`
+                                  )}
+                                </Button>
+                              </div>
+                            </Card>
+                          )
+                        })}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Other Packages Section */}
                   {otherPackages.length > 0 && (
@@ -992,7 +1003,7 @@ export default function ConventionPage() {
                   <p className="text-gray-600 text-lg mb-4">Try adjusting your category filter.</p>
                   <Button
                     onClick={() => setSelectedCategory('all')}
-                    className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white text-base"
+                    className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-base"
                   >
                     Clear Filter
                   </Button>
